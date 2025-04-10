@@ -22,7 +22,7 @@ jobs:
           cache: 'npm'
 
       - name: Install Dependencies
-        run: bun install --legacy-peer-deps
+        run: bun install
 
       - name: Run ESLint
         run: bun run lint
