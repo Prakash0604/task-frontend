@@ -22,10 +22,10 @@ jobs:
           cache: 'npm'
 
       - name: Install Dependencies
-        run: npm install --legacy-peer-deps
+        run: bun install --legacy-peer-deps
 
       - name: Run ESLint
-        run: npm run lint
+        run: bun run lint
 
   deploy:
     name: Deploy to Vercel
