@@ -1,3 +1,4 @@
+"use client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star } from "lucide-react";
 import Image from "next/image";
@@ -31,7 +32,7 @@ const Testimonials = () => {
     <section id="testimonials" className="py-24 bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <p className="text-sm font-medium text-taskpurple-600 uppercase tracking-wider">
+          <p className="text-sm font-medium text-primary uppercase tracking-wider">
             Testimonials
           </p>
           <h2 className="mt-2 text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
@@ -55,11 +56,10 @@ const Testimonials = () => {
                 <p className="text-gray-700 mb-6">{testimonial.quote}</p>
                 <div className="flex items-center">
                   <Image
-                    src={testimonial.avatar}
+                    src={testimonial.avatar || "/default-avatar.png"} // Provide fallback
                     alt={testimonial.name}
-                    height={48}
-                    width={48}
-                    className="h-12 w-12 rounded-full object-cover mr-4"
+                    width={100}
+                    height={100}
                   />
                   <div>
                     <h4 className="font-semibold text-gray-900">
