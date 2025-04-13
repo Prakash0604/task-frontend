@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { motion } from 'framer-motion';
 import { ChevronRight, Check, ArrowRight, Users, Calendar, Clock, Star, Menu, X } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,7 +16,7 @@ export default function Home() {
       setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
     }, 5000);
     return () => clearTimeout(timer);
-  }, [currentTestimonial]);
+  }, []);
 
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
@@ -92,17 +94,17 @@ export default function Home() {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-600 hover:text-indigo-600 transition-colors">Features</a>
-              <a href="#pricing" className="text-gray-600 hover:text-indigo-600 transition-colors">Pricing</a>
-              <a href="#testimonials" className="text-gray-600 hover:text-indigo-600 transition-colors">Testimonials</a>
-              <a href="#faq" className="text-gray-600 hover:text-indigo-600 transition-colors">FAQ</a>
+              <Link href="#features" className="text-gray-600 hover:text-indigo-600 transition-colors">Features</Link>
+              <Link href="#pricing" className="text-gray-600 hover:text-indigo-600 transition-colors">Pricing</Link>
+              <Link href="#testimonials" className="text-gray-600 hover:text-indigo-600 transition-colors">Testimonials</Link>
+              <Link href="#faq" className="text-gray-600 hover:text-indigo-600 transition-colors">FAQ</Link>
             </div>
 
             <div className="hidden md:flex items-center space-x-4">
-              <a href="/login" className="text-gray-600 hover:text-indigo-600 transition-colors">Login</a>
-              <a href="/signup" className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors">
+              <Link href="/login" className="text-gray-600 hover:text-indigo-600 transition-colors">Login</Link>
+              <Link href="/signup" className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors">
                 Get Started
-              </a>
+              </Link>
             </div>
 
             {/* Mobile Menu Button */}
@@ -125,15 +127,15 @@ export default function Home() {
               className="md:hidden bg-white px-4 py-4 border-t border-gray-100"
             >
               <div className="flex flex-col space-y-4">
-                <a href="#features" className="text-gray-600 hover:text-indigo-600 transition-colors">Features</a>
-                <a href="#pricing" className="text-gray-600 hover:text-indigo-600 transition-colors">Pricing</a>
-                <a href="#testimonials" className="text-gray-600 hover:text-indigo-600 transition-colors">Testimonials</a>
-                <a href="#faq" className="text-gray-600 hover:text-indigo-600 transition-colors">FAQ</a>
+                <Link href="#features" className="text-gray-600 hover:text-indigo-600 transition-colors">Features</Link>
+                <Link href="#pricing" className="text-gray-600 hover:text-indigo-600 transition-colors">Pricing</Link>
+                <Link href="#testimonials" className="text-gray-600 hover:text-indigo-600 transition-colors">Testimonials</Link>
+                <Link href="#faq" className="text-gray-600 hover:text-indigo-600 transition-colors">FAQ</Link>
                 <div className="pt-2 border-t border-gray-100">
-                  <a href="/login" className="block text-gray-600 hover:text-indigo-600 transition-colors py-2">Login</a>
-                  <a href="/signup" className="block bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors text-center mt-2">
+                  <Link href="/login" className="block text-gray-600 hover:text-indigo-600 transition-colors py-2">Login</Link>
+                  <Link href="/signup" className="block bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors text-center mt-2">
                     Get Started
-                  </a>
+                  </Link>
                 </div>
               </div>
             </motion.div>
@@ -157,7 +159,7 @@ export default function Home() {
                   TaskFlow helps teams organize, track, and manage their work with powerful features designed for productivity and collaboration.
                 </p>
                 <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                  <motion.a
+                  <motion.link
                     href="/signup"
                     className="bg-indigo-600 text-white px-6 py-3 rounded-md text-center flex items-center justify-center space-x-2 hover:bg-indigo-700 transition-colors"
                     whileHover={{ scale: 1.05 }}
@@ -165,10 +167,10 @@ export default function Home() {
                   >
                     <span>Start for free</span>
                     <ArrowRight size={18} />
-                  </motion.a>
-                  <a href="#demo" className="border border-gray-300 bg-white text-gray-700 px-6 py-3 rounded-md text-center hover:bg-gray-50 transition-colors">
+                  </motion.link>
+                  <Link href="#demo" className="border border-gray-300 bg-white text-gray-700 px-6 py-3 rounded-md text-center hover:bg-gray-50 transition-colors">
                     Watch demo
-                  </a>
+                  </Link>
                 </div>
                 <div className="mt-8 flex items-center text-sm text-gray-500">
                   <p>No credit card required • Free 14-day trial</p>
@@ -190,7 +192,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="p-6">
-                    <img
+                    <Image
                       src="/api/placeholder/600/360"
                       alt="TaskFlow Dashboard"
                       className="rounded-lg shadow-sm"
@@ -254,7 +256,7 @@ export default function Home() {
                     <div className="md:w-1/2 mb-8 md:mb-0">
                       <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">Advanced Analytics</h3>
                       <p className="text-gray-600 mb-6">
-                        Gain valuable insights into your team's performance with detailed reports and visualizations.
+                        Gain valuable insights into your teams performance with detailed reports and visualizations.
                       </p>
                       <ul className="space-y-3">
                         {['Task completion trends', 'Team productivity metrics', 'Time tracking analytics', 'Custom reporting'].map((item, i) => (
@@ -266,7 +268,7 @@ export default function Home() {
                       </ul>
                     </div>
                     <div className="md:w-1/2">
-                      <img
+                      <Image
                         src="/api/placeholder/500/300"
                         alt="Analytics Dashboard"
                         className="rounded-lg shadow-md"
@@ -313,7 +315,7 @@ export default function Home() {
                       className="absolute w-full"
                       style={{ display: currentTestimonial === index ? 'block' : 'none' }}
                     >
-                      <p className="text-lg text-gray-700 italic mb-6">"{testimonial.text}"</p>
+                      <p className="text-lg text-gray-700 italic mb-6">{testimonial.text}</p>
                       <div>
                         <p className="font-semibold text-gray-900">{testimonial.author}</p>
                         <p className="text-gray-500 text-sm">{testimonial.role}</p>
@@ -364,7 +366,7 @@ export default function Home() {
             >
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Simple, Transparent Pricing</h2>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Choose the plan that fits your team's needs with no hidden fees or surprises.
+                Choose the plan that fits your teams needs with no hidden fees or surprises.
               </p>
             </motion.div>
 
@@ -507,13 +509,13 @@ export default function Home() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <a
+                <Link
                   href="/signup"
                   className="bg-white text-indigo-600 px-8 py-4 rounded-md inline-flex items-center space-x-2 font-medium shadow-md hover:bg-indigo-50 transition-colors"
                 >
                   <span>Start your free trial</span>
                   <ChevronRight size={18} />
-                </a>
+                </Link>
               </motion.div>
               <p className="text-indigo-200 mt-4">No credit card required • 14-day free trial</p>
             </motion.div>
@@ -527,10 +529,10 @@ export default function Home() {
               <div>
                 <h3 className="text-lg font-semibold mb-4">Product</h3>
                 <ul className="space-y-2">
-                  <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Features</a></li>
-                  <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Pricing</a></li>
-                  <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Integrations</a></li>
-                  <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Changelog</a></li>
+                  <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Features</Link></li>
+                  <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Pricing</Link></li>
+                  <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Integrations</Link></li>
+                  <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Changelog</Link></li>
                 </ul>
               </div>
               <div>
