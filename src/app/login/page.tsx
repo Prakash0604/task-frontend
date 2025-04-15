@@ -1,9 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-
 import { LoginForm } from "@/Components/login-form";
 
-export default function LoginPage() {
+const LoginPage: React.FC = () => {
   return (
     <div className="flex max-h-screen">
       {/* Left side - Image */}
@@ -46,3 +45,6 @@ export default function LoginPage() {
     </div>
   );
 }
+
+
+export default LoginPage

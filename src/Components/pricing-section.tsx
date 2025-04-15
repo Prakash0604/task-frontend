@@ -53,7 +53,7 @@ export default function PricingSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-16 "
         >
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Simple, Transparent Pricing
@@ -72,11 +72,10 @@ export default function PricingSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className={`rounded-xl shadow-sm border ${
-                plan.popular
-                  ? "border-indigo-200 ring-2 ring-indigo-600 bg-white relative z-10 scale-105 my-4 md:my-0"
-                  : "border-gray-200 bg-white"
-              }`}
+              className={`rounded-xl shadow-sm border ${plan.popular
+                ? "border-indigo-200 ring-2 ring-indigo-600 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-white relative z-10 scale-105 my-4 md:my-0"
+                : "border-gray-200 bg-white"
+                }`}
             >
               {plan.popular && (
                 <Container className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full">
@@ -108,11 +107,10 @@ export default function PricingSection() {
                 <motion.button
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
-                  className={`w-full py-3 rounded-md font-medium ${
-                    plan.popular
-                      ? "bg-indigo-600 text-white hover:bg-indigo-700"
-                      : "bg-white text-indigo-600 border border-indigo-600 hover:bg-indigo-50"
-                  } transition-colors`}
+                  className={`w-full py-3 rounded-md font-medium ${plan.popular
+                    ? "bg-indigo-600 text-white hover:bg-indigo-700"
+                    : "bg-white text-indigo-600 border border-indigo-600 hover:bg-indigo-50"
+                    } transition-colors`}
                 >
                   Get started
                 </motion.button>

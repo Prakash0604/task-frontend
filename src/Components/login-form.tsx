@@ -1,18 +1,13 @@
 "use client";
-
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import { loginSchema, type LoginFormValues } from "@/lib/validations/auth";
 import Container from "@/Container/container";
-
-export function LoginForm() {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+const LoginForm: React.FC = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const {
     register,
@@ -27,18 +22,11 @@ export function LoginForm() {
     },
   });
 
-  async function onSubmit(values: LoginFormValues) {
+  const onSubmit = (values: LoginFormValues) => {
     setIsLoading(true);
 
     try {
-      // Here you would normally call your authentication API
       console.log("Form values:", values);
-
-      // Simulate authentication delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Redirect to dashboard after successful login
-      router.push("/dashboard");
     } catch (error) {
       console.error("Login failed:", error);
     } finally {
@@ -52,7 +40,6 @@ export function LoginForm() {
         <button
           type="button"
           className="flex items-center text-sm text-gray-500 hover:text-gray-700"
-          onClick={() => router.push("/")}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -88,9 +75,8 @@ export function LoginForm() {
               placeholder="name@example.com"
               autoComplete="email"
               disabled={isLoading}
-              className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm ${
-                errors.email ? "border-red-500" : "border-gray-300"
-              }`}
+              className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm ${errors.email ? "border-red-500" : "border-gray-300"
+                }`}
               {...register("email")}
             />
             {errors.email && (
@@ -123,9 +109,8 @@ export function LoginForm() {
               placeholder="••••••••"
               autoComplete="current-password"
               disabled={isLoading}
-              className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm ${
-                errors.password ? "border-red-500" : "border-gray-300"
-              }`}
+              className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm ${errors.password ? "border-red-500" : "border-gray-300"
+                }`}
               {...register("password")}
             />
             <button
@@ -200,7 +185,7 @@ export function LoginForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className="flex w-full justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70"
+          className="flex w-full justify-center rounded-md bg-[#ec2a76] px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#ec2a76] focus:outline-none focus:ring-2 focus:ring-[#ec2a76] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70"
         >
           {isLoading ? (
             <>
@@ -228,3 +213,8 @@ export function LoginForm() {
     </Container>
   );
 }
+
+
+
+
+export { LoginForm }
