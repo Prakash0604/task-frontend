@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { LoginForm } from "@/Components/login-form";
-
+import { LoginForm } from "@/Components/Form/login-form";
 const LoginPage: React.FC = () => {
   return (
     <div className="flex max-h-screen">
@@ -44,7 +43,6 @@ const LoginPage: React.FC = () => {
       </div>
     </div>
   );
-}
+};
 
-
-export default LoginPage
+export default LoginPage;
