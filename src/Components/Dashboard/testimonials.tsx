@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 import { Star } from "lucide-react";
 import Container from "@/Container/container";
 
-export default function TestimonialsSection() {
-  const [currentTestimonial, setCurrentTestimonial] = useState(0);
+const TestimonialsSection: React.FC = () => {
+  const [currentTestimonial, setCurrentTestimonial] = useState<number>(0);
 
   const testimonials = [
     {
@@ -128,4 +128,6 @@ export default function TestimonialsSection() {
       </Container>
     </section>
   );
-}
+};
+
+export default TestimonialsSection;

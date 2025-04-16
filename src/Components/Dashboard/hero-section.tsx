@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Container from "@/Container/container";
 import DailyFlowChart from "./daily-flow-chart";
-export default function HeroSection() {
+const HeroSection: React.FC = () => {
   return (
     <section className="pt-32 pb-20">
       <Container className="container mx-auto px-4 md:px-6">
@@ -67,4 +67,6 @@ export default function HeroSection() {
       </Container>
     </section>
   );
-}
+};
+
+export default HeroSection;

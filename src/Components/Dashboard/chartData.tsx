@@ -13,7 +13,7 @@ const chartData: ChartData[] = [
   { day: "Sun", value: 160 },
 ];
 
-const Dashboard = () => {
+const Dashboard: React.FC<object> = () => {
   return (
     <div className="p-8">
       <AnalyticsChart data={chartData} lineColor="#4F46E5" />

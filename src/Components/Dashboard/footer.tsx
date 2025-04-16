@@ -3,7 +3,7 @@ import Container from "@/Container/container";
 import { Check } from "lucide-react";
 import Link from "next/link";
 
-export default function Footer() {
+const Footer: React.FC = () => {
   const footerLinks = [
     {
       title: "Product",
@@ -103,4 +103,6 @@ export default function Footer() {
       </Container>
     </footer>
   );
-}
+};
+
+export default Footer;

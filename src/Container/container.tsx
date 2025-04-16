@@ -3,9 +3,11 @@ interface ContainerProps {
   className?: string;
 }
 
-export default function Container({
+const Container: React.FC<ContainerProps> = ({
   children,
   className = "",
-}: ContainerProps) {
+}: ContainerProps) => {
   return <div className={`${className}`}>{children}</div>;
-}
+};
+
+export default Container;

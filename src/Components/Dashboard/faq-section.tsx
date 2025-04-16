@@ -2,7 +2,7 @@
 import Container from "@/Container/container";
 import { motion } from "framer-motion";
 
-export default function FaqSection() {
+const FaqSection: React.FC = () => {
   const faqItems = [
     {
       question: "How does the 14-day free trial work?",
@@ -70,4 +70,6 @@ export default function FaqSection() {
       </Container>
     </section>
   );
-}
+};
+
+export default FaqSection;

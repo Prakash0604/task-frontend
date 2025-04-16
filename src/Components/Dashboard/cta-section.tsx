@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 
-export default function CtaSection() {
+const CtaSection: React.FC = () => {
   return (
     <section className="py-20 bg-indigo-600">
       <Container className="container mx-auto px-4 md:px-6 max-w-4xl">
@@ -38,4 +38,6 @@ export default function CtaSection() {
       </Container>
     </section>
   );
-}
+};
+
+export default CtaSection;

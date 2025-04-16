@@ -1,7 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
+<<<<<<< Updated upstream
 
 import { LoginForm } from "@/Components/login-form";
+=======
+import { LoginForm } from "@/Components/Form/login-form";
+>>>>>>> Stashed changes
 
 export default function LoginPage() {
   return (
@@ -45,4 +49,10 @@ export default function LoginPage() {
       </div>
     </div>
   );
+<<<<<<< Updated upstream
 }
+=======
+};
+
+export default LoginPage;
+>>>>>>> Stashed changes

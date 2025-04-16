@@ -9,10 +9,10 @@ interface NavigationProps {
   setIsMenuOpen: (isOpen: boolean) => void;
 }
 
-export default function Navigation({
+const Navigation: React.FC<NavigationProps> = ({
   isMenuOpen,
   setIsMenuOpen,
-}: NavigationProps) {
+}) => {
   return (
     <nav className="bg-white shadow-sm py-4 fixed top-0 w-full z-50">
       <Container className="container mx-auto px-4 md:px-6 flex justify-between items-center">
@@ -134,4 +134,6 @@ export default function Navigation({
       )}
     </nav>
   );
-}
+};
+
+export default Navigation;

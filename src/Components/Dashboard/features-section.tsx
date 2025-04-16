@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Users, Calendar, Clock, Check } from "lucide-react";
 import Dashboard from "./chartData";
 
-export default function FeaturesSection() {
+const FeaturesSection: React.FC = () => {
   const features = [
     {
       icon: <Users size={24} className="text-indigo-500" />,
@@ -126,4 +126,6 @@ export default function FeaturesSection() {
       </Container>
     </section>
   );
-}
+};
+
+export default FeaturesSection;
