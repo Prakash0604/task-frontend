@@ -15,17 +15,17 @@ const Header: React.FC<HeaderProps> = ({
 }: HeaderProps) => {
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 py-3 px-4 flex items-center justify-between">
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 flex-1">
         <button
           className="md:hidden text-gray-600"
           onClick={() => setIsSidebarOpen(true)}
         >
           <Menu className="h-6 w-6" />
         </button>
-        <div className="relative w-full max-w-xs">
+        <div className="relative flex-1 max-w-3xl">
           <Input
             placeholder="Search tasks..."
-            className="pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500"
+            className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />

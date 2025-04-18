@@ -20,12 +20,12 @@ function SidebarItem({ icon, label, active, onClick }: SidebarItemProps) {
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-2 p-2 rounded-lg w-full text-left transition-colors ${
+      className={`flex flex-col items-center justify-center p-2 rounded-lg w-full text-center transition-colors ${
         active ? "bg-blue-100 text-blue-600" : "text-gray-600 hover:bg-gray-100"
       }`}
     >
       <div className="w-6 h-6 flex items-center justify-center">{icon}</div>
-      <span className="text-sm font-medium">{label}</span>
+      <span className="text-xs font-medium mt-1">{label}</span>
     </button>
   );
 }
@@ -54,6 +54,14 @@ const Sidebar: React.FC<SidebarProps> = ({
     { label: "Help", icon: <HelpCircle className="h-5 w-5" /> },
   ];
 
+  const handleItemClick = (label: string) => {
+    setSelectedTab(label);
+    // Close sidebar on mobile after selecting an item
+    if (window.innerWidth < 768) {
+      setIsOpen(false);
+    }
+  };
+
   return (
     <div
       className={`fixed inset-y-0 left-0 w-64 bg-white shadow-lg transform ${
@@ -68,26 +76,26 @@ const Sidebar: React.FC<SidebarProps> = ({
           <span className="font-bold text-gray-800">Open Task</span>
         </div>
         <button
-          className="md:hidden text-gray-600"
+          className="md:hidden text-gray-600 hover:text-gray-800"
           onClick={() => setIsOpen(false)}
+          aria-label="Close sidebar"
         >
           ✕
         </button>
       </div>
 
-      <nav className="flex-1 px-2 py-4 space-y-1">
-        {sidebarItems.map((item) => (
-          <SidebarItem
-            key={item.label}
-            icon={item.icon}
-            label={item.label}
-            active={selectedTab === item.label}
-            onClick={() => {
-              setSelectedTab(item.label);
-              setIsOpen(false);
-            }}
-          />
-        ))}
+      <nav className="flex-1 px-2 py-4">
+        <div className="grid grid-cols-2 gap-2">
+          {sidebarItems.map((item) => (
+            <SidebarItem
+              key={item.label}
+              icon={item.icon}
+              label={item.label}
+              active={selectedTab === item.label}
+              onClick={() => handleItemClick(item.label)}
+            />
+          ))}
+        </div>
       </nav>
     </div>
   );
