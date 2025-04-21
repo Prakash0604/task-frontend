@@ -12,7 +12,7 @@ const Header: React.FC<HeaderProps> = ({
   searchQuery,
   setSearchQuery,
   setIsSidebarOpen,
-}: HeaderProps) => {
+}) => {
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 py-3 px-4 flex items-center justify-between">
       <div className="flex items-center gap-4 flex-1">

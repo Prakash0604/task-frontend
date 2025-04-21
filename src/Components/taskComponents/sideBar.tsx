@@ -1,3 +1,5 @@
+"use client";
+
 import {
   LayoutDashboard,
   ListTodo,
@@ -21,10 +23,15 @@ function SidebarItem({ icon, label, active, onClick }: SidebarItemProps) {
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-2 p-2 rounded-lg w-full text-left transition-colors ${active ? "bg-blue-100 text-blue-600" : "text-gray-600 hover:bg-gray-100"
-        }`}
+      className={`flex flex-col items-center justify-center p-3 rounded-lg w-full transition-colors hover:bg-gray-100 text-gray-600`}
     >
-      <div className="w-6 h-6 flex items-center justify-center">{icon}</div>
+      <div
+        className={`w-6 h-6 flex items-center justify-center ${
+          active ? "text-blue-600" : "text-gray-600"
+        }`}
+      >
+        {icon}
+      </div>
       <span className="text-xs font-medium mt-1">{label}</span>
     </button>
   );
@@ -42,21 +49,20 @@ const Sidebar: React.FC<SidebarProps> = ({
   setIsOpen,
   selectedTab,
   setSelectedTab,
-}: SidebarProps) => {
+}) => {
   const sidebarItems = [
-    { label: "Dashboard", icon: <LayoutDashboard className="h-5 w-5" /> },
-    { label: "My Tasks", icon: <ListTodo className="h-5 w-5" /> },
-    { label: "Projects", icon: <FolderKanban className="h-5 w-5" /> },
-    { label: "Goals", icon: <Target className="h-5 w-5" /> },
-    { label: "Calendar", icon: <Calendar className="h-5 w-5" /> },
-    { label: "Notifications", icon: <Bell className="h-5 w-5" /> },
-    { label: "Settings", icon: <Settings className="h-5 w-5" /> },
-    { label: "Help", icon: <HelpCircle className="h-5 w-5" /> },
+    { label: "Dashboard", icon: <LayoutDashboard className="h-14 w-14" /> },
+    { label: "My Tasks", icon: <ListTodo className="h-14 w-14" /> },
+    { label: "Projects", icon: <FolderKanban className="h-14 w-14" /> },
+    { label: "Goals", icon: <Target className="h-14 w-14" /> },
+    { label: "Calendar", icon: <Calendar className="h-14 w-14" /> },
+    { label: "Notifications", icon: <Bell className="h-14 w-14" /> },
+    { label: "Settings", icon: <Settings className="h-14 w-14" /> },
+    { label: "Help", icon: <HelpCircle className="h-14 w-14" /> },
   ];
 
   const handleItemClick = (label: string) => {
     setSelectedTab(label);
-    // Close sidebar on mobile after selecting an item
     if (window.innerWidth < 768) {
       setIsOpen(false);
     }
@@ -64,13 +70,14 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <div
-      className={`fixed inset-y-0 left-0 w-64 bg-white shadow-lg transform ${isOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 transition-transform duration-300 ease-in-out z-50 md:static md:flex md:flex-col md:w-64 border-r border-gray-200`}
+      className={`fixed inset-y-0 left-0 w-64 bg-white shadow-lg transform ${
+        isOpen ? "translate-x-0" : "-translate-x-full"
+      } md:translate-x-0 transition-transform duration-300 ease-in-out z-50 md:static md:flex md:flex-col md:w-64 border-r border-gray-200`}
     >
       <div className="p-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="bg-blue-500 p-2 rounded-lg">
-            <div className="text-white font-bold"><SquareCheckBig /></div>
+            <SquareCheckBig className="text-white h-5 w-5" />
           </div>
           <span className="font-bold text-gray-800">TaskMandu</span>
         </div>
