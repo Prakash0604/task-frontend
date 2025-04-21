@@ -1,9 +1,9 @@
 "use client";
 
+import React from "react";
 import { useDrag } from "react-dnd";
 import { Task, ItemTypes } from "@/lib/validations/type";
 import TaskCard from "./taskCard";
-import { RefObject } from "react";
 
 interface DraggableTaskCardProps {
   task: Task;
@@ -22,9 +22,12 @@ const DraggableTaskCard: React.FC<DraggableTaskCardProps> = ({ task }) => {
     }),
   });
 
+  const ref = React.useRef<HTMLDivElement>(null);
+  drag(ref);
+
   return (
     <div
-      ref={drag as unknown as RefObject<HTMLDivElement>}
+      ref={ref}
       className={`${isDragging ? "opacity-50" : "opacity-100"} cursor-move`}
     >
       <TaskCard task={task} />

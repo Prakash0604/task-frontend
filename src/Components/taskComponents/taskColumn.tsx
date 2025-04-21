@@ -1,13 +1,12 @@
 "use client";
 
+import React from "react";
 import { useDrop } from "react-dnd";
 import { Badge } from "../ui/badge";
 import { Task, ItemTypes } from "@/lib/validations/type";
 import { getStatusColor } from "@/lib/validations/case";
 import DraggableTaskCard from "./graggableTaskCard";
-import React from "react";
 
-// Define allowed transitions for one step forward or backward
 const allowedTransitions: Record<string, string[]> = {
   "To Do": ["In Progress"],
   "In Progress": ["To Do", "In Review"],
@@ -20,8 +19,8 @@ interface TaskColumnProps {
   title: string;
   count: number;
   tasks: Task[];
-  allTasks: Task[]; // Add prop for full task list
-  onDrop: (taskId: number) => void;
+  allTasks: Task[];
+  onDrop: (taskId: number, status: Task["status"]) => void;
 }
 
 const TaskColumn: React.FC<TaskColumnProps> = ({
@@ -30,45 +29,51 @@ const TaskColumn: React.FC<TaskColumnProps> = ({
   tasks,
   allTasks,
   onDrop,
-}: TaskColumnProps) => {
-  const [{ isOver }, drop] = useDrop<
+}) => {
+  const [{ isOver, canDrop }, drop] = useDrop<
     { id: number },
-    { status: string },
-    { isOver: boolean }
+    void,
+    { isOver: boolean; canDrop: boolean }
   >({
     accept: ItemTypes.TASK,
     canDrop: (item: { id: number }) => {
+      console.debug(`Checking canDrop for task ${item.id} to ${title}`);
       const draggedTask = allTasks.find((task) => task.id === item.id);
       if (!draggedTask) {
-        console.error(`Task with ID ${item.id} not found in allTasks`);
+        console.error(
+          `Task with ID ${item.id} not found in allTasks`,
+          allTasks
+        );
         return false;
       }
 
-      return allowedTransitions[draggedTask.status]?.includes(title) ?? false;
+      const isAllowed =
+        allowedTransitions[draggedTask.status]?.includes(title) ?? false;
+      console.debug(
+        `Can drop task ${item.id} from ${draggedTask.status} to ${title}? ${isAllowed}`,
+        { allowedTransitions: allowedTransitions[draggedTask.status] }
+      );
+      return isAllowed;
     },
     drop: (item: { id: number }) => {
-      onDrop(item.id);
-      return { status: title };
+      console.debug(`Dropped task ${item.id} to ${title}`);
+      onDrop(item.id, title as Task["status"]);
     },
     collect: (monitor) => ({
-      isOver: !!monitor.isOver() && monitor.canDrop(),
+      isOver: !!monitor.isOver(),
+      canDrop: !!monitor.canDrop(),
     }),
   });
 
   const dropRef = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    if (dropRef.current) {
-      drop(dropRef.current);
-    }
-  }, [drop]);
+  drop(dropRef);
 
   return (
     <div
       ref={dropRef}
       className={`flex flex-col h-full p-4 rounded-lg ${
-        isOver ? "bg-blue-50" : "bg-white"
-      } shadow-md`}
+        isOver && canDrop ? "bg-blue-100" : "bg-white"
+      } shadow-md min-h-[200px]`}
     >
       <div className="flex items-center gap-2 mb-3">
         <div className={`w-3 h-3 rounded-full ${getStatusColor(title)}`}></div>
@@ -80,7 +85,7 @@ const TaskColumn: React.FC<TaskColumnProps> = ({
 
       <div className="space-y-3">
         {tasks.map((task) => (
-          <DraggableTaskCard key={task.id} task={task} />
+          <DraggableTaskCard key={`${task.id}-${task.status}`} task={task} />
         ))}
       </div>
 

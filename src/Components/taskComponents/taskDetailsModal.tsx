@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Dialog,
   DialogContent,
@@ -11,7 +12,7 @@ import { Avatar, AvatarFallback } from "../ui/avatar";
 import { MessageSquare } from "lucide-react";
 import { Task } from "@/lib/validations/type";
 import { getPriorityColor } from "@/lib/validations/case";
-import Image from "next/image";
+// import Image from "next/image";
 
 interface TaskDetailsModalProps {
   task: Task;
@@ -23,7 +24,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
   task,
   isOpen,
   setIsOpen,
-}: TaskDetailsModalProps) => {
+}) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
@@ -36,7 +37,6 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-6 py-4">
-          {/* Priority and Status */}
           <div className="flex gap-4">
             <div>
               <h4 className="text-sm font-medium text-gray-700">Priority</h4>
@@ -57,13 +57,11 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
             </div>
           </div>
 
-          {/* Description */}
           <div>
             <h4 className="text-sm font-medium text-gray-700">Description</h4>
             <p className="mt-1 text-sm text-gray-600">{task.description}</p>
           </div>
 
-          {/* Assigned Users */}
           <div>
             <h4 className="text-sm font-medium text-gray-700">
               Assigned Users
@@ -80,7 +78,6 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
             </div>
           </div>
 
-          {/* Additional Details */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <h4 className="text-sm font-medium text-gray-700">Comments</h4>
@@ -102,8 +99,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
             </div>
           </div>
 
-          {/* In Progress Image */}
-          {task.status === "In Progress" && (
+          {/* {task.status === "In Progress" && (
             <div>
               <h4 className="text-sm font-medium text-gray-700">Preview</h4>
               <Image
@@ -114,7 +110,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
                 className="mt-2 w-full h-48 object-cover rounded-md"
               />
             </div>
-          )}
+          )} */}
         </div>
       </DialogContent>
     </Dialog>

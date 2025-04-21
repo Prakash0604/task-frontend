@@ -3,7 +3,7 @@ import { MoreHorizontal, MessageSquare } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { Task } from "@/lib/validations/type";
 import { getPriorityColor } from "@/lib/validations/case";
-import Image from "next/image";
+// import Image from "next/image";
 import TaskDetailsModal from "./taskDetailsModal";
 
 interface TaskCardProps {
@@ -34,7 +34,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
           {task.description}
         </p>
 
-        {task.status === "In Progress" && (
+        {/* {task.status === "In Progress" && (
           <div className="mb-3">
             <Image
               src="/api/placeholder/320/180"
@@ -44,7 +44,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
               className="w-full h-24 object-cover rounded-md"
             />
           </div>
-        )}
+        )} */}
 
         <div className="flex flex-col justify-between items-center mt-2">
           <div className="flex items-center gap-3 text-gray-500 text-xs">

@@ -17,18 +17,16 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
   selectedTab,
   filteredTasks,
   moveTask,
-}: ContentRendererProps) => {
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [tasks] = useState<Task[]>(filteredTasks); // Manage tasks state
+  const [tasks] = useState<Task[]>(filteredTasks);
 
-  // Function to close modal when clicking outside
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       setIsModalOpen(false);
     }
   };
 
-  // Freeze background scrolling when modal is open
   useEffect(() => {
     if (isModalOpen) {
       document.body.style.overflow = "hidden";
@@ -88,10 +86,13 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
                       <TaskColumn
                         key={status}
                         title={status}
-                        count={tasks.filter((t) => t.status === status).length}
-                        tasks={tasks.filter((t) => t.status === status)}
+                        count={
+                          filteredTasks.filter((t) => t.status === status)
+                            .length
+                        }
+                        tasks={filteredTasks.filter((t) => t.status === status)}
                         allTasks={tasks}
-                        onDrop={(id) => moveTask(id, status as Task["status"])}
+                        onDrop={(id, newStatus) => moveTask(id, newStatus)}
                       />
                     ))}
                   </div>
@@ -117,7 +118,6 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
               </Tabs>
             </div>
 
-            {/* Modal */}
             {isModalOpen && (
               <div
                 className="fixed inset-0 z-50 flex items-center justify-center"

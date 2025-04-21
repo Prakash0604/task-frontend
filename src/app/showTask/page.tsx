@@ -1,15 +1,31 @@
 "use client";
 
+import React from "react";
 import { useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import Sidebar from "@/components/taskComponents/sideBar";
-import Header from "@/components/taskComponents/header";
-import ContentRenderer from "@/components/taskComponents/contentRender";
+import Header from "../../components/taskComponents/header";
+import ContentRenderer from "../../components/taskComponents/contentRender";
 import { Task } from "@/lib/validations/type";
 
 export default function Dashboard() {
   const [tasks, setTasks] = useState<Task[]>([
+    {
+      id: 1,
+      title: "Redesign Login Page",
+      description: "Update the UI for a more modern look.",
+      priority: "HIGH",
+      status: "To Do",
+      users: [
+        { id: 1, avatar: "/avatar1.png", name: "User 1" },
+        { id: 2, avatar: "/avatar2.png", name: "User 2" },
+        { id: 3, avatar: "/avatar3.png", name: "User 3" },
+      ],
+      comments: 4,
+      attachments: 5,
+      dueDate: "18 Sep, 2024",
+    },
     {
       id: 2,
       title: "Landing Page Refresh",
@@ -151,8 +167,8 @@ export default function Dashboard() {
   const [selectedTab, setSelectedTab] = useState("My Tasks");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  // Function to move a task to a new status
   const moveTask = (taskId: number, newStatus: Task["status"]) => {
-    console.debug(`Moving task ${taskId} to ${newStatus}`);
     setTasks((prevTasks) =>
       prevTasks.map((task) =>
         task.id === taskId ? { ...task, status: newStatus } : task
@@ -160,6 +176,7 @@ export default function Dashboard() {
     );
   };
 
+  // Filter tasks based on search query
   const filteredTasks = tasks.filter(
     (task) =>
       task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
