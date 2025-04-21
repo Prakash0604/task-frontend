@@ -1,13 +1,14 @@
 "use client";
+import CtaSection from "@/Components/Dashboard/cta-section";
+import FaqSection from "@/Components/Dashboard/faq-section";
+import FeaturesSection from "@/Components/Dashboard/features-section";
+import Footer from "@/Components/Dashboard/footer";
+import HeroSection from "@/Components/Dashboard/hero-section";
+import Navigation from "@/Components/Dashboard/navigation";
+import PricingSection from "@/Components/Dashboard/pricing-section";
+import TestimonialsSection from "@/Components/Dashboard/testimonials";
 import { useState } from "react";
-import Navigation from "@/components/Dashboard/navigation";
-import HeroSection from "@/components/Dashboard/hero-section";
-import FeaturesSection from "@/components/Dashboard/features-section";
-import TestimonialsSection from "@/components/Dashboard/testimonials";
-import PricingSection from "@/components/Dashboard/pricing-section";
-import FaqSection from "@/components/Dashboard/faq-section";
-import CtaSection from "@/components/Dashboard/cta-section";
-import Footer from "@/components/Dashboard/footer";
+
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
