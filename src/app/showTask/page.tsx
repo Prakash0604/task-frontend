@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import Sidebar from "@/Components/taskComponents/sideBar";
-import Header from "@/Components/taskComponents/header";
-import ContentRenderer from "@/Components/taskComponents/contentRender";
+import Sidebar from "@/components/taskComponents/sideBar";
+import Header from "@/components/taskComponents/header";
+import ContentRenderer from "@/components/taskComponents/contentRender";
 import { Task } from "@/lib/validations/type";
 
 export default function Dashboard() {
@@ -202,6 +202,7 @@ export default function Dashboard() {
             tasks={tasks}
             filteredTasks={filteredTasks}
             moveTask={moveTask}
+            onClose={() => setIsSidebarOpen(false)}
           />
         </div>
       </div>

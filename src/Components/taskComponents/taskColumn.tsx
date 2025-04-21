@@ -7,10 +7,20 @@ import { getStatusColor } from "@/lib/validations/case";
 import DraggableTaskCard from "./graggableTaskCard";
 import React from "react";
 
+// Define allowed transitions for one step forward or backward
+const allowedTransitions: Record<string, string[]> = {
+  "To Do": ["In Progress"],
+  "In Progress": ["To Do", "In Review"],
+  "In Review": ["In Progress", "Completed"],
+  Completed: ["In Review", "Backlog"],
+  Backlog: ["Completed"],
+};
+
 interface TaskColumnProps {
   title: string;
   count: number;
   tasks: Task[];
+  allTasks: Task[]; // Add prop for full task list
   onDrop: (taskId: number) => void;
 }
 
@@ -18,6 +28,7 @@ const TaskColumn: React.FC<TaskColumnProps> = ({
   title,
   count,
   tasks,
+  allTasks,
   onDrop,
 }: TaskColumnProps) => {
   const [{ isOver }, drop] = useDrop<
@@ -26,12 +37,21 @@ const TaskColumn: React.FC<TaskColumnProps> = ({
     { isOver: boolean }
   >({
     accept: ItemTypes.TASK,
+    canDrop: (item: { id: number }) => {
+      const draggedTask = allTasks.find((task) => task.id === item.id);
+      if (!draggedTask) {
+        console.error(`Task with ID ${item.id} not found in allTasks`);
+        return false;
+      }
+
+      return allowedTransitions[draggedTask.status]?.includes(title) ?? false;
+    },
     drop: (item: { id: number }) => {
       onDrop(item.id);
       return { status: title };
     },
     collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
+      isOver: !!monitor.isOver() && monitor.canDrop(),
     }),
   });
 

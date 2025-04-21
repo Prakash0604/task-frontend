@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Button } from "../ui/button";
 import TaskColumn from "./taskColumn";
-import AddTaskForm from "../Form/add-TaskForm";
+import TaskForm from "../Form/taskAddForm";
 import { Task } from "@/lib/validations/type";
 
 interface ContentRendererProps {
   selectedTab: string;
+  onClose: () => void;
   tasks: Task[];
   filteredTasks: Task[];
   moveTask: (taskId: number, newStatus: Task["status"]) => void;
@@ -18,6 +19,26 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
   moveTask,
 }: ContentRendererProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [tasks] = useState<Task[]>(filteredTasks); // Manage tasks state
+
+  // Function to close modal when clicking outside
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      setIsModalOpen(false);
+    }
+  };
+
+  // Freeze background scrolling when modal is open
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isModalOpen]);
 
   const renderContent = () => {
     switch (selectedTab) {
@@ -33,68 +54,76 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
         );
       case "My Tasks":
         return (
-          <div className="flex-1 overflow-auto p-4">
-            <Tabs defaultValue="task-board" className="w-full">
-              <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 gap-4">
-                <TabsList className="w-full md:w-auto md:min-w-[50%] md:max-w-[50%]">
-                  <TabsTrigger value="overview">Overview</TabsTrigger>
-                  <TabsTrigger value="task-board">Task Board</TabsTrigger>
-                  <TabsTrigger value="task-list">Task List</TabsTrigger>
-                  <TabsTrigger value="timeline">Timeline</TabsTrigger>
-                </TabsList>
-                <Button
-                  onClick={() => setIsModalOpen(true)}
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 w-full md:w-auto"
-                >
-                  Add Task
-                </Button>
-              </div>
-
-              <TabsContent value="task-board" className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-                  {[
-                    "To Do",
-                    "In Progress",
-                    "In Review",
-                    "Completed",
-                    "Backlog",
-                  ].map((status) => (
-                    <TaskColumn
-                      key={status}
-                      title={status}
-                      count={
-                        filteredTasks.filter((t) => t.status === status).length
-                      }
-                      tasks={filteredTasks.filter((t) => t.status === status)}
-                      onDrop={(id) => moveTask(id, status as Task["status"])}
-                    />
-                  ))}
+          <>
+            <div
+              className={`flex-1 overflow-auto p-4 ${
+                isModalOpen ? "blur-sm" : ""
+              }`}
+            >
+              <Tabs defaultValue="task-board" className="w-full">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 gap-4">
+                  <TabsList className="w-full md:w-auto md:min-w-[50%] md:max-w-[50%]">
+                    <TabsTrigger value="overview">Overview</TabsTrigger>
+                    <TabsTrigger value="task-board">Task Board</TabsTrigger>
+                    <TabsTrigger value="task-list">Task List</TabsTrigger>
+                    <TabsTrigger value="timeline">Timeline</TabsTrigger>
+                  </TabsList>
+                  <Button
+                    onClick={() => setIsModalOpen(true)}
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 w-full md:w-auto"
+                  >
+                    Add Task
+                  </Button>
                 </div>
-              </TabsContent>
 
-              <TabsContent value="overview">
-                <div className="text-center py-10 text-gray-600">
-                  Overview content would go here
-                </div>
-              </TabsContent>
+                <TabsContent value="task-board" className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+                    {[
+                      "To Do",
+                      "In Progress",
+                      "In Review",
+                      "Completed",
+                      "Backlog",
+                    ].map((status) => (
+                      <TaskColumn
+                        key={status}
+                        title={status}
+                        count={tasks.filter((t) => t.status === status).length}
+                        tasks={tasks.filter((t) => t.status === status)}
+                        allTasks={tasks}
+                        onDrop={(id) => moveTask(id, status as Task["status"])}
+                      />
+                    ))}
+                  </div>
+                </TabsContent>
 
-              <TabsContent value="task-list">
-                <div className="text-center py-10 text-gray-600">
-                  Task list content would go here
-                </div>
-              </TabsContent>
+                <TabsContent value="overview">
+                  <div className="text-center py-10 text-gray-600">
+                    Overview content would go here
+                  </div>
+                </TabsContent>
 
-              <TabsContent value="timeline">
-                <div className="text-center py-10 text-gray-600">
-                  Timeline content would go here
-                </div>
-              </TabsContent>
-            </Tabs>
+                <TabsContent value="task-list">
+                  <div className="text-center py-10 text-gray-600">
+                    Task list content would go here
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="timeline">
+                  <div className="text-center py-10 text-gray-600">
+                    Timeline content would go here
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </div>
 
             {/* Modal */}
             {isModalOpen && (
-              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+              <div
+                className="fixed inset-0 z-50 flex items-center justify-center"
+                onClick={handleOverlayClick}
+              >
+                <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[80vh] overflow-y-auto">
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-semibold">Add New Task</h2>
                     <button
@@ -104,11 +133,11 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
                       ✕
                     </button>
                   </div>
-                  <AddTaskForm onClose={() => setIsModalOpen(false)} />
+                  <TaskForm onClose={() => setIsModalOpen(false)} />
                 </div>
               </div>
             )}
-          </div>
+          </>
         );
       case "Projects":
         return (

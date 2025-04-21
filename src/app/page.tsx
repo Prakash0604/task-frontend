@@ -1,13 +1,13 @@
 "use client";
 import { useState } from "react";
-import Navigation from "@/Components/navigation";
-import HeroSection from "@/Components/hero-section";
-import FeaturesSection from "@/Components/features-section";
-import TestimonialsSection from "@/Components/testimonials";
-import PricingSection from "@/Components/pricing-section";
-import FaqSection from "@/Components/faq-section";
-import CtaSection from "@/Components/cta-section";
-import Footer from "@/Components/footer";
+import Navigation from "@/components/Dashboard/navigation";
+import HeroSection from "@/components/Dashboard/hero-section";
+import FeaturesSection from "@/components/Dashboard/features-section";
+import TestimonialsSection from "@/components/Dashboard/testimonials";
+import PricingSection from "@/components/Dashboard/pricing-section";
+import FaqSection from "@/components/Dashboard/faq-section";
+import CtaSection from "@/components/Dashboard/cta-section";
+import Footer from "@/components/Dashboard/footer";
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
