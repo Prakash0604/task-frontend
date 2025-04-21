@@ -1,33 +1,31 @@
 "use client";
 import Container from "@/Container/container";
+import { useThemeStore } from "@/store/theme/theme-store";
 import { motion } from "framer-motion";
-import { Check, Menu, X } from "lucide-react";
+import { Menu, Moon, X } from "lucide-react";
 import Link from "next/link";
-
 interface NavigationProps {
   isMenuOpen: boolean;
   setIsMenuOpen: (isOpen: boolean) => void;
 }
-
 export default function Navigation({
   isMenuOpen,
   setIsMenuOpen,
 }: NavigationProps) {
+  const { toggleTheme, theme } = useThemeStore()
   return (
-    <nav className="bg-white shadow-sm py-4 fixed top-0 w-full z-50">
+    <nav className={`${theme === "light" ? "bg-white" : "bg-red-500"} shadow-sm py-4 fixed top-0 w-full z-50`}>
       <Container className="container mx-auto px-4 md:px-6 flex justify-between items-center">
         <Container className="flex items-center space-x-2">
           <motion.div
             initial={{ rotate: -10, scale: 0.9 }}
             animate={{ rotate: 0, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="bg-indigo-600 text-white p-2 rounded"
+            className=" text-white p-2 rounded"
           >
-            <Check size={20} />
           </motion.div>
-          <span className="text-xl font-bold text-gray-900">TaskFlow</span>
+          <span className="text-xl font-bold text-gray-900">TaskMandu</span>
         </Container>
-
         {/* Desktop Navigation */}
         <Container className="hidden md:flex items-center space-x-8">
           <Link
@@ -70,7 +68,7 @@ export default function Navigation({
             Get Started
           </Link>
         </Container>
-
+        <Moon onClick={toggleTheme} />
         {/* Mobile Menu Button */}
         <Container className="md:hidden">
           <button
