@@ -7,12 +7,13 @@ import { Task, ItemTypes } from "@/lib/validations/type";
 import { getStatusColor } from "@/lib/validations/case";
 import DraggableTaskCard from "./graggableTaskCard";
 
+// Allow moving one step forward or backward
 const allowedTransitions: Record<string, string[]> = {
   "To Do": ["In Progress"],
   "In Progress": ["To Do", "In Review"],
   "In Review": ["In Progress", "Completed"],
-  Completed: ["In Review", "Backlog"],
-  Backlog: ["Completed"],
+  Completed: ["In Review"],
+  Backlog: ["To Do"], // Allow moving from Backlog to To Do
 };
 
 interface TaskColumnProps {
@@ -37,26 +38,17 @@ const TaskColumn: React.FC<TaskColumnProps> = ({
   >({
     accept: ItemTypes.TASK,
     canDrop: (item: { id: number }) => {
-      console.debug(`Checking canDrop for task ${item.id} to ${title}`);
       const draggedTask = allTasks.find((task) => task.id === item.id);
       if (!draggedTask) {
-        console.error(
-          `Task with ID ${item.id} not found in allTasks`,
-          allTasks
-        );
+        console.error(`Task with ID ${item.id} not found in allTasks`);
         return false;
       }
 
       const isAllowed =
         allowedTransitions[draggedTask.status]?.includes(title) ?? false;
-      console.debug(
-        `Can drop task ${item.id} from ${draggedTask.status} to ${title}? ${isAllowed}`,
-        { allowedTransitions: allowedTransitions[draggedTask.status] }
-      );
       return isAllowed;
     },
     drop: (item: { id: number }) => {
-      console.debug(`Dropped task ${item.id} to ${title}`);
       onDrop(item.id, title as Task["status"]);
     },
     collect: (monitor) => ({

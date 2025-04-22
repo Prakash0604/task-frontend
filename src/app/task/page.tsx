@@ -1,358 +1,195 @@
 "use client";
 
 import { useState } from "react";
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DropResult,
-} from "@hello-pangea/dnd";
-import Container from "@/Container/container";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { Task } from "@/lib/validations/type";
+import Sidebar from "@/Components/taskComponents/sideBar";
+import Header from "@/Components/taskComponents/header";
+import ContentRenderer from "@/Components/taskComponents/contentRender";
 
-// Task type definition with assignee
-interface Task {
-  id: string;
-  content: string;
-  status: "pending" | "inProgress" | "completed";
-  assignee: string;
-}
-
-export default function TaskBoard() {
+export default function Dashboard() {
   const [tasks, setTasks] = useState<Task[]>([
     {
-      id: "task-1",
-      content: "Create project documentation",
-      status: "pending",
-      assignee: "Alex Johnson",
+      id: 2,
+      title: "Landing Page Refresh",
+      description: "Revamp the homepage to improve engagement.",
+      priority: "MEDIUM",
+      status: "In Progress",
+      users: [
+        { id: 1, avatar: "/avatar1.png", name: "User 1" },
+        { id: 2, avatar: "/avatar2.png", name: "User 2" },
+      ],
+      comments: 10,
+      attachments: 6,
+      dueDate: "11 Sep, 2024",
     },
     {
-      id: "task-2",
-      content: "Design user interface",
-      status: "pending",
-      assignee: "Sam Taylor",
+      id: 3,
+      title: "Optimize Mobile Layout",
+      description: "Enhance mobile UI for better usability.",
+      priority: "HIGH",
+      status: "In Review",
+      users: [
+        { id: 1, avatar: "/avatar1.png", name: "User 1" },
+        { id: 2, avatar: "/avatar2.png", name: "User 2" },
+        { id: 3, avatar: "/avatar3.png", name: "User 3" },
+      ],
+      comments: 12,
+      attachments: 8,
+      dueDate: "29 Aug, 2024",
     },
     {
-      id: "task-3",
-      content: "Implement authentication",
-      status: "inProgress",
-      assignee: "Jamie Smith",
+      id: 4,
+      title: "Style Guide Update",
+      description:
+        "Update the style guide to reflect the latest branding elements.",
+      priority: "LOW",
+      status: "Completed",
+      users: [
+        { id: 1, avatar: "/avatar1.png", name: "User 1" },
+        { id: 2, avatar: "/avatar2.png", name: "User 2" },
+      ],
+      comments: 4,
+      attachments: 1,
+      dueDate: "17 Aug, 2024",
     },
     {
-      id: "task-4",
-      content: "Set up database",
-      status: "inProgress",
-      assignee: "Casey Wilson",
+      id: 5,
+      title: "App Icon Redesign",
+      description:
+        "Design a fresh, modern app icon that aligns with the new branding.",
+      priority: "DELAYED",
+      status: "Backlog",
+      users: [
+        { id: 1, avatar: "/avatar1.png", name: "User 1" },
+        { id: 2, avatar: "/avatar2.png", name: "User 2" },
+        { id: 3, avatar: "/avatar3.png", name: "User 3" },
+        { id: 4, avatar: "/avatar4.png", name: "User 4" },
+        { id: 5, avatar: "/avatar5.png", name: "User 5" },
+      ],
+      comments: 2,
+      attachments: 1,
+      dueDate: "15 Oct, 2024",
     },
     {
-      id: "task-5",
-      content: "Write unit tests",
-      status: "completed",
-      assignee: "Morgan Lee",
+      id: 6,
+      title: "Create Onboarding Flow",
+      description: "Design a seamless onboarding experience for new users.",
+      priority: "MEDIUM",
+      status: "To Do",
+      users: [
+        { id: 1, avatar: "/avatar1.png", name: "User 1" },
+        { id: 2, avatar: "/avatar2.png", name: "User 2" },
+      ],
+      comments: 10,
+      attachments: 6,
+      dueDate: "11 Sep, 2024",
+    },
+    {
+      id: 7,
+      title: "Prototype New Feature",
+      description: "Build an interactive prototype for user testing.",
+      priority: "LOW",
+      status: "In Review",
+      users: [
+        { id: 1, avatar: "/avatar1.png", name: "User 1" },
+        { id: 2, avatar: "/avatar2.png", name: "User 2" },
+        { id: 3, avatar: "/avatar3.png", name: "User 3" },
+        { id: 4, avatar: "/avatar4.png", name: "User 4" },
+      ],
+      comments: 20,
+      attachments: 7,
+      dueDate: "1 Sep, 2024",
+    },
+    {
+      id: 8,
+      title: "Dashboard Visualization",
+      description: "Create visual components for the user dashboard.",
+      priority: "MEDIUM",
+      status: "Completed",
+      users: [
+        { id: 1, avatar: "/avatar1.png", name: "User 1" },
+        { id: 2, avatar: "/avatar2.png", name: "User 2" },
+      ],
+      comments: 6,
+      attachments: 5,
+      dueDate: "29 Nov, 2024",
+    },
+    {
+      id: 9,
+      title: "High-Fidelity Mockups",
+      description: "Produce detailed mockups for the development team.",
+      priority: "DELAYED",
+      status: "Backlog",
+      users: [
+        { id: 1, avatar: "/avatar1.png", name: "User 1" },
+        { id: 2, avatar: "/avatar2.png", name: "User 2" },
+        { id: 3, avatar: "/avatar3.png", name: "User 3" },
+      ],
+      comments: 6,
+      attachments: 5,
+      dueDate: "29 Nov, 2024",
+    },
+    {
+      id: 10,
+      title: "Design Product Tour",
+      description: "Create a guided, interactive product tour for new users.",
+      priority: "HIGH",
+      status: "In Progress",
+      users: [
+        { id: 1, avatar: "/avatar1.png", name: "User 1" },
+        { id: 2, avatar: "/avatar2.png", name: "User 2" },
+      ],
+      comments: 8,
+      attachments: 3,
+      dueDate: "5 Oct, 2024",
     },
   ]);
-  const [newTaskContent, setNewTaskContent] = useState("");
-  const [newTaskAssignee, setNewTaskAssignee] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Filter tasks by status
-  const pendingTasks = tasks.filter((task) => task.status === "pending");
-  const inProgressTasks = tasks.filter((task) => task.status === "inProgress");
-  const completedTasks = tasks.filter((task) => task.status === "completed");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTab, setSelectedTab] = useState("My Tasks");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Handle drag end event
-  const onDragEnd = (result: DropResult) => {
-    const { destination, source, draggableId } = result;
-
-    // If there's no destination or the item was dropped back in its original position
-    if (
-      !destination ||
-      (destination.droppableId === source.droppableId &&
-        destination.index === source.index)
-    ) {
-      return;
-    }
-
-    // Find the task that was dragged
-    const task = tasks.find((task) => task.id === draggableId);
-    if (!task) return;
-
-    // Create a new array without the dragged task
-    const newTasks = tasks.filter((task) => task.id !== draggableId);
-
-    // Update the task status based on the destination droppableId
-    const updatedTask = {
-      ...task,
-      status: destination.droppableId as "pending" | "inProgress" | "completed",
-    };
-
-    // Add the updated task back to the array
-    setTasks([...newTasks, updatedTask]);
+  const moveTask = (taskId: number, newStatus: Task["status"]) => {
+    console.debug(`Moving task ${taskId} to ${newStatus}`);
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === taskId ? { ...task, status: newStatus } : task
+      )
+    );
   };
 
-  // Add a new task
-  const addTask = () => {
-    if (newTaskContent.trim() === "") return;
-
-    const newTask: Task = {
-      id: `task-${Date.now()}`,
-      content: newTaskContent,
-      status: "pending",
-      assignee: newTaskAssignee.trim() || "Unassigned",
-    };
-
-    setTasks([...tasks, newTask]);
-    setNewTaskContent("");
-    setNewTaskAssignee("");
-    setIsModalOpen(false);
-  };
+  const filteredTasks = tasks.filter(
+    (task) =>
+      task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      task.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
-    <Container className="container mx-auto p-4">
-      <Container className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Task Board</h1>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4 mr-2"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 4v16m8-8H4"
-            />
-          </svg>
-          Add Task
-        </button>
-      </Container>
-
-      {/* Modal for adding new task */}
-      {isModalOpen && (
-        <Container className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <Container className="bg-white p-6 rounded-lg w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">Add New Task</h2>
-            <Container className="mb-4">
-              <label
-                htmlFor="task"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Task Description
-              </label>
-              <input
-                id="task"
-                type="text"
-                value={newTaskContent}
-                onChange={(e) => setNewTaskContent(e.target.value)}
-                placeholder="Enter task description"
-                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </Container>
-            <Container className="mb-4">
-              <label
-                htmlFor="assignee"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Assign To
-              </label>
-              <input
-                id="assignee"
-                type="text"
-                value={newTaskAssignee}
-                onChange={(e) => setNewTaskAssignee(e.target.value)}
-                placeholder="Enter person name"
-                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </Container>
-            <Container className="flex justify-end space-x-2">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={addTask}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-              >
-                Add Task
-              </button>
-            </Container>
-          </Container>
-        </Container>
-      )}
-
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Container className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Pending Column */}
-          <Container className="bg-white rounded-lg shadow overflow-hidden">
-            <Container className="bg-gray-100 px-4 py-3 border-b">
-              <h2 className="font-semibold text-gray-800">Pending</h2>
-            </Container>
-            <Droppable droppableId="pending">
-              {(provided) => (
-                <div
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  className="p-2 min-h-[200px]"
-                >
-                  {pendingTasks.map((task, index) => (
-                    <Draggable
-                      key={task.id}
-                      draggableId={task.id}
-                      index={index}
-                    >
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className="bg-white p-3 rounded-md shadow mb-2 border border-gray-200"
-                        >
-                          <div className="font-medium">{task.content}</div>
-                          <div className="text-sm text-gray-500 mt-1 flex items-center">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-4 w-4 mr-1"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                              />
-                            </svg>
-                            {task.assignee}
-                          </div>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </Container>
-
-          {/* In Progress Column */}
-          <Container className="bg-white rounded-lg shadow overflow-hidden">
-            <Container className="bg-blue-100 px-4 py-3 border-b">
-              <h2 className="font-semibold text-gray-800">In Progress</h2>
-            </Container>
-            <Droppable droppableId="inProgress">
-              {(provided) => (
-                <div
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  className="p-2 min-h-[200px]"
-                >
-                  {inProgressTasks.map((task, index) => (
-                    <Draggable
-                      key={task.id}
-                      draggableId={task.id}
-                      index={index}
-                    >
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className="bg-white p-3 rounded-md shadow mb-2 border border-gray-200"
-                        >
-                          <Container className="font-medium">
-                            {task.content}
-                          </Container>
-                          <Container className="text-sm text-gray-500 mt-1 flex items-center">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-4 w-4 mr-1"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                              />
-                            </svg>
-                            {task.assignee}
-                          </Container>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </Container>
-
-          {/* Completed Column */}
-          <Container className="bg-white rounded-lg shadow overflow-hidden">
-            <Container className="bg-green-100 px-4 py-3 border-b">
-              <h2 className="font-semibold text-gray-800">Completed</h2>
-            </Container>
-            <Droppable droppableId="completed">
-              {(provided) => (
-                <div
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  className="p-2 min-h-[200px]"
-                >
-                  {completedTasks.map((task, index) => (
-                    <Draggable
-                      key={task.id}
-                      draggableId={task.id}
-                      index={index}
-                    >
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className="bg-white p-3 rounded-md shadow mb-2 border border-gray-200"
-                        >
-                          <Container className="font-medium">
-                            {task.content}
-                          </Container>
-                          <Container className="text-sm text-gray-500 mt-1 flex items-center">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-4 w-4 mr-1"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                              />
-                            </svg>
-                            {task.assignee}
-                          </Container>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </Container>
-        </Container>
-      </DragDropContext>
-    </Container>
+    <DndProvider backend={HTML5Backend}>
+      <div className="flex min-h-screen bg-gradient-to-br from-gray-100 to-gray-200">
+        <Sidebar
+          isOpen={isSidebarOpen}
+          setIsOpen={setIsSidebarOpen}
+          selectedTab={selectedTab}
+          setSelectedTab={setSelectedTab}
+        />
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <Header
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            setIsSidebarOpen={setIsSidebarOpen}
+          />
+          <ContentRenderer
+            selectedTab={selectedTab}
+            tasks={tasks}
+            filteredTasks={filteredTasks}
+            moveTask={moveTask}
+            onClose={() => setIsSidebarOpen(false)}
+          />
+        </div>
+      </div>
+    </DndProvider>
   );
 }
