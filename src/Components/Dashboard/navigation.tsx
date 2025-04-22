@@ -1,54 +1,57 @@
 "use client";
+
 import Container from "@/Container/container";
-import { useThemeStore } from "@/store/theme/theme-store";
 import { motion } from "framer-motion";
-import { Menu, Moon, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import Link from "next/link";
+import { ModeToggle } from "../darkMode/toggleButton";
+
 interface NavigationProps {
   isMenuOpen: boolean;
   setIsMenuOpen: (isOpen: boolean) => void;
 }
+
 export default function Navigation({
   isMenuOpen,
   setIsMenuOpen,
 }: NavigationProps) {
-  const { toggleTheme, theme } = useThemeStore()
   return (
-    <nav className={`${theme === "light" ? "bg-white" : "bg-red-500"} shadow-sm py-4 fixed top-0 w-full z-50`}>
+    <nav className="bg-white dark:bg-gray-900 shadow-sm py-4 fixed top-0 w-full z-50">
       <Container className="container mx-auto px-4 md:px-6 flex justify-between items-center">
         <Container className="flex items-center space-x-2">
           <motion.div
             initial={{ rotate: -10, scale: 0.9 }}
             animate={{ rotate: 0, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className=" text-white p-2 rounded"
-          >
-          </motion.div>
-          <span className="text-xl font-bold text-gray-900">TaskMandu</span>
+            className="text-white p-2 rounded"
+          ></motion.div>
+          <span className="text-xl font-bold text-gray-900 dark:text-white">
+            TaskMandu
+          </span>
         </Container>
         {/* Desktop Navigation */}
         <Container className="hidden md:flex items-center space-x-8">
           <Link
             href="#features"
-            className="text-gray-600 hover:text-indigo-600 transition-colors"
+            className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
           >
             Features
           </Link>
           <Link
             href="#pricing"
-            className="text-gray-600 hover:text-indigo-600 transition-colors"
+            className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
           >
             Pricing
           </Link>
           <Link
             href="#testimonials"
-            className="text-gray-600 hover:text-indigo-600 transition-colors"
+            className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
           >
             Testimonials
           </Link>
           <Link
             href="#faq"
-            className="text-gray-600 hover:text-indigo-600 transition-colors"
+            className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
           >
             FAQ
           </Link>
@@ -57,7 +60,7 @@ export default function Navigation({
         <Container className="hidden md:flex items-center space-x-4">
           <Link
             href="/login"
-            className="text-gray-600 hover:text-indigo-600 transition-colors"
+            className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
           >
             Login
           </Link>
@@ -67,13 +70,13 @@ export default function Navigation({
           >
             Get Started
           </Link>
+          <ModeToggle />
         </Container>
-        <Moon onClick={toggleTheme} />
         {/* Mobile Menu Button */}
         <Container className="md:hidden">
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="text-gray-600 hover:text-indigo-600 transition-colors"
+            className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -86,46 +89,50 @@ export default function Navigation({
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
-          className="md:hidden bg-white px-4 py-4 border-t border-gray-100"
+          className="md:hidden bg-white dark:bg-gray-900 px-4 py-4 border-t border-gray-100 dark:border-gray-700"
         >
           <Container className="flex flex-col space-y-4">
             <Link
               href="#features"
-              className="text-gray-600 hover:text-indigo-600 transition-colors"
+              className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
             >
               Features
             </Link>
             <Link
               href="#pricing"
-              className="text-gray-600 hover:text-indigo-600 transition-colors"
+              className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
             >
               Pricing
             </Link>
             <Link
               href="#testimonials"
-              className="text-gray-600 hover:text-indigo-600 transition-colors"
+              className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
             >
               Testimonials
             </Link>
             <Link
               href="#faq"
-              className="text-gray-600 hover:text-indigo-600 transition-colors"
+              className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
             >
               FAQ
             </Link>
-            <div className="pt-2 border-t border-gray-100">
+            <div className="pt-2 border-t border-gray-100 dark:border-gray-700">
               <Link
                 href="/login"
-                className="block text-gray-600 hover:text-indigo-600 transition-colors py-2"
+                className="block text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors py-2"
               >
                 Login
               </Link>
+
               <Link
                 href="/signup"
                 className="block bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors text-center mt-2"
               >
                 Get Started
               </Link>
+              <div className="flex justify-center mt-2">
+                <ModeToggle />
+              </div>
             </div>
           </Container>
         </motion.div>

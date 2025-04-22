@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "../ui/tabs";
 import { Button } from "../ui/button";
 import TaskColumn from "./taskColumn";
 import TaskForm from "../Form/taskAddForm";
 import { Task } from "@/lib/validations/type";
 
-interface ContentRendererProps {
+export interface ContentRendererProps {
   selectedTab: string;
-  onClose: () => void;
   tasks: Task[];
   filteredTasks: Task[];
   moveTask: (taskId: number, newStatus: Task["status"]) => void;
+  onClose?: () => void; // Added onClose property
 }
 
 const ContentRenderer: React.FC<ContentRendererProps> = ({
@@ -19,7 +19,6 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
   moveTask,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [tasks] = useState<Task[]>(filteredTasks);
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -91,7 +90,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
                             .length
                         }
                         tasks={filteredTasks.filter((t) => t.status === status)}
-                        allTasks={tasks}
+                        allTasks={filteredTasks}
                         onDrop={(id, newStatus) => moveTask(id, newStatus)}
                       />
                     ))}
@@ -120,7 +119,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
 
             {isModalOpen && (
               <div
-                className="fixed inset-0 z-50 flex items-center justify-center"
+                className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
                 onClick={handleOverlayClick}
               >
                 <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[80vh] overflow-y-auto">
