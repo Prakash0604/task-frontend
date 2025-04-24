@@ -44,7 +44,7 @@ export default function FaqSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 dark:text-white">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#2596be] mb-4 e">
             Frequently Asked Questions
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-300">
@@ -61,9 +61,9 @@ export default function FaqSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
-              className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 dark:bg-gray-800 dark:border-gray-400 "
+              className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 dark:bg-gray-800 dark:border-gray-700 "
             >
-              <h3 className="text-lg font-semibold text-gray-900 mb-3 dark:text-white ">
+              <h3 className="text-lg font-semibold text-[#2596be] mb-3  ">
                 {item.question}
               </h3>
               <p className="text-gray-600 dark:text-white">{item.answer}</p>

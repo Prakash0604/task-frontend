@@ -61,13 +61,8 @@ const DailyFlowChart: React.FC = () => {
     description: "",
     status: "pending",
   });
-  const [isAdding, setIsAdding] = useState(false);
+  const [isAdding, setIsAdding] = useState<boolean>(false);
 
-  const handleStatusChange = (id: string, status: Task["status"]) => {
-    setTasks(
-      tasks.map((task) => (task.id === id ? { ...task, status } : task))
-    );
-  };
 
   const handleAddTask = () => {
     if (!newTask.time || !newTask.title) return;
@@ -78,9 +73,7 @@ const DailyFlowChart: React.FC = () => {
     setIsAdding(false);
   };
 
-  const handleDeleteTask = (id: string) => {
-    setTasks(tasks.filter((task) => task.id !== id));
-  };
+
 
   const getStatusColor = (status: Task["status"]) => {
     switch (status) {
@@ -94,8 +87,8 @@ const DailyFlowChart: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg dark:bg-gray-900 dark:text-white">
-      <h1 className="text-3xl font-bold text-center mb-8 text-gray-800 dark:text-white">
+    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg dark:bg-gray-900 dark:text-white border border-gray-100 dark:border-gray-700">
+      <h1 className="text-3xl font-bold text-center mb-8 text-[#2596be]">
         Daily Flow Chart
       </h1>
 
@@ -103,7 +96,7 @@ const DailyFlowChart: React.FC = () => {
         {!isAdding ? (
           <button
             onClick={() => setIsAdding(true)}
-            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-colors"
+            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 hidden rounded transition-colors"
           >
             Add Task
           </button>
@@ -173,7 +166,7 @@ const DailyFlowChart: React.FC = () => {
 
       <div className="relative dark:bg-gray-900 dark:text-white">
         {/* Vertical timeline line */}
-        <div className="absolute left-12 top-8 bottom-0 w-1 bg-blue-200"></div>
+
 
         {/* Tasks */}
         <div className="space-y-6">
@@ -182,7 +175,7 @@ const DailyFlowChart: React.FC = () => {
             .map((task) => (
               <div key={task.id} className="flex items-start">
                 {/* Time indicator */}
-                <div className="w-24 text-right pr-4 font-medium text-gray-600 pt-2 dark:text-gray-300">
+                <div className="w-24 text-right pr-4 font-medium text-[#abdbe3] pt-2 ">
                   {task.time}
                 </div>
 
@@ -210,43 +203,9 @@ const DailyFlowChart: React.FC = () => {
                 {/* Task card */}
                 <div className="ml-4 flex-1 bg-white p-4 rounded-lg shadow-md border border-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:text-white">
                   <div className="flex justify-between">
-                    <h3 className="text-lg font-semibold">{task.title}</h3>
-                    <div className="flex space-x-2">
-                      <select
-                        value={task.status}
-                        onChange={(e) =>
-                          handleStatusChange(
-                            task.id,
-                            e.target.value as Task["status"]
-                          )
-                        }
-                        className="text-sm border border-gray-300 rounded px-2 bg-white dark:bg-gray-800"
-                      >
-                        <option value="pending">Pending</option>
-                        <option value="in-progress">In Progress</option>
-                        <option value="completed">Completed</option>
-                      </select>
-                      <button
-                        onClick={() => handleDeleteTask(task.id)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <svg
-                          className="w-5 h-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                          />
-                        </svg>
-                      </button>
-                    </div>
+                    <h3 className="text-lg font-semibold text-[#2596be]">{task.title}</h3>
                   </div>
-                  <p className="text-gray-600 mt-1 dark:text-white">
+                  <p className="text-gray-600 mt-1 dark:text-gray-400">
                     {task.description}
                   </p>
                 </div>

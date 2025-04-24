@@ -75,26 +75,25 @@ export default function PricingSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className={`rounded-xl shadow-sm border ${
-                plan.popular
-                  ? "border-indigo-200 ring-2 ring-indigo-600 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-white relative z-10 scale-105 my-4 md:my-0 dark:bg-gray-800 dark:border-gray-700 dark:ring-2 dark:ring-indigo-600"
-                  : "border-gray-200 bg-white dark:bg-gray-800 dark:border-gray-700"
-              }`}
+              className={`rounded-xl shadow-sm border ${plan.popular
+                ? "border-[#2596be] ring-2     relative z-10 scale-105 my-4 md:my-0  dark:border-gray-700 dark:ring-2 dark:ring-[#2596be]"
+                : "border-gray-200 bg-white dark:bg-gray-800 dark:border-gray-700"
+                }`}
             >
               {plan.popular && (
-                <Container className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                <Container className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#2596be] text-white text-xs font-bold px-3 py-1 rounded-full">
                   MOST POPULAR
                 </Container>
               )}
               <Container className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-2 dark:text-white">
+                <h3 className="text-xl font-bold text-[#2596be] mb-2 ">
                   {plan.name}
                 </h3>
                 <p className="text-gray-600 text-sm mb-4 dark:text-gray-300">
                   {plan.description}
                 </p>
                 <Container className="mb-6">
-                  <span className="text-4xl font-bold text-gray-900 dark:text-white">
+                  <span className="text-4xl font-bold text-[#2596be] ">
                     {plan.price}
                   </span>
                   <span className="text-gray-600 dark:text-white">/month</span>
@@ -104,7 +103,7 @@ export default function PricingSection() {
                     <li key={i} className="flex items-start dark:text-white">
                       <Check
                         size={18}
-                        className="text-indigo-600 mt-0.5 mr-2 flex-shrink-0"
+                        className="text-[#2596be] mt-0.5 mr-2 flex-shrink-0"
                       />
                       <span className="text-gray-600 dark:text-white">
                         {feature}
@@ -115,11 +114,10 @@ export default function PricingSection() {
                 <motion.button
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
-                  className={`w-full py-3 rounded-md font-medium ${
-                    plan.popular
-                      ? "bg-indigo-600 text-white hover:bg-indigo-700"
-                      : "bg-white text-indigo-600 border border-indigo-600 hover:bg-indigo-50 dark:bg-gray-800 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700"
-                  } transition-colors`}
+                  className={`w-full py-3 rounded-md font-medium cursor-pointer ${plan.popular
+                    ? "bg-[#2596be] text-white "
+                    : "bg-white text-indigo-600 border  hover:bg-indigo-50 dark:bg-gray-800 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700"
+                    } transition-colors`}
                 >
                   Get started
                 </motion.button>

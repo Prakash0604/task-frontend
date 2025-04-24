@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function CtaSection() {
   return (
-    <section className="py-20 bg-indigo-600 dark:bg-gray-900 dark:text-white">
+    <section className="py-20 bg-[#abdbe3] dark:bg-gray-900 dark:text-white">
       <Container className="container mx-auto px-4 md:px-6 max-w-4xl">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -25,7 +25,7 @@ export default function CtaSection() {
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link
               href="/signup"
-              className="bg-white text-indigo-600 px-8 py-4 rounded-md inline-flex items-center space-x-2 font-medium shadow-md hover:bg-indigo-50 transition-colors"
+              className="bg-[#2596be] text-white px-8 py-4 rounded-md inline-flex items-center space-x-2 font-medium shadow-md  transition-colors"
             >
               <span>Start your free trial</span>
               <ChevronRight size={18} />

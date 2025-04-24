@@ -101,7 +101,7 @@ const AnalyticsChart: React.FC<AnalyticsChartProps> = ({ data, lineColor }) => {
       {/* Tooltip */}
       {hoveredIndex !== null && (
         <div
-          className="absolute bg-black text-white text-xs px-2 py-1 rounded"
+          className="absolute bg-black text-[#2596be] text-xs px-2 py-1 rounded"
           style={{
             left: `calc(${getX(hoveredIndex)}% + 12px)`,
             bottom: `calc(${getY(data[hoveredIndex].value)}% + 30px)`,

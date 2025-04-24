@@ -7,19 +7,19 @@ import Dashboard from "./chartData";
 export default function FeaturesSection() {
   const features = [
     {
-      icon: <Users size={24} className="text-indigo-500" />,
+      icon: <Users size={24} className="text-[#2596be]" />,
       title: "Team Collaboration",
       description:
         "Work seamlessly with your team in real-time with shared workspaces and instant updates.",
     },
     {
-      icon: <Calendar size={24} className="text-indigo-500" />,
+      icon: <Calendar size={24} className="text-[#2596be]" />,
       title: "Smart Scheduling",
       description:
         "Intelligent deadline management and calendar integration to keep your projects on track.",
     },
     {
-      icon: <Clock size={24} className="text-indigo-500" />,
+      icon: <Clock size={24} className="text-[#2596be]" />,
       title: "Time Tracking",
       description:
         "Monitor time spent on tasks and projects with detailed analytics and reporting.",
@@ -53,7 +53,7 @@ export default function FeaturesSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 dark:text-white">
+          <h2 className="text-3xl md:text-4xl font-bold  mb-4 text-[#2596be]">
             Powerful Features
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-300">
@@ -78,7 +78,7 @@ export default function FeaturesSection() {
               <Container className="bg-white w-12 h-12 rounded-full flex items-center justify-center mb-4 shadow-sm dark:bg-gray-700 dark:shadow-md dark:text-white">
                 {feature.icon}
               </Container>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white">
+              <h3 className="text-xl font-semibold  mb-2 text-[#2596be]">
                 {feature.title}
               </h3>
               <p className="text-gray-600 dark:text-white">
@@ -100,7 +100,7 @@ export default function FeaturesSection() {
             <Container className="relative">
               <Container className="flex flex-col md:flex-row items-center">
                 <Container className="md:w-1/2 mb-8 md:mb-0 dark:text-white">
-                  <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 dark:text-white">
+                  <h3 className="text-2xl md:text-3xl font-bold text-[#2596be] mb-4 ">
                     Advanced Analytics
                   </h3>
                   <p className="text-gray-600 mb-6 dark:text-white">
@@ -117,7 +117,7 @@ export default function FeaturesSection() {
                       <li key={i} className="flex items-center">
                         <Check
                           size={18}
-                          className="text-indigo-600 mr-2 dark:text-white"
+                          className="text-[#2596be] mr-2 "
                         />
                         <span>{item}</span>
                       </li>

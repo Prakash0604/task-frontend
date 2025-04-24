@@ -61,9 +61,11 @@ validations-schema --- zod validation schmes
 
 # colors pallet
 backgroud colors of task : #F2F5F7
-primary color: #C2E9FB
+primary color: #2596be
 pure-white :#FFFFFF
 secondary-text:#DADADA
 primary-text:#424242
 primary-icon:#DADADA
+text-[
+#abdbe3]
 

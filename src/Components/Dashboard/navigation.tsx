@@ -16,7 +16,7 @@ export default function Navigation({
   setIsMenuOpen,
 }: NavigationProps) {
   return (
-    <nav className="bg-white dark:bg-gray-900 shadow-sm py-4 fixed top-0 w-full z-50">
+    <nav className="bg-white dark:bg-gray-900 py-4 fixed top-0 w-full z-50 border">
       <Container className="container mx-auto px-4 md:px-6 flex justify-between items-center">
         <Container className="flex items-center space-x-2">
           <motion.div
@@ -25,7 +25,7 @@ export default function Navigation({
             transition={{ duration: 0.5 }}
             className="text-white p-2 rounded"
           ></motion.div>
-          <span className="text-xl font-bold text-gray-900 dark:text-white">
+          <span className="text-xl font-bold text-[#2596be]  cursor-pointer">
             TaskMandu
           </span>
         </Container>
@@ -33,25 +33,25 @@ export default function Navigation({
         <Container className="hidden md:flex items-center space-x-8">
           <Link
             href="#features"
-            className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+            className="text-gray-600 dark:text-gray-300 hover:text-[#2596be] dark:hover:text-[#2596be] transition-colors"
           >
             Features
           </Link>
           <Link
             href="#pricing"
-            className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+            className="text-gray-600 dark:text-gray-300 hover:text-[#2596be] dark:hover:text-[#2596be] transition-colors"
           >
             Pricing
           </Link>
           <Link
             href="#testimonials"
-            className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+            className="text-gray-600 dark:text-gray-300 hover:text-[#2596be] dark:hover:text-[#2596be] transition-colors"
           >
             Testimonials
           </Link>
           <Link
             href="#faq"
-            className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+            className="text-gray-600 dark:text-gray-300 hover:text-[#2596be] dark:hover:text-[#2596be]transition-colors"
           >
             FAQ
           </Link>
@@ -60,16 +60,11 @@ export default function Navigation({
         <Container className="hidden md:flex items-center space-x-4">
           <Link
             href="/login"
-            className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+            className="text-gray-100  bg-[#2596be] px-4 py-2 rounded-md  transition-colors"
           >
             Login
           </Link>
-          <Link
-            href="/signup"
-            className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors"
-          >
-            Get Started
-          </Link>
+
           <ModeToggle />
         </Container>
         {/* Mobile Menu Button */}

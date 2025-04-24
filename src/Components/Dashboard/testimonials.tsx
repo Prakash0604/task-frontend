@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
 import Container from "@/Container/container";
+import { Button } from "../ui/button";
 
 export default function TestimonialsSection() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
@@ -14,7 +15,7 @@ export default function TestimonialsSection() {
       role: "Product Manager, Acme Inc.",
     },
     {
-      text: "The interface is intuitive and the analytics provide invaluable insights into our workflow.",
+      text: "The interface is intuitive and the analytics provide invaluable .",
       author: "Michael Chen",
       role: "CTO, TechSavvy",
     },
@@ -46,7 +47,7 @@ export default function TestimonialsSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 dark:text-white">
+          <h2 className="text-3xl md:text-4xl font-bold  mb-4 text-[#2596be]">
             Loved by Teams Everywhere
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-300">
@@ -57,7 +58,7 @@ export default function TestimonialsSection() {
 
         <Container className="max-w-3xl mx-auto dark:bg-gray-900  rounded-xl shadow-lg p-8">
           <Container className="bg-white rounded-xl shadow-md p-8 relative dark:bg-gray-800 dark:text-white">
-            <Container className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-indigo-600 text-white p-3 rounded-full">
+            <Container className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-[#2596be] text-white p-3 rounded-full">
               <Star size={24} />
             </Container>
             <Container className="h-48 dark:text-white">
@@ -79,7 +80,7 @@ export default function TestimonialsSection() {
                     {testimonial.text}
                   </p>
                   <Container>
-                    <p className="font-semibold text-gray-900 dark:text-white">
+                    <p className="font-semibold text-[#2596be] ">
                       {testimonial.author}
                     </p>
                     <p className="text-gray-500 text-sm dark:text-gray-400">
@@ -91,14 +92,13 @@ export default function TestimonialsSection() {
             </Container>
             <Container className="flex justify-center space-x-2 mt-6">
               {testimonials.map((_, index) => (
-                <button
+                <Button
                   key={index}
                   onClick={() => setCurrentTestimonial(index)}
-                  className={`w-3 h-3 rounded-full ${
-                    currentTestimonial === index
-                      ? "bg-indigo-600"
-                      : "bg-gray-300"
-                  }`}
+                  className={`w-1 h-1 rounded-full cursor-pointer ${currentTestimonial === index
+                    ? "bg-[#2596be]"
+                    : "bg-gray-300"
+                    }`}
                   aria-label={`Go to testimonial ${index + 1}`}
                 />
               ))}
