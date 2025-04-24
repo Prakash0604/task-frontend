@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function CtaSection() {
   return (
-    <section className="py-20 bg-indigo-600">
+    <section className="py-20 bg-indigo-600 dark:bg-gray-900 dark:text-white">
       <Container className="container mx-auto px-4 md:px-6 max-w-4xl">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}

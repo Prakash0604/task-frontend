@@ -43,9 +43,9 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-gray-900 text-white py-12">
+    <footer className="bg-gray-900 text-white py-12 dark:bg-gray-900">
       <Container className="container mx-auto px-4 md:px-6">
-        <Container className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <Container className="grid grid-cols-2 md:grid-cols-4 gap-8 dark:text-white">
           {footerLinks.map((section, index) => (
             <Container key={index}>
               <h3 className="text-lg font-semibold mb-4">{section.title}</h3>
@@ -54,7 +54,7 @@ export default function Footer() {
                   <li key={i}>
                     <Link
                       href={link.href}
-                      className="text-gray-400 hover:text-white transition-colors"
+                      className="text-gray-400 hover:text-white transition-colors dark:text-gray-300 dark:hover:text-white"
                     >
                       {link.name}
                     </Link>
@@ -69,15 +69,15 @@ export default function Footer() {
             <Container className="bg-indigo-600 text-white p-2 rounded">
               <Check size={18} />
             </Container>
-            <span className="font-bold">TaskFlow</span>
+            <span className="font-bold dark:text-white">TaskMandu</span>
           </Container>
-          <p className="text-gray-400 text-sm">
+          <p className="text-gray-400 text-sm dark:text-white">
             © 2025 TaskFlow Inc. All rights reserved.
           </p>
-          <Container className="flex space-x-4 mt-4 md:mt-0">
+          <Container className="flex space-x-4 mt-4 md:mt-0 dark:text-white">
             <a
               href="#"
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-gray-400 hover:text-white transition-colors dark:text-gray-300 dark:hover:text-white"
             >
               <span className="sr-only">Twitter</span>
               <div className="w-6 h-6 bg-gray-700 rounded-full"></div>

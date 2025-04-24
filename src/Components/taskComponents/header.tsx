@@ -14,7 +14,7 @@ const Header: React.FC<HeaderProps> = ({
   setIsSidebarOpen,
 }) => {
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200 py-3 px-4 flex items-center justify-between">
+    <header className="bg-white shadow-sm border-b border-gray-200 py-3 px-4 flex items-center justify-between dark:bg-gray-900 dark:border-gray-700">
       <div className="flex items-center gap-4 flex-1">
         <button
           className="md:hidden text-gray-600"
@@ -33,7 +33,7 @@ const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
       <div className="flex items-center space-x-4">
-        <Bell className="h-5 w-5 text-gray-500 hover:text-blue-500 transition-colors" />
+        <Bell className="h-5 w-5 text-gray-500 hover:text-blue-500 transition-colors dark:text-white" />
         <Avatar className="h-8 w-8">
           <AvatarImage src="/avatar1.png" alt="Kai Shaw" />
           <AvatarFallback>KS</AvatarFallback>

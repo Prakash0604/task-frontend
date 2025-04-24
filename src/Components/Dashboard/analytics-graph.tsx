@@ -26,7 +26,7 @@ const AnalyticsChart: React.FC<AnalyticsChartProps> = ({ data, lineColor }) => {
   const areaPath = linePath + ` L 100,100 L 0,100 Z`;
 
   return (
-    <div className="w-full h-64 p-4 border rounded relative bg-white">
+    <div className="w-full h-64 p-4 border rounded relative bg-white dark:bg-gray-800">
       {/* Grid Lines */}
       {[...Array(5)].map((_, i) => (
         <div
