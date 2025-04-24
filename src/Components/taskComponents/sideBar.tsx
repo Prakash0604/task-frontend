@@ -23,12 +23,18 @@ function SidebarItem({ icon, label, active, onClick }: SidebarItemProps) {
   return (
     <button
       onClick={onClick}
-      className={`flex flex-col items-center justify-center p-3 rounded-lg w-full transition-colors hover:bg-gray-100 ${
-        active ? "text-blue-600" : "text-gray-600"
+      className={`flex flex-col items-center justify-center p-3 rounded-lg w-full transition-colors hover:bg-gray-100 dark:hover:bg-gray-500 ${
+        active ? "text-blue-600" : "text-gray-600 dark:text-white"
       }`}
     >
       <div className="w-6 h-6 flex items-center justify-center">{icon}</div>
-      <span className="text-xs font-medium mt-1">{label}</span>
+      <span
+        className={`text-xs font-medium mt-1 ${
+          active ? "text-blue-600" : "text-gray-600 dark:text-white"
+        }`}
+      >
+        {label}
+      </span>
     </button>
   );
 }
@@ -87,7 +93,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <div
-      className={`fixed inset-y-0 left-0 w-64 bg-white shadow-lg transform ${
+      className={`fixed inset-y-0 left-0 w-64 bg-white shadow-lg transform dark:bg-gray-900 dark:text-white ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       } md:translate-x-0 transition-transform duration-300 ease-in-out z-50 md:static md:flex md:flex-col md:w-64 border-r border-gray-200`}
     >
@@ -96,10 +102,12 @@ const Sidebar: React.FC<SidebarProps> = ({
           <div className="bg-blue-500 p-2 rounded-lg cursor-pointer">
             <SquareCheckBig className="text-white h-5 w-5 cursor-pointer" />
           </div>
-          <span className="font-bold text-gray-800">TaskMandu</span>
+          <span className="font-bold text-gray-800 dark:text-white">
+            TaskMandu
+          </span>
         </div>
         <button
-          className="md:hidden text-gray-600 hover:text-gray-800 cursor-pointer"
+          className="md:hidden text-gray-600 hover:text-gray-800 dark:text-white dark:hover:text-gray-200 cursor-pointer"
           onClick={() => setIsOpen(false)}
           aria-label="Close sidebar"
         >
@@ -107,8 +115,8 @@ const Sidebar: React.FC<SidebarProps> = ({
         </button>
       </div>
 
-      <nav className="flex-1 px-2 py-4">
-        <div className="grid grid-cols-2 gap-2 cursor-pointer">
+      <nav className="flex-1 px-2 py-4 dark:bg-gray-900 dark:text-white">
+        <div className="grid grid-cols-2 gap-2 cursor-pointer dark:text-white">
           {sidebarItems.map((item) => (
             <SidebarItem
               key={item.label}

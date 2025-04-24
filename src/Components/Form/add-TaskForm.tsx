@@ -31,7 +31,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onClose, onAddTask }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
+      <div className="dark:text-white dark:bg-gray-900">
         <label className="block text-sm font-medium text-gray-700">Title</label>
         <Input
           value={title}

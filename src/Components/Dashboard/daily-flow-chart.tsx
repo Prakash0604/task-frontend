@@ -94,8 +94,8 @@ const DailyFlowChart: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
+    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg dark:bg-gray-900 dark:text-white">
+      <h1 className="text-3xl font-bold text-center mb-8 text-gray-800 dark:text-white">
         Daily Flow Chart
       </h1>
 
@@ -171,7 +171,7 @@ const DailyFlowChart: React.FC = () => {
         )}
       </div>
 
-      <div className="relative">
+      <div className="relative dark:bg-gray-900 dark:text-white">
         {/* Vertical timeline line */}
         <div className="absolute left-12 top-8 bottom-0 w-1 bg-blue-200"></div>
 
@@ -182,13 +182,13 @@ const DailyFlowChart: React.FC = () => {
             .map((task) => (
               <div key={task.id} className="flex items-start">
                 {/* Time indicator */}
-                <div className="w-24 text-right pr-4 font-medium text-gray-600 pt-2">
+                <div className="w-24 text-right pr-4 font-medium text-gray-600 pt-2 dark:text-gray-300">
                   {task.time}
                 </div>
 
                 {/* Timeline node */}
                 <div
-                  className={`relative z-10 flex items-center justify-center w-6 h-6 rounded-full ${getStatusColor(
+                  className={`relative z-10 flex items-center justify-center w-6 h-6 rounded-full dark:bg-gray-800 dark:border-gray-600 ${getStatusColor(
                     task.status
                   )} border-4 border-white`}
                 >
@@ -208,7 +208,7 @@ const DailyFlowChart: React.FC = () => {
                 </div>
 
                 {/* Task card */}
-                <div className="ml-4 flex-1 bg-white p-4 rounded-lg shadow-md border border-gray-100">
+                <div className="ml-4 flex-1 bg-white p-4 rounded-lg shadow-md border border-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:text-white">
                   <div className="flex justify-between">
                     <h3 className="text-lg font-semibold">{task.title}</h3>
                     <div className="flex space-x-2">
@@ -220,7 +220,7 @@ const DailyFlowChart: React.FC = () => {
                             e.target.value as Task["status"]
                           )
                         }
-                        className="text-sm border border-gray-300 rounded px-2 bg-white"
+                        className="text-sm border border-gray-300 rounded px-2 bg-white dark:bg-gray-800"
                       >
                         <option value="pending">Pending</option>
                         <option value="in-progress">In Progress</option>
@@ -246,7 +246,9 @@ const DailyFlowChart: React.FC = () => {
                       </button>
                     </div>
                   </div>
-                  <p className="text-gray-600 mt-1">{task.description}</p>
+                  <p className="text-gray-600 mt-1 dark:text-white">
+                    {task.description}
+                  </p>
                 </div>
               </div>
             ))}

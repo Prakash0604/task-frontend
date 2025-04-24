@@ -11,6 +11,7 @@ export interface ContentRendererProps {
   filteredTasks: Task[];
   moveTask: (taskId: number, newStatus: Task["status"]) => void;
   onClose?: () => void; // Added onClose property
+  className?: string;
 }
 
 const ContentRenderer: React.FC<ContentRendererProps> = ({
@@ -41,7 +42,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
     switch (selectedTab) {
       case "Dashboard":
         return (
-          <div className="p-6 text-center text-gray-600">
+          <div className="p-6 text-center text-gray-600 dark:text-gray-300 dark:bg-gray-900">
             <h2 className="text-2xl font-semibold mb-4">Dashboard</h2>
             <p>
               Welcome to your dashboard! Here you can view key metrics and
@@ -57,9 +58,12 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
                 isModalOpen ? "blur-sm" : ""
               }`}
             >
-              <Tabs defaultValue="task-board" className="w-full">
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 gap-4">
-                  <TabsList className="w-full md:w-auto md:min-w-[50%] md:max-w-[50%]">
+              <Tabs
+                defaultValue="task-board"
+                className="w-full dark:bg-gray-900"
+              >
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 gap-4 ">
+                  <TabsList className="w-full md:w-auto md:min-w-[50%] md:max-w-[50%] dark:bg-gray-800">
                     <TabsTrigger value="overview">Overview</TabsTrigger>
                     <TabsTrigger value="task-board">Task Board</TabsTrigger>
                     <TabsTrigger value="task-list">Task List</TabsTrigger>
@@ -74,7 +78,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
                 </div>
 
                 <TabsContent value="task-board" className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 dark:bg-gray-900 dark:text-white">
                     {[
                       "To Do",
                       "In Progress",
@@ -98,7 +102,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
                 </TabsContent>
 
                 <TabsContent value="overview">
-                  <div className="text-center py-10 text-gray-600">
+                  <div className="text-center py-10 text-gray-600 dark:text-gray-300">
                     Overview content would go here
                   </div>
                 </TabsContent>
@@ -119,15 +123,15 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
 
             {isModalOpen && (
               <div
-                className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+                className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 dark:bg-gray-900"
                 onClick={handleOverlayClick}
               >
-                <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[80vh] overflow-y-auto">
+                <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[80vh] overflow-y-auto dark:bg-gray-800 dark:text-white">
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-semibold">Add New Task</h2>
                     <button
                       onClick={() => setIsModalOpen(false)}
-                      className="text-gray-600 hover:text-gray-800"
+                      className="text-gray-600 hover:text-gray-800 dark:text-white dark:hover:text-gray-400"
                     >
                       ✕
                     </button>
@@ -189,7 +193,11 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
     }
   };
 
-  return <>{renderContent()}</>;
+  return (
+    <>
+      <div className="dark:bg-gray-900 w-full h-full">{renderContent()}</div>
+    </>
+  );
 };
 
 export default ContentRenderer;

@@ -32,7 +32,10 @@ export default function FaqSection() {
   ];
 
   return (
-    <section id="faq" className="py-20 bg-gray-50">
+    <section
+      id="faq"
+      className="py-20 bg-gray-50 dark:bg-gray-900 dark:text-white"
+    >
       <Container className="container mx-auto px-4 md:px-6 max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -41,10 +44,10 @@ export default function FaqSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 dark:text-white">
             Frequently Asked Questions
           </h2>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-gray-600 dark:text-gray-300">
             Everything you need to know about TaskFlow and how it can help your
             team.
           </p>
@@ -58,12 +61,12 @@ export default function FaqSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
-              className="bg-white rounded-lg shadow-sm border border-gray-100 p-6"
+              className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 dark:bg-gray-800 dark:border-gray-400 "
             >
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3 dark:text-white ">
                 {item.question}
               </h3>
-              <p className="text-gray-600">{item.answer}</p>
+              <p className="text-gray-600 dark:text-white">{item.answer}</p>
             </motion.div>
           ))}
         </Container>

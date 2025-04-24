@@ -34,7 +34,10 @@ export default function TestimonialsSection() {
   }, [currentTestimonial, testimonials.length]);
 
   return (
-    <section id="testimonials" className="py-20 bg-indigo-50">
+    <section
+      id="testimonials"
+      className="py-20 bg-indigo-50 dark:bg-gray-900 dark:text-white "
+    >
       <Container className="container mx-auto px-4 md:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -43,21 +46,21 @@ export default function TestimonialsSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 dark:text-white">
             Loved by Teams Everywhere
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-300">
             See what our customers have to say about how TaskFlow has
             transformed their workflow.
           </p>
         </motion.div>
 
-        <Container className="max-w-3xl mx-auto">
-          <Container className="bg-white rounded-xl shadow-md p-8 relative">
+        <Container className="max-w-3xl mx-auto dark:bg-gray-900  rounded-xl shadow-lg p-8">
+          <Container className="bg-white rounded-xl shadow-md p-8 relative dark:bg-gray-800 dark:text-white">
             <Container className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-indigo-600 text-white p-3 rounded-full">
               <Star size={24} />
             </Container>
-            <Container className="h-48">
+            <Container className="h-48 dark:text-white">
               {testimonials.map((testimonial, index) => (
                 <motion.div
                   key={index}
@@ -67,19 +70,21 @@ export default function TestimonialsSection() {
                     x: currentTestimonial === index ? 0 : 20,
                   }}
                   transition={{ duration: 0.5 }}
-                  className="absolute w-full"
+                  className="absolute w-full dark:text-white"
                   style={{
                     display: currentTestimonial === index ? "block" : "none",
                   }}
                 >
-                  <p className="text-lg text-gray-700 italic mb-6">
+                  <p className="text-lg text-gray-700 italic mb-6 dark:text-gray-300">
                     {testimonial.text}
                   </p>
                   <Container>
-                    <p className="font-semibold text-gray-900">
+                    <p className="font-semibold text-gray-900 dark:text-white">
                       {testimonial.author}
                     </p>
-                    <p className="text-gray-500 text-sm">{testimonial.role}</p>
+                    <p className="text-gray-500 text-sm dark:text-gray-400">
+                      {testimonial.role}
+                    </p>
                   </Container>
                 </motion.div>
               ))}

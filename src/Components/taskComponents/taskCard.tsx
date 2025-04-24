@@ -16,10 +16,10 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
   return (
     <>
       <div
-        className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow cursor-pointer"
+        className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow cursor-pointer dark:bg-gray-800 dark:border-gray-700"
         onClick={() => setIsModalOpen(true)}
       >
-        <div className="flex justify-between items-start mb-2">
+        <div className="flex justify-between items-start mb-2 dark:text-gray-200">
           <Badge
             variant="outline"
             className={`text-xs font-medium ${getPriorityColor(task.priority)}`}
@@ -29,8 +29,10 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
           <MoreHorizontal className="h-4 w-4 text-gray-400 hover:text-gray-600" />
         </div>
 
-        <h4 className="font-semibold text-gray-800 mb-1">{task.title}</h4>
-        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+        <h4 className="font-semibold text-gray-800 mb-1 dark:text-white">
+          {task.title}
+        </h4>
+        <p className="text-gray-600 text-sm mb-3 line-clamp-2 dark:text-gray-300">
           {task.description}
         </p>
 
@@ -46,17 +48,17 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
           </div>
         )} */}
 
-        <div className="flex flex-col justify-between items-center mt-2">
+        <div className="flex flex-col justify-between items-center mt-2 dark:text-gray-200">
           <div className="flex items-center gap-3 text-gray-500 text-xs">
             <div className="flex items-center">
-              <MessageSquare className="h-3 w-3 mr-1" />
+              <MessageSquare className="h-3 w-3 mr-1 dark:text-white" />
               {task.comments}
             </div>
             <div className="flex items-center">
-              <div className="text-xs mr-1">📎</div>
+              <div className="text-xs mr-1 dark:text-white ">📎</div>
               {task.attachments}
             </div>
-            <div className="text-xs">{task.dueDate}</div>
+            <div className="text-xs dark:text-white">{task.dueDate}</div>
           </div>
         </div>
       </div>

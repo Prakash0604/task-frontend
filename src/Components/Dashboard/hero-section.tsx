@@ -6,7 +6,7 @@ import Container from "@/Container/container";
 import DailyFlowChart from "./daily-flow-chart";
 export default function HeroSection() {
   return (
-    <section className="pt-32 pb-20">
+    <section className="pt-32 pb-20 dark:bg-gray-900">
       <Container className="container mx-auto px-4 md:px-6">
         <Container className="flex flex-col md:flex-row items-center justify-between">
           <motion.div
@@ -18,7 +18,7 @@ export default function HeroSection() {
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900 mb-6">
               Manage Tasks <span className="text-indigo-600">Effortlessly</span>
             </h1>
-            <p className="text-lg text-gray-600 mb-8 max-w-lg">
+            <p className="text-lg text-gray-600 mb-8 max-w-lg dark:text-gray-300">
               TaskFlow helps teams organize, track, and manage their work with
               powerful features designed for productivity and collaboration.
             </p>
@@ -39,7 +39,7 @@ export default function HeroSection() {
                 Watch demo
               </Link>
             </Container>
-            <Container className="mt-8 flex items-center text-sm text-gray-500">
+            <Container className="mt-8 flex items-center text-sm text-gray-500 dark:text-gray-300">
               <p>No credit card required • Free 14-day trial</p>
             </Container>
           </motion.div>

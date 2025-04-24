@@ -28,7 +28,9 @@ const DraggableTaskCard: React.FC<DraggableTaskCardProps> = ({ task }) => {
   return (
     <div
       ref={ref}
-      className={`${isDragging ? "opacity-50" : "opacity-100"} cursor-move`}
+      className={`${
+        isDragging ? "opacity-50 dark:text-white" : "opacity-100 "
+      } cursor-move dark:text-white`}
     >
       <TaskCard task={task} />
     </div>
