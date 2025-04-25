@@ -3,7 +3,7 @@ import Link from "next/link";
 import { LoginForm } from "@/Components/Form/login-form";
 const LoginPage: React.FC = () => {
   return (
-    <div className="flex max-h-screen">
+    <div className="flex max-h-screen dark:bg-gray-900">
       {/* Left side - Image */}
       <div className="hidden w-1/2 bg-gray-100 lg:block">
         <Image
@@ -23,7 +23,7 @@ const LoginPage: React.FC = () => {
             <h2 className="mt-6 text-3xl font-bold tracking-tight">
               Welcome back
             </h2>
-            <p className="mt-2 text-sm text-gray-500">
+            <p className="mt-2 text-sm text-gray-500 dark:text-white">
               Sign in to your account to continue
             </p>
           </div>
@@ -34,7 +34,7 @@ const LoginPage: React.FC = () => {
             Don&apos;t have an account?{" "}
             <Link
               href="/signup"
-              className="font-medium text-blue-600 hover:underline"
+              className="font-medium text-blue-600 hover:underline "
             >
               Sign up
             </Link>
