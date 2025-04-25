@@ -47,7 +47,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {footerLinks.map((section, index) => (
             <div key={index}>
-              <h3 className="text-base sm:text-lg font-semibold mb-4">
+              <h3 className="text-base sm:text-lg font-semibold mb-4 text-[#2596be]">
                 {section.title}
               </h3>
               <ul className="space-y-2">

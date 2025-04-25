@@ -1,14 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+import { createContext, useContext, useState } from "react";
 import { Task } from "@/lib/validations/type";
-import Sidebar from "@/Components/taskComponents/sideBar";
-import Header from "@/Components/taskComponents/header";
-import ContentRenderer from "@/Components/taskComponents/contentRender";
 
-export default function Dashboard() {
+interface TaskContextType {
+  tasks: Task[];
+  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+  searchQuery: string;
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+  filteredTasks: Task[];
+  moveTask: (taskId: number, newStatus: Task["status"]) => void;
+}
+
+const TaskContext = createContext<TaskContextType | undefined>(undefined);
+
+export function TaskProvider({ children }: { children: React.ReactNode }) {
   const [tasks, setTasks] = useState<Task[]>([
     {
       id: 2,
@@ -148,8 +154,12 @@ export default function Dashboard() {
   ]);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTab, setSelectedTab] = useState("My Tasks");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const filteredTasks = tasks.filter(
+    (task) =>
+      task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      task.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const moveTask = (taskId: number, newStatus: Task["status"]) => {
     console.debug(`Moving task ${taskId} to ${newStatus}`);
@@ -160,36 +170,26 @@ export default function Dashboard() {
     );
   };
 
-  const filteredTasks = tasks.filter(
-    (task) =>
-      task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      task.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   return (
-    <DndProvider backend={HTML5Backend}>
-      <div className="flex min-h-screen bg-gradient-to-br from-gray-100 to-gray-200">
-        <Sidebar
-          isOpen={isSidebarOpen}
-          setIsOpen={setIsSidebarOpen}
-          selectedTab={selectedTab}
-          setSelectedTab={setSelectedTab}
-        />
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <Header
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            setIsSidebarOpen={setIsSidebarOpen}
-          />
-          <ContentRenderer
-            selectedTab={selectedTab}
-            tasks={tasks}
-            filteredTasks={filteredTasks}
-            moveTask={moveTask}
-            onClose={() => setIsSidebarOpen(false)}
-          />
-        </div>
-      </div>
-    </DndProvider>
+    <TaskContext.Provider
+      value={{
+        tasks,
+        setTasks,
+        searchQuery,
+        setSearchQuery,
+        filteredTasks,
+        moveTask,
+      }}
+    >
+      {children}
+    </TaskContext.Provider>
   );
+}
+
+export function useTaskContext() {
+  const context = useContext(TaskContext);
+  if (!context) {
+    throw new Error("useTaskContext must be used within a TaskProvider");
+  }
+  return context;
 }

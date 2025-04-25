@@ -63,13 +63,13 @@ const TaskColumn: React.FC<TaskColumnProps> = ({
   return (
     <div
       ref={dropRef}
-      className={`flex flex-col h-full p-4 rounded-lg dark:bg-gray-900 ${
+      className={`flex flex-col h-full p-4 rounded-lg dark:bg-gray-800 ${
         isOver && canDrop ? "bg-blue-100" : "bg-white"
       } shadow-md min-h-[200px]`}
     >
-      <div className="flex items-center gap-2 mb-3">
+      <div className="flex items-center gap-2 mb-3 ">
         <div className={`w-3 h-3 rounded-full ${getStatusColor(title)}`}></div>
-        <h3 className="font-semibold text-gray-800">{title}</h3>
+        <h3 className="font-semibold text-gray-800 dark:text-white">{title}</h3>
         <Badge
           variant="outline"
           className="ml-2 text-xs dark:bg-gray-800 dark:text-gray-200"
