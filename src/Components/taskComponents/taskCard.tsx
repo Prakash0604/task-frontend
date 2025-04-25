@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 import { MoreHorizontal, MessageSquare } from "lucide-react";
 import { Badge } from "../ui/badge";
@@ -16,7 +17,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
   return (
     <>
       <div
-        className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow cursor-pointer dark:bg-gray-800 dark:border-gray-700"
+        className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow cursor-pointer dark:bg-gray-800  dark:border-[#2596be]"
         onClick={() => setIsModalOpen(true)}
       >
         <div className="flex justify-between items-start mb-2 dark:text-gray-200">

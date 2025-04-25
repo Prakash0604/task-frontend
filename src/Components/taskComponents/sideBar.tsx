@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   ListTodo,
@@ -52,40 +53,54 @@ const Sidebar: React.FC<SidebarProps> = ({
   selectedTab,
   setSelectedTab,
 }) => {
+  const router = useRouter();
+
   const sidebarItems = [
     {
       label: "Dashboard",
       icon: <LayoutDashboard className="h-6 w-6 cursor-pointer" />,
+      route: "/dashboard",
     },
     {
       label: "My Tasks",
       icon: <ListTodo className="h-6 w-6 cursor-pointer" />,
+      route: "/tasks",
     },
     {
       label: "Projects",
       icon: <FolderKanban className="h-6 w-6 cursor-pointer" />,
+      route: "/projects",
     },
-    { label: "Goals", icon: <Target className="h-6 w-6 cursor-pointer" /> },
+    {
+      label: "Goals",
+      icon: <Target className="h-6 w-6 cursor-pointer" />,
+      route: "/goals",
+    },
     {
       label: "Calendar",
       icon: <Calendar className="h-6 w-6 cursor-pointer" />,
+      route: "/calendar",
     },
     {
       label: "Notifications",
       icon: <Bell className="h-6 w-6 cursor-pointer" />,
+      route: "/notifications",
     },
     {
       label: "Settings",
       icon: <Settings className="h-6 w-6 cursor-pointer" />,
+      route: "/settings",
     },
     {
       label: "Help",
       icon: <HelpCircle className="h-6 w-6 cursor-pointer" />,
+      route: "/help",
     },
   ];
 
-  const handleItemClick = (label: string) => {
+  const handleItemClick = (label: string, route: string) => {
     setSelectedTab(label);
+    router.push(route);
     if (window.innerWidth < 768) {
       setIsOpen(false);
     }
@@ -123,7 +138,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               icon={item.icon}
               label={item.label}
               active={selectedTab === item.label}
-              onClick={() => handleItemClick(item.label)}
+              onClick={() => handleItemClick(item.label, item.route)}
             />
           ))}
         </div>

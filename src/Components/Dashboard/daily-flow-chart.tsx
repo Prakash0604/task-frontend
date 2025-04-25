@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 
 interface Task {
@@ -63,7 +64,6 @@ const DailyFlowChart: React.FC = () => {
   });
   const [isAdding, setIsAdding] = useState<boolean>(false);
 
-
   const handleAddTask = () => {
     if (!newTask.time || !newTask.title) return;
 
@@ -72,8 +72,6 @@ const DailyFlowChart: React.FC = () => {
     setNewTask({ time: "", title: "", description: "", status: "pending" });
     setIsAdding(false);
   };
-
-
 
   const getStatusColor = (status: Task["status"]) => {
     switch (status) {
@@ -167,7 +165,6 @@ const DailyFlowChart: React.FC = () => {
       <div className="relative dark:bg-gray-900 dark:text-white">
         {/* Vertical timeline line */}
 
-
         {/* Tasks */}
         <div className="space-y-6">
           {tasks
@@ -203,7 +200,9 @@ const DailyFlowChart: React.FC = () => {
                 {/* Task card */}
                 <div className="ml-4 flex-1 bg-white p-4 rounded-lg shadow-md border border-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:text-white">
                   <div className="flex justify-between">
-                    <h3 className="text-lg font-semibold text-[#2596be]">{task.title}</h3>
+                    <h3 className="text-lg font-semibold text-[#2596be]">
+                      {task.title}
+                    </h3>
                   </div>
                   <p className="text-gray-600 mt-1 dark:text-gray-400">
                     {task.description}

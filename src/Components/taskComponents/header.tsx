@@ -1,18 +1,19 @@
+"use client";
+
 import { Search, Bell, Menu } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Input } from "../ui/input";
+import { useTaskContext } from "./taskContext";
 
 interface HeaderProps {
+  setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
   searchQuery: string;
-  setSearchQuery: (query: string) => void;
-  setIsSidebarOpen: (open: boolean) => void;
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Header: React.FC<HeaderProps> = ({
-  searchQuery,
-  setSearchQuery,
-  setIsSidebarOpen,
-}) => {
+const Header: React.FC<HeaderProps> = ({ setIsSidebarOpen }) => {
+  const { searchQuery, setSearchQuery } = useTaskContext();
+
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 py-3 px-4 flex items-center justify-between dark:bg-gray-900 dark:border-gray-700">
       <div className="flex items-center gap-4 flex-1">

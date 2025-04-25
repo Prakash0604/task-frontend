@@ -1,10 +1,10 @@
+"use client";
 import { useState, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../ui/tabs";
 import { Button } from "../ui/button";
 import TaskColumn from "./taskColumn";
 import TaskForm from "../Form/taskAddForm";
 import { Task } from "@/lib/validations/type";
-
 export interface ContentRendererProps {
   selectedTab: string;
   tasks: Task[];

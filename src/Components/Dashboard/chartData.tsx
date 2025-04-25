@@ -1,5 +1,4 @@
-// Example usage in a page or parent component
-
+"use client";
 import React from "react";
 import AnalyticsChart, { ChartData } from "./analytics-graph";
 
