@@ -71,14 +71,17 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({
                   </TabsList>
                   <Button
                     onClick={() => setIsModalOpen(true)}
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 w-full md:w-auto"
+                    className="bg-[#2596be] hover:bg-[#2596be] text-white px-4 py-2 w-full md:w-auto cursor-pointer"
                   >
                     Add Task
                   </Button>
                 </div>
 
-                <TabsContent value="task-board" className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 dark:bg-gray-900 dark:text-white">
+                <TabsContent
+                  value="task-board"
+                  className="space-y-4 dark:text-white"
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 text-white">
                     {[
                       "To Do",
                       "In Progress",
