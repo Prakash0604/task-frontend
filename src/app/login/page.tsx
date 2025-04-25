@@ -3,7 +3,7 @@ import Link from "next/link";
 import { LoginForm } from "@/Components/Form/login-form";
 const LoginPage: React.FC = () => {
   return (
-    <div className="flex max-h-screen">
+    <div className="flex max-h-screen dark:bg-gray-900">
       {/* Left side - Image */}
       <div className="hidden w-1/2 bg-gray-100 lg:block">
         <Image

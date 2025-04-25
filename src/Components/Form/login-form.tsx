@@ -38,11 +38,11 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <Container className="space-y-6">
+    <Container className="space-y-6 ">
       <Container>
         <Link
           href="/"
-          className="flex items-center text-sm text-gray-500 hover:text-gray-700"
+          className="flex items-center text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -175,7 +175,7 @@ const LoginForm: React.FC = () => {
           <input
             id="rememberMe"
             type="checkbox"
-            className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
             disabled={isLoading}
             {...register("rememberMe")}
           />
@@ -190,7 +190,7 @@ const LoginForm: React.FC = () => {
         <button
           type="submit"
           disabled={isLoading}
-          className="flex w-full justify-center rounded-md bg-[#ec2a76] px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#ec2a76] focus:outline-none focus:ring-2 focus:ring-[#ec2a76] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70"
+          className="flex w-full justify-center rounded-md bg-[#2596be] px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#2596be] focus:outline-none focus:ring-2 focus:ring-[#ec2a76] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70 cursor-pointer"
         >
           {isLoading ? (
             <>

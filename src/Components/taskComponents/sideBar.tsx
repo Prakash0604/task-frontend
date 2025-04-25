@@ -24,13 +24,13 @@ function SidebarItem({ icon, label, active, onClick }: SidebarItemProps) {
     <button
       onClick={onClick}
       className={`flex flex-col items-center justify-center p-3 rounded-lg w-full transition-colors hover:bg-gray-100 dark:hover:bg-gray-500 ${
-        active ? "text-blue-600" : "text-gray-600 dark:text-white"
+        active ? "bg-[#2596be]" : "text-gray-600 dark:text-white"
       }`}
     >
       <div className="w-6 h-6 flex items-center justify-center">{icon}</div>
       <span
         className={`text-xs font-medium mt-1 ${
-          active ? "text-blue-600" : "text-gray-600 dark:text-white"
+          active ? "bg-[#2596be]" : "text-gray-600 dark:text-white"
         }`}
       >
         {label}
@@ -99,7 +99,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     >
       <div className="p-4 flex items-center justify-between">
         <div className="flex items-center gap-2 cursor-pointer">
-          <div className="bg-blue-500 p-2 rounded-lg cursor-pointer">
+          <div className="bg-[#2596be] p-2 rounded-lg cursor-pointer">
             <SquareCheckBig className="text-white h-5 w-5 cursor-pointer" />
           </div>
           <span className="font-bold text-gray-800 dark:text-white">
