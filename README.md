@@ -34,38 +34,3 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-
-
-
-# Rules for the Project
-folder and file naming structure must me in : task-manager(folder) for ##file like  login-form.tsx, login-store.ts,
-and the extra custom function must be in utils folders like the date function , time function , and others like validation schems
-
-# UI 
-- shadcn (bun js ) node -23  with next js  and tailwindcss
-- color custom color like primary color , secondary color, border-color and etc....
-- make reusable components of all like inputs, forms, box, containers and others liek layouts 
--use optimized code of html (hr,br,strong tags are not allowed)
-
-
-# components 
-form(login-form, register-fom)
-input (email, text ,)
-
-# utils  || lib
-validations-schema --- zod validation schmes
-
-
-
-
-# colors pallet
-backgroud colors of task : #F2F5F7
-primary color: #2596be
-pure-white :#FFFFFF
-secondary-text:#DADADA
-primary-text:#424242
-primary-icon:#DADADA
-text-[
-#abdbe3]
-
