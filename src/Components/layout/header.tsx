@@ -3,7 +3,7 @@
 import { Search, Bell, Menu } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Input } from "../ui/input";
-import { useTaskContext } from "./taskContext";
+// import { useTaskContext } from "../taskComponents/taskContext";
 
 interface HeaderProps {
   setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -12,7 +12,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ setIsSidebarOpen }) => {
-  const { searchQuery, setSearchQuery } = useTaskContext();
+  // const { searchQuery, setSearchQuery } = useTaskContext();
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 py-3 px-4 flex items-center justify-between dark:bg-gray-900 dark:border-gray-700">
@@ -27,8 +27,8 @@ const Header: React.FC<HeaderProps> = ({ setIsSidebarOpen }) => {
           <Input
             placeholder="Search tasks..."
             className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            // value={searchQuery}
+            // onChange={(e) => setSearchQuery(e.target.value)}
           />
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
         </div>

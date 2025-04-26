@@ -55,13 +55,14 @@ type FormValues = z.infer<typeof formSchema>;
 
 interface TaskFormProps {
   onClose: () => void;
+  onAddTask: (title: string) => void;
 }
 
-export default function TaskForm({ onClose }: TaskFormProps) {
+export default function AddTaskForm({ onClose }: TaskFormProps) {
   const [comments, setComments] = useState<string[]>([]);
   const [showMentionDropdown, setShowMentionDropdown] = useState(false);
   const [mentionPosition, setMentionPosition] = useState(0);
-  const [open, setOpen] = useState(false); // For assignee dropdown
+  const [open, setOpen] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
