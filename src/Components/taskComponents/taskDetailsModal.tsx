@@ -1,141 +1,101 @@
-"use client";
-
+import { Calendar, CheckCircle } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "../ui/dialog";
-import { Badge } from "../ui/badge";
-import { Avatar, AvatarFallback } from "../ui/avatar";
-import { MessageSquare } from "lucide-react";
-import { Task } from "@/lib/validations/type";
-import { getPriorityColor } from "@/lib/validations/case";
-// import Image from "next/image";
+  DialogFooter,
+} from "@/Components/ui/dialog";
+import { Button } from "@/Components/ui/button";
+import { Badge } from "@/Components/ui/badge";
+import {
+  Task,
+  COLUMNS,
+  getPriorityColor,
+  getAssignee,
+} from "@/lib/validations/type";
 
-interface TaskDetailsModalProps {
-  task: Task;
+interface TaskDetailModalProps {
   isOpen: boolean;
-  setIsOpen: (open: boolean) => void;
+  onClose: () => void;
+  task: Task | null;
 }
 
-const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
-  task,
+export const TaskDetailModal = ({
   isOpen,
-  setIsOpen,
-}) => {
+  onClose,
+  task,
+}: TaskDetailModalProps) => {
+  if (!task) return null;
+
+  const assignee = getAssignee(task.assigneeId);
+
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto dark:bg-gray-900 dark:text-gray-200">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-semibold text-gray-800 dark:text-white">
-            {task.title}
-          </DialogTitle>
-          <DialogDescription className="text-sm text-gray-500 dark:text-white">
-            Full details for task ID: {task.id}
+          <DialogTitle className="text-xl">{task.title}</DialogTitle>
+          <DialogDescription>
+            <Badge className={`${getPriorityColor(task.priority)} my-2`}>
+              {task.priority}
+            </Badge>
+            <p className="text-sm text-gray-600">
+              Status: {COLUMNS[task.columnId].title}
+            </p>
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-6 py-4">
-          <div className="flex gap-4">
-            <div>
-              <h4 className="text-sm font-medium text-gray-700 dark:text-white">
-                Priority
-              </h4>
-              <Badge
-                variant="outline"
-                className={`mt-1 text-xs font-medium ${getPriorityColor(
-                  task.priority
-                )}`}
-              >
-                {task.priority}
-              </Badge>
-            </div>
-            <div>
-              <h4 className="text-sm font-medium text-gray-700 dark:text-white">
-                Status
-              </h4>
-              <Badge
-                variant="outline"
-                className="mt-1 text-xs font-medium dark:text-white"
-              >
-                {task.status}
-              </Badge>
-            </div>
-          </div>
 
+        <div className="grid gap-4 py-4">
+          {/* Description (read-only) */}
           <div>
-            <h4 className="text-sm font-medium text-gray-700 dark:text-white">
-              Description
-            </h4>
-            <p className="mt-1 text-sm text-gray-600 dark:text-white">
-              {task.description}
+            <h3 className="font-medium mb-2">Description</h3>
+            <p className="text-sm p-3 bg-gray-50 rounded-md min-h-24">
+              {task.description || "No description provided."}
             </p>
           </div>
 
+          {/* Assignee (read-only) */}
           <div>
-            <h4 className="text-sm font-medium text-gray-700 dark:text-white">
-              Assigned Users
-            </h4>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {task.users.map((user, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  <Avatar className="h-8 w-8 border-2 border-white">
-                    <AvatarFallback>{user.name[0]}</AvatarFallback>
-                  </Avatar>
-                  <span className="text-sm text-gray-600 dark:text-white">
-                    {user.name}
-                  </span>
+            <h3 className="font-medium mb-1">Assignee</h3>
+            <p className="text-sm">{assignee ? assignee.name : "Unassigned"}</p>
+          </div>
+
+          {/* Priority (read-only) */}
+          <div>
+            <h3 className="font-medium mb-1">Priority</h3>
+            <Badge className={getPriorityColor(task.priority)}>
+              {task.priority}
+            </Badge>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+            {task.assignedDate && (
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-gray-500" />
+                <div>
+                  <p className="text-xs text-gray-500">Assigned Date</p>
+                  <p className="text-sm">{task.assignedDate}</p>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <h4 className="text-sm font-medium text-gray-700 dark:text-white">
-                Comments
-              </h4>
-              <div className="flex items-center mt-1 text-sm text-gray-600">
-                <MessageSquare className="h-4 w-4 mr-1 dark:text-white" />
-                <span className="dark:text-white">{task.comments}</span>
               </div>
-            </div>
-            <div>
-              <h4 className="text-sm font-medium text-gray-700 dark:text-white">
-                Attachments
-              </h4>
-              <div className="flex items-center mt-1 text-sm text-gray-600">
-                <span className="mr-1 dark:text-white">📎</span>
-                <span className="dark:text-white">{task.attachments}</span>
-              </div>
-            </div>
-            <div>
-              <h4 className="text-sm font-medium text-gray-700 dark:text-white">
-                Due Date
-              </h4>
-              <p className="mt-1 text-sm text-gray-600 dark:text-white">
-                {task.dueDate}
-              </p>
-            </div>
-          </div>
+            )}
 
-          {/* {task.status === "In Progress" && (
-            <div>
-              <h4 className="text-sm font-medium text-gray-700">Preview</h4>
-              <Image
-                src="/api/placeholder/320/180"
-                width={320}
-                height={180}
-                alt="Task preview"
-                className="mt-2 w-full h-48 object-cover rounded-md"
-              />
-            </div>
-          )} */}
+            {task.completedDate && (
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4 text-green-500" />
+                <div>
+                  <p className="text-xs text-gray-500">Completed Date</p>
+                  <p className="text-sm">{task.completedDate}</p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
+
+        <DialogFooter>
+          <Button onClick={onClose}>Close</Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 };
-
-export default TaskDetailsModal;

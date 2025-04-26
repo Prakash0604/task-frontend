@@ -1,76 +1,54 @@
-"use client";
-import { useState } from "react";
-import { MoreHorizontal, MessageSquare } from "lucide-react";
-import { Badge } from "../ui/badge";
-import { Task } from "@/lib/validations/type";
-import { getPriorityColor } from "@/lib/validations/case";
-// import Image from "next/image";
-import TaskDetailsModal from "./taskDetailsModal";
+import { User, Calendar, CheckCircle } from "lucide-react";
+import { DraggableProvided } from "@hello-pangea/dnd";
+import { Badge } from "@/Components/ui/badge";
+import { Task, getAssignee, getPriorityColor } from "@/lib/validations/type";
 
 interface TaskCardProps {
   task: Task;
+  provided: DraggableProvided;
+  onClick: (task: Task) => void;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+export const TaskCard = ({ task, onClick, provided }: TaskCardProps) => {
+  const assignee = getAssignee(task.assigneeId);
 
   return (
-    <>
-      <div
-        className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow cursor-pointer dark:bg-gray-800  dark:border-[#2596be]"
-        onClick={() => setIsModalOpen(true)}
-      >
-        <div className="flex justify-between items-start mb-2 dark:text-gray-200">
-          <Badge
-            variant="outline"
-            className={`text-xs font-medium ${getPriorityColor(task.priority)}`}
-          >
-            {task.priority}
-          </Badge>
-          <MoreHorizontal className="h-4 w-4 text-gray-400 hover:text-gray-600" />
-        </div>
-
-        <h4 className="font-semibold text-gray-800 mb-1 dark:text-white">
-          {task.title}
-        </h4>
-        <p className="text-gray-600 text-sm mb-3 line-clamp-2 dark:text-gray-300">
-          {task.description}
-        </p>
-
-        {/* {task.status === "In Progress" && (
-          <div className="mb-3">
-            <Image
-              src="/api/placeholder/320/180"
-              width={320}
-              height={180}
-              alt="Task preview"
-              className="w-full h-24 object-cover rounded-md"
-            />
-          </div>
-        )} */}
-
-        <div className="flex flex-col justify-between items-center mt-2 dark:text-gray-200">
-          <div className="flex items-center gap-3 text-gray-500 text-xs">
-            <div className="flex items-center">
-              <MessageSquare className="h-3 w-3 mr-1 dark:text-white" />
-              {task.comments}
-            </div>
-            <div className="flex items-center">
-              <div className="text-xs mr-1 dark:text-white ">📎</div>
-              {task.attachments}
-            </div>
-            <div className="text-xs dark:text-white">{task.dueDate}</div>
-          </div>
-        </div>
+    <div
+      ref={provided.innerRef}
+      {...provided.draggableProps}
+      {...provided.dragHandleProps}
+      className="bg-white p-3 rounded-md shadow mb-2 border cursor-grab hover:bg-gray-50 transition-colors"
+      onClick={() => onClick(task)}
+    >
+      <div className="flex justify-between items-start mb-2">
+        <div className="font-medium text-gray-900">{task.title}</div>
+        <Badge className={getPriorityColor(task.priority)}>
+          {task.priority}
+        </Badge>
       </div>
 
-      <TaskDetailsModal
-        task={task}
-        isOpen={isModalOpen}
-        setIsOpen={setIsModalOpen}
-      />
-    </>
+      <div className="flex flex-wrap gap-2 text-xs text-gray-500">
+        {assignee && (
+          <div className="flex items-center gap-1">
+            <User className="h-3 w-3" />
+            <span>{assignee.name}</span>
+          </div>
+        )}
+
+        {task.assignedDate && (
+          <div className="flex items-center gap-1">
+            <Calendar className="h-3 w-3" />
+            <span>{task.assignedDate}</span>
+          </div>
+        )}
+
+        {task.completedDate && (
+          <div className="flex items-center gap-1">
+            <CheckCircle className="h-3 w-3" />
+            <span>{task.completedDate}</span>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
-
-export default TaskCard;

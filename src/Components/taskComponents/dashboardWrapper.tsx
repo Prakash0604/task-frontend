@@ -3,9 +3,8 @@
 import { useState, useEffect } from "react";
 import { useMemo } from "react";
 import { usePathname } from "next/navigation";
-import Sidebar from "./sideBar";
-import Header from "./header";
-import { TaskProvider } from "./taskContext";
+import Sidebar from "../layout/sideBar";
+import Header from "../layout/header";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
@@ -41,31 +40,31 @@ export default function DashboardWrapper({
   }, [pathname, routeToTab]);
 
   return (
-    <TaskProvider>
-      <DndProvider backend={HTML5Backend}>
-        <div className="flex min-h-screen dark:bg-gray-900">
-          {/* Sidebar */}
-          <Sidebar
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            selectedTab={selectedTab}
-            setSelectedTab={setSelectedTab}
+    // <TaskProvider>
+    <DndProvider backend={HTML5Backend}>
+      <div className="flex min-h-screen dark:bg-gray-900">
+        {/* Sidebar */}
+        <Sidebar
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          selectedTab={selectedTab}
+          setSelectedTab={setSelectedTab}
+        />
+
+        {/* Main content area */}
+        <div className="flex-1 flex flex-col">
+          <Header
+            setIsSidebarOpen={setIsOpen}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
           />
+          {/* <Header setIsSidebarOpen={setIsOpen} /> */}
 
-          {/* Main content area */}
-          <div className="flex-1 flex flex-col">
-            <Header
-              setIsSidebarOpen={setIsOpen}
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-            />
-            {/* <Header setIsSidebarOpen={setIsOpen} /> */}
-
-            {/* Page content */}
-            <main className="flex-1 p-4">{children}</main>
-          </div>
+          {/* Page content */}
+          <main className="flex-1 p-4">{children}</main>
         </div>
-      </DndProvider>
-    </TaskProvider>
+      </div>
+    </DndProvider>
+    // </TaskProvider>
   );
 }
