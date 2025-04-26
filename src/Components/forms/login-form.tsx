@@ -52,10 +52,10 @@ const LoginForm = () => {
         };
 
         return (
-                <Container className="flex min-h-screen items-center justify-center bg-taskmandu-bg-light">
-                        <Container className="flex items-center justify-center p-8 bg-white shadow-lg rounded-lg max-w-lg w-full border border-gray-200">
+                <Container className="flex min-h-screen md:w-[35%] w-[100%] items-center  bg-gray-100   px-8">
+                        <Container className="flex items-center justify-center p-8 bg-white shadow-lg rounded-lg w-full border  border-gray-200">
                                 <Container className="w-full space-y-6">
-                                        <h2 className="text-2xl font-bold text-center text-taskmandu-primary">Login</h2>
+                                        <h2 className="text-2xl font-bold text-center text-[var(--taskmandu-primary)]">Welcome to Taskmandu</h2>
                                         <p className='text-red-600'>{errMessage}</p>
                                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                                                 {/* Email Input */}
@@ -88,7 +88,7 @@ const LoginForm = () => {
                                                                 />
                                                                 <Button
                                                                         type="button"
-                                                                        variant={'transparent'}
+                                                                        variant={'trans'}
                                                                         onClick={() => setShowPassword(!showPassword)}
                                                                         className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500"
                                                                 >
