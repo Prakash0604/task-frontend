@@ -25,20 +25,19 @@ const LoginForm = () => {
         });
         const onSubmit = async (data: LoginFormInputs) => {
                 try {
-                        const response = await login(data.email, data.password)
-                        if (response) {
+                        const response = await login(data.email, data.password);
+                        if (response.status) {
                                 toast.success("Login successful", {
-                                        description: `Welcome Taskmandu `,
-                                        style: { backgroundColor: "#fffff", color: "#4CAF50" },
+                                        description: `Welcome, ${response.data.name || 'User'}!`,
+                                        style: { backgroundColor: "#ffffff", color: "#4CAF50" },
                                         descriptionClassName: "text-green-600 font-medium",
-                                })
-                                router.push('/dashboard')
-                                reset()
-                        }
-                        else {
-                                toast.error("Error!", {
-                                        description: "Login failed.",
-                                        style: { backgroundColor: "#fffff", color: "red" },
+                                });
+                                router.push('/dashboard');
+                                reset();
+                        } else {
+                                toast.error("Login failed", {
+                                        description: response.message || "Invalid email or password",
+                                        style: { backgroundColor: "#ffffff", color: "red" },
                                 });
                         }
                 } catch (error) {
