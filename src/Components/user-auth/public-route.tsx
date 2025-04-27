@@ -1,6 +1,6 @@
 import { getUser } from "@/utlis";
 import { useRouter } from "next/navigation";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useState } from "react";
 
 interface PublicRouteProps {
         children: ReactNode;
@@ -8,18 +8,13 @@ interface PublicRouteProps {
 
 const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
         const router = useRouter();
+        const [checked, setChecked] = useState<boolean>(false);
         const token = getUser();
-
-        useEffect(() => {
-                if (token) {
-                        router.push("/dashboard");
-                }
-        }, [token, router]);
-
-        if (token) {
+        if (token && !checked) {
+                router.push("/dashboard");
+                setChecked(true);
                 return null;
         }
-
         return <>{children}</>;
 };
 
