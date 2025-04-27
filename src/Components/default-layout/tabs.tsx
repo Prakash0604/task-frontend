@@ -72,9 +72,9 @@ const Tabs: React.FC = () => {
                 <MoreHorizontal className="text-black w-6 h-6" />
               </button>
             </DrawerTrigger>
-            <DrawerContent className="h-[50vh] p-4">
+            <DrawerContent className="h-[45vh] p-4 bg-white dark:bg-gray-900">
               <DrawerTitle className="sr-only">Menu Options</DrawerTitle>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-5  gap-3">
                 {menu.map((item, index) => (
                   <Link
                     key={`${item.name}-${index}`}
@@ -82,8 +82,8 @@ const Tabs: React.FC = () => {
                     className="flex items-center p-4 rounded-lg hover:bg-gray-100"
                     onClick={() => setIsDrawerOpen(false)}
                   >
-                    <item.icon className="text-black w-6 h-6 mr-2" />
-                    <span className="text-sm font-medium">{item.name}</span>
+                    <item.icon className="text-black w-6 h-6 mr-2 dark:text-white" />
+                    {/* <span className="text-sm font-medium">{item.name}</span> */}
                   </Link>
                 ))}
               </div>

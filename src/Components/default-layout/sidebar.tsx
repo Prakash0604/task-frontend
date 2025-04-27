@@ -77,7 +77,7 @@ const SidebarComponents = () => {
         </div>
         <span className="font-bold text-2xl  text-black">TaskMandu</span>
       </div>
-      <Container className="grid grid-cols-2 gap-4 h-[40%] w-full">
+      <Container className="grid grid-cols-2 gap-4 h-[40%] w-full mt-4">
         {menu.map((item, index) => (
           <div
             key={`${item.name}-${index}`}
