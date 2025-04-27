@@ -1,3 +1,6 @@
+"use client"
+
+
 import React from "react";
 import Container from "../containers/main-container";
 import {
@@ -12,9 +15,15 @@ import {
   SquareCheckBig,
   SquareUserRound,
   User,
+  Loader2Icon,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import useLogoutStore from "@/store/user-auth/logout-store";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+
+
 interface MenuItem {
   name: string;
   link: string;
@@ -34,7 +43,32 @@ const menu: MenuItem[] = [
   { name: "Help", link: "/help", icon: HelpCircle },
 ];
 
-const Sidebar = () => {
+const SidebarComponents = () => {
+  const router = useRouter()
+
+  const { logout, isLoading, error } = useLogoutStore()
+  const handleLogout = async () => {
+    try {
+      const response = await logout();
+      if (response.status) {
+        toast.success("Logout successful", {
+          description: response.message,
+          style: { backgroundColor: "#ffffff", color: "#4CAF50" },
+        });
+        router.push("/login");
+      } else {
+        toast.error(error || "Logout failed", {
+          description: response.message,
+          style: { backgroundColor: "#ffffff", color: "red" },
+        });
+      }
+    } catch (error) {
+      toast.error("Error!", {
+        description: String(error),
+        style: { backgroundColor: "#ffffff", color: "red" },
+      });
+    }
+  };
   return (
     <Container className="max-h-screen xl:w-[22%] bg-[var(--taskmandu-background)] xl:flex hidden border-r border-gray-200 py-4  px-6 flex-col items-center relative">
       <div className="flex items-center gap-2 cursor-pointer mb-8">
@@ -59,11 +93,13 @@ const Sidebar = () => {
           </div>
         ))}
       </Container>
-      <Button className="bg-[var(--taskmandu-primary)] text-black w-full rounded-md  transition-colors duration-200 ease-in-out absolute bottom-5 text-xl cursor-pointer">
-        Log Out
+      <Button className="bg-[var(--taskmandu-primary)] text-black w-full rounded-md  transition-colors duration-200 ease-in-out absolute bottom-5  text-xl cursor-pointer" onClick={handleLogout}
+        disabled={isLoading}>
+        {isLoading ? <Loader2Icon className="animate-spin" /> : "Logout"}
       </Button>
-    </Container>
+
+    </Container >
   );
 };
 
-export default Sidebar;
+export default SidebarComponents;
