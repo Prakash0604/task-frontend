@@ -3,7 +3,7 @@ import Header from "./header";
 import Container from "../containers/main-container";
 import { ReactNode } from "react";
 import Tabs from "./tabs";
-import SidebarComponents from "@/components/default-layout/sidebar";
+import SidebarComponents from "@/Components/default-layout/sidebar";
 
 const DefaultLayout = ({ children }: { children: ReactNode }) => {
         return (
@@ -16,7 +16,7 @@ const DefaultLayout = ({ children }: { children: ReactNode }) => {
                                                 searchQuery=""
                                                 setSearchQuery={() => { }}
                                         />
-                                        <Container className="w-full pt-20">{children}</Container>
+                                        <Container className="w-full overflow-hidden">{children}</Container>
                                         <Tabs />
                                 </Container>
                         </Container>
