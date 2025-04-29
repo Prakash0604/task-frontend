@@ -1,4 +1,13 @@
 import { Calendar, CheckCircle } from "lucide-react";
+// import {
+//   Dialog,
+//   DialogContent,
+//   DialogHeader,
+//   DialogTitle,
+//   DialogDescription,
+//   DialogFooter,
+// } from "../UI/dialog";
+
 import {
   Dialog,
   DialogContent,
@@ -6,9 +15,10 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/Components/ui/dialog";
-import { Button } from "@/Components/ui/button";
-import { Badge } from "@/Components/ui/badge";
+} from "@/components/ui/dialog";
+
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 import { Task, COLUMNS, getPriorityColor, getAssignee } from "@/lib/type";
 

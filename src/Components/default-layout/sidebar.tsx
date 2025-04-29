@@ -17,7 +17,7 @@ import {
   Loader2Icon,
 } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/Components/ui/button";
+import { Button } from "@/components/ui/button";
 import useLogoutStore from "@/store/user-auth/logout-store";
 import { toast } from "sonner";
 import { useRouter, usePathname } from "next/navigation";

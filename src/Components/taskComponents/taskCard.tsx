@@ -1,6 +1,6 @@
 import { User, Calendar, CheckCircle } from "lucide-react";
 import { DraggableProvided } from "@hello-pangea/dnd";
-import { Badge } from "@/Components/ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { Task, getAssignee, getPriorityColor } from "@/lib/type";
 
 interface TaskCardProps {
