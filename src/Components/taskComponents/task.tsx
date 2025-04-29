@@ -108,10 +108,15 @@ export const KanbanBoard = ({ initialTasks }: KanbanBoardProps) => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 dark:bg-gray-900 dark:text-white">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">TaskMandu</h1>
-        <Button onClick={() => setIsTaskModalOpen(true)}>Add Task</Button>
+        <Button
+          onClick={() => setIsTaskModalOpen(true)}
+          className="bg-[#2596be]"
+        >
+          Add Task
+        </Button>
       </div>
 
       <DragDropContext onDragEnd={handleDragEnd}>
@@ -129,7 +134,7 @@ export const KanbanBoard = ({ initialTasks }: KanbanBoardProps) => {
 
       {/* Modal for AddTaskForm */}
       <Dialog open={isTaskModalOpen} onOpenChange={setIsTaskModalOpen}>
-        <DialogContent>
+        <DialogContent className="bg-white dark:bg-gray-900">
           <DialogHeader>
             <DialogTitle>Add New Task</DialogTitle>
           </DialogHeader>
