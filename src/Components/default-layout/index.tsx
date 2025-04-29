@@ -3,7 +3,7 @@ import Header from "./header";
 import Container from "../containers/main-container";
 import { ReactNode } from "react";
 import Tabs from "./tabs";
-import SidebarComponents from "@/Components/default-layout/sidebar";
+import SidebarComponents from "@/components/default-layout/sidebar";
 
 const DefaultLayout = ({ children }: { children: ReactNode }) => {
   return (

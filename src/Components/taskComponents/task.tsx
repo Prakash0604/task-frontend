@@ -7,8 +7,13 @@ import { Column } from "./taskColumn";
 import { TaskDetailModal } from "./detailsModal";
 import AddTaskForm from "../forms/taskAddForm";
 import { Button } from "../ui/button";
-// import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 import { Task, ColumnId, ALLOWED_TRANSITIONS, COLUMN_ORDER } from "@/lib/type";
 

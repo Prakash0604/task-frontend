@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { cn } from "@/lib/utils"; // Shadcn/UI utility for classNames
+import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
   ListTodo,

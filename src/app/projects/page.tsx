@@ -1,11 +1,11 @@
 "use client";
 
-import DefaultLayout from "@/Components/default-layout";
-import ProjectsTable from "@/Components/tables/project-tables";
-import ProtectedRoute from "@/Components/user-auth/protected-route";
+import DefaultLayout from "@/components/default-layout";
+import ProjectsTable from "@/components/tables/project-tables";
+// import ProtectedRoute from "@/Components/user-auth/protected-route";
 import React from "react";
-import { CardContent } from "@/Components/ui/card";
-import Container from "@/Components/containers/main-container";
+import { CardContent } from "@/components/ui/card";
+import Container from "@/components/containers/main-container";
 const Projects: React.FC = () => {
   return (
     // <ProtectedRoute>

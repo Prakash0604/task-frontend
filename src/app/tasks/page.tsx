@@ -1,6 +1,6 @@
 "use client";
-import DefaultLayout from "@/Components/default-layout";
-import { KanbanBoard } from "@/Components/taskComponents/task";
+import DefaultLayout from "@/components/default-layout";
+import { KanbanBoard } from "@/components/taskComponents/task";
 import { Task } from "@/lib/type";
 
 const initialTasks: Task[] = [
