@@ -8,7 +8,7 @@ import { ModeToggle } from "../theme/toggel";
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   return (
-    <Container className="fixed top-0 w-full bg-black shadow-sm z-50">
+    <Container className="fixed top-0 w-full bg-white shadow-sm z-50">
       <Container className="container mx-auto px-4 py-6">
         <Container className="flex items-center justify-between">
           <Container className="flex items-center space-x-2">

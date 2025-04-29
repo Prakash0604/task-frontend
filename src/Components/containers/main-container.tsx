@@ -1,12 +1,12 @@
 "use client";
 interface ContainerProps {
-        children: React.ReactNode;
-        className?: string;
+  children: React.ReactNode;
+  className?: string;
 }
 
 export default function Container({
-        children,
-        className = "",
+  children,
+  className = "",
 }: ContainerProps) {
-        return <div className={`${className}`}>{children}</div>;
+  return <div className={`${className}`}>{children}</div>;
 }
