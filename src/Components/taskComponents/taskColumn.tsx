@@ -14,7 +14,9 @@ export const Column = ({ columnId, tasks, onTaskClick }: ColumnProps) => {
   return (
     <div className="min-w-full">
       <Card className="h-full">
-        <CardHeader className={`${COLUMNS[columnId].color} rounded-t-lg pb-2`}>
+        <CardHeader
+          className={`${COLUMNS[columnId].color} rounded-t-lg pb-2 dark:bg-gray-800 dark:text-white`}
+        >
           <CardTitle className="text-center text-sm sm:text-base">
             {COLUMNS[columnId].title}
             <Badge className="ml-2 bg-white text-black">{tasks.length}</Badge>

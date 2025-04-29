@@ -6,22 +6,22 @@ import Tabs from "./tabs";
 import SidebarComponents from "@/Components/default-layout/sidebar";
 
 const DefaultLayout = ({ children }: { children: ReactNode }) => {
-        return (
-                <>
-                        <Container className="flex w-screen  min-h-screen">
-                                <SidebarComponents />
-                                <Container className=" w-full flex flex-col relative">
-                                        <Header
-                                                setIsSidebarOpen={() => { }}
-                                                searchQuery=""
-                                                setSearchQuery={() => { }}
-                                        />
-                                        <Container className="w-full overflow-hidden">{children}</Container>
-                                        <Tabs />
-                                </Container>
-                        </Container>
-                </>
-        );
+  return (
+    <>
+      <Container className="flex w-screen  min-h-screen dark:bg-gray-900">
+        <SidebarComponents />
+        <Container className=" w-full flex flex-col relative">
+          <Header
+            setIsSidebarOpen={() => {}}
+            searchQuery=""
+            setSearchQuery={() => {}}
+          />
+          <Container className="w-full overflow-hidden">{children}</Container>
+          <Tabs />
+        </Container>
+      </Container>
+    </>
+  );
 };
 
 export default DefaultLayout;

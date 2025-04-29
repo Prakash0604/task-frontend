@@ -17,17 +17,19 @@ export const TaskCard = ({ task, onClick, provided }: TaskCardProps) => {
       ref={provided.innerRef}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
-      className="bg-white p-3 rounded-md shadow mb-2 border cursor-grab hover:bg-gray-50 transition-colors"
+      className="bg-white p-3 rounded-md shadow mb-2 border cursor-grab hover:bg-gray-50 transition-colors dark:bg-gray-600 dark:text-white dark:border-gray-500 dark:hover:bg-gray-700"
       onClick={() => onClick(task)}
     >
-      <div className="flex justify-between items-start mb-2">
-        <div className="font-medium text-gray-900">{task.title}</div>
+      <div className="flex justify-between items-start mb-2 dark:text-white">
+        <div className="font-medium text-gray-900 dark:text-white">
+          {task.title}
+        </div>
         <Badge className={getPriorityColor(task.priority)}>
           {task.priority}
         </Badge>
       </div>
 
-      <div className="flex flex-wrap gap-2 text-xs text-gray-500">
+      <div className="flex flex-wrap gap-2 text-xs text-gray-500 dark:text-white">
         {assignee && (
           <div className="flex items-center gap-1">
             <User className="h-3 w-3" />
