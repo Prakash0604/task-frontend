@@ -29,15 +29,15 @@ interface MenuItem {
 }
 
 const menu: MenuItem[] = [
-  { name: "Dashboard", link: "/", icon: LayoutDashboard },
+  { name: "Dashboard", link: "/dashboard", icon: LayoutDashboard },
   { name: "My Tasks", link: "/tasks", icon: ListTodo },
   { name: "Projects", link: "/projects", icon: FolderKanban },
   { name: "Goals", link: "/goals", icon: Target },
-  { name: "Calendra", link: "/calendra", icon: Calendar },
-  { name: "Notifications", link: "/notification", icon: Bell },
-  { name: "Client", link: "/client", icon: SquareUserRound },
-  { name: "Users", link: "/user", icon: User },
-  { name: "Settings", link: "/setting", icon: Settings },
+  { name: "Calendar", link: "/calendars", icon: Calendar },
+  { name: "Notifications", link: "/notifications", icon: Bell },
+  { name: "Client", link: "/clients", icon: SquareUserRound },
+  { name: "Users", link: "/users", icon: User },
+  { name: "Settings", link: "/settings", icon: Settings },
   { name: "Help", link: "/help", icon: HelpCircle },
 ];
 
@@ -85,25 +85,22 @@ const SidebarComponents = () => {
           return (
             <div
               key={`${item.name}-${index}`}
-              className={`rounded-md flex items-center justify-center dark:text-white cursor-pointer transition-colors duration-200 ease-in-out ${
-                isActive
-                  ? "bg-gray-200 dark:bg-gray-700"
-                  : "hover:bg-gray-200 dark:hover:bg-gray-700"
-              }`}
+              className={`rounded-md flex items-center justify-center dark:text-white cursor-pointer transition-colors duration-200 ease-in-out ${isActive
+                ? "bg-gray-200 dark:bg-gray-700"
+                : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                }`}
             >
               <Link
                 href={item.link}
                 className="flex items-center flex-col justify-center"
               >
                 <item.icon
-                  className={`${
-                    isActive ? "text-blue-500" : "text-black dark:text-white"
-                  }`}
+                  className={`${isActive ? "text-blue-500" : "text-black dark:text-white"
+                    }`}
                 />
                 <h1
-                  className={`${
-                    isActive ? "text-blue-500" : "text-black dark:text-white"
-                  }`}
+                  className={`${isActive ? "text-blue-500" : "text-black dark:text-white"
+                    }`}
                 >
                   {item.name}
                 </h1>
