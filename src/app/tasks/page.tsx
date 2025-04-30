@@ -2,6 +2,7 @@
 import DefaultLayout from "@/components/default-layout";
 import { KanbanBoard } from "@/components/taskComponents/task";
 import { Task } from "@/lib/type";
+import ProtectedRoute from "@/components/user-auth/protected-route";
 
 const initialTasks: Task[] = [
   {
@@ -65,9 +66,11 @@ const initialTasks: Task[] = [
 export default function Home() {
   return (
     <>
-      <DefaultLayout>
-        <KanbanBoard initialTasks={initialTasks} />;
-      </DefaultLayout>
+      <ProtectedRoute>
+        <DefaultLayout>
+          <KanbanBoard initialTasks={initialTasks} />;
+        </DefaultLayout>
+      </ProtectedRoute>
     </>
   );
 }
