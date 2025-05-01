@@ -1,7 +1,6 @@
-// app/projects/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Edit, Trash2 } from "lucide-react";
 import {
   Table,
@@ -13,8 +12,9 @@ import {
 } from "../ui/table";
 import { Button } from "../ui/button";
 import ProjectDetailsModal from "./projectDetailsModal";
+import EditProjectModal from "./edit-project-modal";
+import useProjectsStore from "@/store/projects-store/get-projects-stores";
 
-// Define type for project data
 interface Project {
   id: number;
   name: string;
@@ -25,75 +25,59 @@ interface Project {
 }
 
 export default function ProjectsTable() {
-  // Sample data
-  const [projects, setProjects] = useState<Project[]>([
-    {
-      id: 1,
-      name: "Website Redesign",
-      assignedPersons: ["Jane Smith", "Robert Chen"],
-      createDate: "2025-04-15",
-      completionDate: "2025-05-30",
-      description: "Complete overhaul of company website with modern design",
-    },
-    {
-      id: 2,
-      name: "Mobile App Development",
-      assignedPersons: ["John Doe", "Emily Wong", "David Miller"],
-      createDate: "2025-04-18",
-      completionDate: null,
-      description:
-        "Build a native mobile app for both iOS and Android platforms",
-    },
-    {
-      id: 3,
-      name: "Database Migration",
-      assignedPersons: ["Sarah Johnson"],
-      createDate: "2025-04-22",
-      completionDate: "2025-06-15",
-      description: "Migrate existing database to new cloud infrastructure",
-    },
-    {
-      id: 4,
-      name: "Marketing Campaign",
-      assignedPersons: ["Michael Brown", "Jessica Lee"],
-      createDate: "2025-04-25",
-      completionDate: null,
-      description:
-        "Develop and execute Q2 marketing campaign across all channels",
-    },
-    {
-      id: 5,
-      name: "Marketing",
-      assignedPersons: ["Michael Brown", "Jessica Lee"],
-      createDate: "2025-04-25",
-      completionDate: null,
-      description:
-        "Develop and execute Q2 marketing campaign across all channels",
-    },
-  ]);
+  const { fetchProjects, deleteProject } = useProjectsStore();
 
-  // State for modal
+  const [projects, setProjects] = useState<Project[]>([]);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [projectToEdit, setProjectToEdit] = useState<Project | null>(null);
 
-  // Handler for row click
+  // Reusable function to load and transform data
+  const loadProjects = useCallback(async () => {
+    const response = await fetchProjects();
+    if (response.success) {
+      const transformed: Project[] = response.data.map((item) => ({
+        id: item.id,
+        name: item.title,
+        assignedPersons: ["N/A"],
+        createDate: item.created_at,
+        completionDate: null,
+        description: item.description,
+      }));
+      setProjects(transformed);
+    }
+  }, [fetchProjects]);
+
+  useEffect(() => {
+    loadProjects();
+  }, [loadProjects]);
+
   const handleRowClick = (project: Project) => {
     setSelectedProject(project);
     setIsModalOpen(true);
   };
 
-  // Handler for edit action
   const handleEdit = (id: number, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent row click handler from firing
-    console.log(`Editing project with ID: ${id}`);
-    // Implement edit functionality here
+    e.stopPropagation();
+    const project = projects.find((p) => p.id === id);
+    if (project) {
+      setProjectToEdit(project);
+      setEditModalOpen(true);
+    }
   };
 
-  // Handler for delete action
-  const handleDelete = (id: number, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent row click handler from firing
-    console.log(`Deleting project with ID: ${id}`);
-    setProjects(projects.filter((project) => project.id !== id));
+  const handleDelete = async (id: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const confirmed = confirm("Are you sure you want to delete this project?");
+    if (!confirmed) return;
+
+    const success = await deleteProject(id);
+    if (success) {
+      setProjects((prev) => prev.filter((project) => project.id !== id));
+    } else {
+      alert("Failed to delete project");
+    }
   };
 
   return (
@@ -115,20 +99,20 @@ export default function ProjectsTable() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {projects.map((project) => (
+                {projects.map((project, index) => (
                   <TableRow
                     key={project.id}
                     className="border-b cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700"
                     onClick={() => handleRowClick(project)}
                   >
                     <TableCell className="font-medium border-r">
-                      {project.id}
+                      {index + 1}
                     </TableCell>
                     <TableCell className="border-r">{project.name}</TableCell>
                     <TableCell className="border-r">
                       <div className="flex flex-col gap-1">
-                        {project.assignedPersons.map((person, index) => (
-                          <span key={index} className="text-sm">
+                        {project.assignedPersons.map((person, idx) => (
+                          <span key={idx} className="text-sm">
                             • {person}
                           </span>
                         ))}
@@ -154,7 +138,6 @@ export default function ProjectsTable() {
                           className="h-8 w-8 p-0"
                         >
                           <Edit className="h-4 w-4" />
-                          <span className="sr-only">Edit</span>
                         </Button>
                         <Button
                           variant="ghost"
@@ -163,7 +146,6 @@ export default function ProjectsTable() {
                           className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50"
                         >
                           <Trash2 className="h-4 w-4" />
-                          <span className="sr-only">Delete</span>
                         </Button>
                       </div>
                     </TableCell>
@@ -175,11 +157,20 @@ export default function ProjectsTable() {
         </div>
       </div>
 
-      {/* Project Details Modal */}
       <ProjectDetailsModal
         project={selectedProject}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+      />
+
+      <EditProjectModal
+        isOpen={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        project={projectToEdit}
+        onUpdateSuccess={() => {
+          setEditModalOpen(false);
+          loadProjects(); // Refetch updated project list
+        }}
       />
     </div>
   );
