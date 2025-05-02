@@ -38,9 +38,9 @@ interface ProjectsState {
         isLoading: boolean;
         error: string | null;
         fetchProjects: () => Promise<ProjectsResponse>;
-  deleteProject: (id: number) => Promise<boolean>;
-  updateProject: (id: number, updatedData: Partial<Project>) => Promise<boolean>;
-  
+        deleteProject: (id: number) => Promise<boolean>;
+        updateProject: (id: number, updatedData: Partial<Project>) => Promise<boolean>;
+
 }
 
 const useProjectsStore = create<ProjectsState>()(
@@ -49,6 +49,7 @@ const useProjectsStore = create<ProjectsState>()(
                 meta: null,
                 isLoading: false,
                 error: null,
+                // get all projects list
                 fetchProjects: async (): Promise<ProjectsResponse> => {
                         set((state) => {
                                 state.isLoading = true;
@@ -107,70 +108,70 @@ const useProjectsStore = create<ProjectsState>()(
                 // delete project if id will be match
                 deleteProject: async (id: number): Promise<boolean> => {
                         try {
-                          const token = getUser();
-                          if (!token) throw new Error('No token found');
-                  
-                          await API.delete(`/projects/${id}`, {
-                            headers: {
-                              Authorization: `Bearer ${token}`,
-                            },
-                          });
-                  
-                          set((state) => {
-                            if (state.projects) {
-                              state.projects = state.projects.filter((project) => project.id !== id);
-                            }
-                          });
-                  
-                          return true;
-                        } catch (error) {
-                          const errorMessage =
-                            (error as AxiosError<{ message?: string }>).response?.data?.message || 'Failed to delete project';
-                  
-                          set((state) => {
-                            state.error = errorMessage;
-                          });
-                  
-                          console.error(errorMessage);
-                          return false;
-                        }
-                      },
+                                const token = getUser();
+                                if (!token) throw new Error('No token found');
 
-                      // Add this function in the store
-        updateProject: async (id, updatedData) => {
-        try {
-          const token = getUser();
-          if (!token) throw new Error("No token found");
-      
-          await API.put(`/projects/${id}`, updatedData, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-      
-          set((state) => {
-            if (state.projects) {
-              const index = state.projects.findIndex((p) => p.id === id);
-              if (index !== -1) {
-                state.projects[index] = { ...state.projects[index], ...updatedData };
-              }
-            }
-          });
-      
-          return true;
-        } catch (error) {
-          const message =
-            (error as AxiosError<{ message?: string }>).response?.data?.message ||
-            "Failed to update project";
-      
-          set((state) => {
-            state.error = message;
-          });
-      
-          console.error(message);
-          return false;
-        }
-      },
+                                await API.delete(`/projects/${id}`, {
+                                        headers: {
+                                                Authorization: `Bearer ${token}`,
+                                        },
+                                });
+
+                                set((state) => {
+                                        if (state.projects) {
+                                                state.projects = state.projects.filter((project) => project.id !== id);
+                                        }
+                                });
+
+                                return true;
+                        } catch (error) {
+                                const errorMessage =
+                                        (error as AxiosError<{ message?: string }>).response?.data?.message || 'Failed to delete project';
+
+                                set((state) => {
+                                        state.error = errorMessage;
+                                });
+
+                                console.error(errorMessage);
+                                return false;
+                        }
+                },
+
+                // update Projects this function in the store
+                updateProject: async (id, updatedData) => {
+                        try {
+                                const token = getUser();
+                                if (!token) throw new Error("No token found");
+
+                                await API.put(`/projects/${id}`, updatedData, {
+                                        headers: {
+                                                Authorization: `Bearer ${token}`,
+                                        },
+                                });
+
+                                set((state) => {
+                                        if (state.projects) {
+                                                const index = state.projects.findIndex((p) => p.id === id);
+                                                if (index !== -1) {
+                                                        state.projects[index] = { ...state.projects[index], ...updatedData };
+                                                }
+                                        }
+                                });
+
+                                return true;
+                        } catch (error) {
+                                const message =
+                                        (error as AxiosError<{ message?: string }>).response?.data?.message ||
+                                        "Failed to update project";
+
+                                set((state) => {
+                                        state.error = message;
+                                });
+
+                                console.error(message);
+                                return false;
+                        }
+                },
         }))
 );
 
