@@ -1,4 +1,3 @@
-// app/components/ProjectDetailsModal.tsx
 "use client";
 
 import {
@@ -11,16 +10,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import { Calendar } from "lucide-react";
-
-// Define the Project type
-interface Project {
-  id: number;
-  name: string;
-  assignedPersons: string[];
-  createDate: string;
-  completionDate: string | null;
-  description: string;
-}
+// import { Project } from "@/types/project";
+import { Project } from "@/lib/type";
 
 interface ProjectDetailsModalProps {
   project: Project | null;
@@ -63,20 +54,6 @@ export default function ProjectDetailsModal({
                   ? new Date(project.completionDate).toLocaleDateString()
                   : "In Progress"}
               </div>
-            </div>
-          </div>
-
-          <div className="grid gap-2">
-            <h3 className="font-semibold">Team Members</h3>
-            <div className="flex flex-wrap gap-2">
-              {project.assignedPersons.map((person, index) => (
-                <span
-                  key={index}
-                  className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs dark:bg-gray-600 dark:text-white"
-                >
-                  {person}
-                </span>
-              ))}
             </div>
           </div>
 

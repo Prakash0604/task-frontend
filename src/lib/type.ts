@@ -12,6 +12,15 @@ export interface Task {
   priority: "low" | "medium" | "high";
 }
 
+export interface Project {
+  id: number;
+  name: string;
+  createDate: string;
+  description: string;
+  assignedPersons?: string[];
+  completionDate?: string | null;
+}
+
 export const COLUMNS: Record<ColumnId, { title: string; color: string }> = {
   backlog: { title: "Backlog",color: "bg-gray-200 dark:bg-gray-700" },
   todo: { title: "To-Do", color: "bg-blue-200" },
