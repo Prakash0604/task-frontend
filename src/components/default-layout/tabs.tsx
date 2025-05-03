@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
@@ -14,13 +14,14 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 import Link from "next/link";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerTrigger,
-  DrawerTitle,
-} from "../ui/drawer";
 import Container from "../containers/main-container";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu"; // ✅ make sure this import is correct for your setup
+import { Button } from "../ui/button";
 
 interface MenuItem {
   name: string;
@@ -42,7 +43,7 @@ const menu: MenuItem[] = [
 ];
 
 const Tabs: React.FC = () => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
 
   return (
     <Container
@@ -52,46 +53,56 @@ const Tabs: React.FC = () => {
     >
       <Container
         className={cn(
-          "w-full p-4 rounded-full flex items-center border border-gray-200 bg-white xl:hidden"
+          "w-full p-4 rounded-full relative border border-gray-300 dark:border-gray-700  flex items-center xl:hidden",
         )}
       >
-        {/* For small devices (sm and below), show limited tabs and drawer */}
-        <div className="flex w-full md:hidden">
+        {/* For small devices (sm and below) */}
+        <div className="flex w-full md:hidden justify-between items-center">
           {menu.slice(0, 3).map((item, index) => (
             <Link
               key={`${item.name}-${index}`}
               href={item.link}
               className="flex flex-col w-full items-center justify-center"
             >
-              <item.icon className="text-black w-6 h-6" />
+              <item.icon
+                className={cn(
+                  "w-6 h-6 text-gray-700 dark:text-[#F2F5F7]",
+                )}
+              />
             </Link>
           ))}
-          <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-            <DrawerTrigger asChild>
-              <button className="flex flex-col w-full items-center justify-center">
-                <MoreHorizontal className="text-black w-6 h-6" />
-              </button>
-            </DrawerTrigger>
-            <DrawerContent className="h-[45vh] p-4 bg-white dark:bg-gray-900">
-              <DrawerTitle className="sr-only">Menu Options</DrawerTitle>
-              <div className="grid grid-cols-5  gap-3">
-                {menu.map((item, index) => (
-                  <Link
-                    key={`${item.name}-${index}`}
-                    href={item.link}
-                    className="flex items-center p-4 rounded-lg hover:bg-gray-100"
-                    onClick={() => setIsDrawerOpen(false)}
-                  >
-                    <item.icon className="text-black w-6 h-6 mr-2 dark:text-white" />
-                    {/* <span className="text-sm font-medium">{item.name}</span> */}
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant={'trans'} className="flex flex-col  items-center justify-center">
+                <MoreHorizontal
+                  className={cn(
+                    "w-6 h-6 text-gray-700 dark:text-[#F2F5F7]",
+
+                  )}
+                />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent side="top" className={`grid  mb-8 mr-8 border-gray-300  dark:border-gray-700   grid-cols-1 gap-2 p-2 border rounded-lg `} >
+              {menu.slice(3).map((item, index) => (
+                <DropdownMenuItem key={index} asChild>
+                  <Link href={item.link} className="flex items-center gap-2">
+                    <item.icon
+                      className={cn(
+                        "w-6 h-6 text-gray-700 dark:text-[#F2F5F7]",
+                      )}
+                    />
+                    <span className={cn(
+                      "text-sm text-gray-700 dark:text-[#F2F5F7]",
+                    )}>{item.name}</span>
                   </Link>
-                ))}
-              </div>
-            </DrawerContent>
-          </Drawer>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
-        {/* For medium devices and above (md and up), show full tabs */}
+        {/* For medium devices and above */}
         <div className="hidden md:flex w-full justify-around xl:hidden">
           {menu.map((item, index) => (
             <Link
@@ -99,8 +110,11 @@ const Tabs: React.FC = () => {
               href={item.link}
               className="flex items-center p-2 rounded-lg hover:bg-gray-100"
             >
-              <item.icon className="text-black w-6 h-6 mr-2" />
-              {/* <span className="text-sm font-medium">{item.name}</span> */}
+              <item.icon
+                className={cn(
+                  "w-6 h-6 text-gray-700 dark:text-[#F2F5F7]",
+                )}
+              />
             </Link>
           ))}
         </div>
