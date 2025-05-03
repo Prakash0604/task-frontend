@@ -1,7 +1,8 @@
 "use client";
 
 import DefaultLayout from "@/components/default-layout";
-import ProjectsTable from "@/components/tables/project-tables";
+// import ProjectsTable from "@/components/tables/project-tables";
+import { ProjectsDataTable } from "@/components/tables/project-tables";
 import ProtectedRoute from "@/components/user-auth/protected-route";
 import React from "react";
 import { CardContent } from "@/components/ui/card";
@@ -23,7 +24,7 @@ const Projects: React.FC = () => {
 
             {/* <Card> */}
             <CardContent>
-              <ProjectsTable />
+              <ProjectsDataTable />
             </CardContent>
             {/* </Card> */}
           </Container>

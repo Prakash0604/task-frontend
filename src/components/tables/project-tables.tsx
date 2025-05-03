@@ -1,7 +1,36 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { Edit, Trash2 } from "lucide-react";
+import * as React from "react";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+  VisibilityState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import {
+  ArrowUpDown,
+  ChevronDown,
+  Edit,
+  Trash2,
+  MoreHorizontal,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -9,64 +38,184 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../ui/table";
-import { Button } from "../ui/button";
+} from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton"; // Import Skeleton from Shadcn
+import useProjectsStore from "@/store/projects-store/get-projects-stores";
 import ProjectDetailsModal from "./projectDetailsModal";
 import EditProjectModal from "./edit-project-modal";
-import useProjectsStore from "@/store/projects-store/get-projects-stores";
+import { Project } from "@/lib/type";
 
-interface Project {
-  id: number;
-  name: string;
-  assignedPersons: string[];
-  createDate: string;
-  completionDate: string | null;
-  description: string;
-}
+export const columns: ColumnDef<Project>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    id: "serial",
+    header: "S.N",
+    cell: ({ row }) => <div>{row.index + 1}</div>,
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "name",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Project Name
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => <div>{row.getValue("name")}</div>,
+  },
+  {
+    accessorKey: "createDate",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Create Date
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => (
+      <div>
+        {row.getValue("createDate")
+          ? new Date(row.getValue("createDate")).toLocaleDateString()
+          : "N/A"}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "description",
+    header: "Description",
+    cell: ({ row }) => (
+      <div className="max-w-xs truncate">{row.getValue("description")}</div>
+    ),
+  },
+  {
+    id: "actions",
+    header: "Actions",
+    enableHiding: false,
+    cell: ({ row, table }) => {
+      const project = row.original;
+      const { handleEdit, handleDelete } = table.options.meta as {
+        handleEdit: (id: number, e: React.MouseEvent) => void;
+        handleDelete: (id: number, e: React.MouseEvent) => void;
+      };
 
-export default function ProjectsTable() {
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            className="dark:bg-gray-950 dark:text-white"
+          >
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem onClick={(e) => handleEdit(project.id, e)}>
+              <Edit className="mr-2 h-4 w-4" /> Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={(e) => handleDelete(project.id, e)}
+              className="text-red-500"
+            >
+              <Trash2 className="mr-2 h-4 w-4" /> Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
+  },
+];
+
+export function ProjectsDataTable() {
   const { fetchProjects, deleteProject } = useProjectsStore();
+  const [data, setData] = React.useState<Project[]>([]);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
+  const [selectedProject, setSelectedProject] = React.useState<Project | null>(
+    null
+  );
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [editModalOpen, setEditModalOpen] = React.useState(false);
+  const [projectToEdit, setProjectToEdit] = React.useState<Project | null>(
+    null
+  );
 
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editModalOpen, setEditModalOpen] = useState(false);
-  const [projectToEdit, setProjectToEdit] = useState<Project | null>(null);
-
-  // Reusable function to load and transform data
-  const loadProjects = useCallback(async () => {
-    const response = await fetchProjects();
-    if (response.success) {
-      const transformed: Project[] = response.data.map((item) => ({
-        id: item.id,
-        name: item.title,
-        assignedPersons: ["N/A"],
-        createDate: item.created_at,
-        completionDate: null,
-        description: item.description,
-      }));
-      setProjects(transformed);
-    }
+  // Fetch projects from API
+  React.useEffect(() => {
+    const loadProjects = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetchProjects();
+        if (response.success) {
+          const transformed: Project[] = response.data.map((item) => ({
+            id: item.id,
+            name: item.title,
+            createDate: item.created_at,
+            description: item.description || "No description available",
+          }));
+          setData(transformed);
+        } else {
+          alert("Failed to fetch projects");
+        }
+      } catch {
+        alert("An error occurred while fetching projects");
+      }
+      setIsLoading(false);
+    };
+    loadProjects();
   }, [fetchProjects]);
 
-  useEffect(() => {
-    loadProjects();
-  }, [loadProjects]);
-
+  // Handle row click to open details modal
   const handleRowClick = (project: Project) => {
     setSelectedProject(project);
     setIsModalOpen(true);
   };
 
+  // Handle edit action
   const handleEdit = (id: number, e: React.MouseEvent) => {
     e.stopPropagation();
-    const project = projects.find((p) => p.id === id);
+    const project = data.find((p) => p.id === id);
     if (project) {
       setProjectToEdit(project);
       setEditModalOpen(true);
     }
   };
 
+  // Handle delete action
   const handleDelete = async (id: number, e: React.MouseEvent) => {
     e.stopPropagation();
     const confirmed = confirm("Are you sure you want to delete this project?");
@@ -74,86 +223,178 @@ export default function ProjectsTable() {
 
     const success = await deleteProject(id);
     if (success) {
-      setProjects((prev) => prev.filter((project) => project.id !== id));
+      setData((prev) => prev.filter((project) => project.id !== id));
     } else {
       alert("Failed to delete project");
     }
   };
 
+  const table = useReactTable({
+    data,
+    columns,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+    meta: {
+      handleEdit,
+      handleDelete,
+    },
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+    },
+  });
+
   return (
-    <div className="container mx-auto py-6">
+    <div className="w-full container mx-auto py-6">
       <h1 className="text-2xl font-bold mb-2">Projects Management</h1>
-      <div className="overflow-x-auto">
-        <div className="inline-block min-w-full align-middle">
-          <div className="overflow-hidden border rounded-lg">
-            <Table className="min-w-full divide-y divide-gray-200">
-              <TableHeader>
-                <TableRow className="text-center">
-                  <TableHead className="w-16 border-r">S.N</TableHead>
-                  <TableHead className="border-r">Project Name</TableHead>
-                  <TableHead className="border-r">Assigned Persons</TableHead>
-                  <TableHead className="border-r">Create Date</TableHead>
-                  <TableHead className="border-r">Completion Date</TableHead>
-                  <TableHead className="border-r">Description</TableHead>
-                  <TableHead className="w-24">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {projects.map((project, index) => (
-                  <TableRow
-                    key={project.id}
-                    className="border-b cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700"
-                    onClick={() => handleRowClick(project)}
-                  >
-                    <TableCell className="font-medium border-r">
-                      {index + 1}
-                    </TableCell>
-                    <TableCell className="border-r">{project.name}</TableCell>
+      <div className="flex items-center py-4">
+        <Input
+          placeholder="Filter project names..."
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("name")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            asChild
+            className="dark:text-white dark:bg-gray-950"
+          >
+            <Button
+              variant="outline"
+              className="ml-auto bg-white dark:bg-gray-800"
+            >
+              Hide Columns
+              <ChevronDown className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            className="dark:bg-gray-950 dark:text-white"
+          >
+            {table
+              .getAllColumns()
+              .filter((column) => column.getCanHide())
+              .map((column) => (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize dark:text-white dark:bg-gray-950"
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                >
+                  {column.id}
+                </DropdownMenuCheckboxItem>
+              ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id} className="border-r text-center">
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {isLoading ? (
+              // Skeleton loader for loading state
+              Array(5) // Show 5 skeleton rows
+                .fill(0)
+                .map((_, index) => (
+                  <TableRow key={index}>
                     <TableCell className="border-r">
-                      <div className="flex flex-col gap-1">
-                        {project.assignedPersons.map((person, idx) => (
-                          <span key={idx} className="text-sm">
-                            • {person}
-                          </span>
-                        ))}
-                      </div>
+                      <Skeleton className="h-6 w-6" />
                     </TableCell>
                     <TableCell className="border-r">
-                      {new Date(project.createDate).toLocaleDateString()}
+                      <Skeleton className="h-6 w-12" />
                     </TableCell>
                     <TableCell className="border-r">
-                      {project.completionDate
-                        ? new Date(project.completionDate).toLocaleDateString()
-                        : "In Progress"}
+                      <Skeleton className="h-6 w-32" />
                     </TableCell>
-                    <TableCell className="max-w-xs truncate border-r">
-                      {project.description}
+                    <TableCell className="border-r">
+                      <Skeleton className="h-6 w-24" />
                     </TableCell>
-                    <TableCell>
-                      <div className="flex justify-center gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={(e) => handleEdit(project.id, e)}
-                          className="h-8 w-8 p-0"
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={(e) => handleDelete(project.id, e)}
-                          className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
+                    <TableCell className="border-r">
+                      <Skeleton className="h-6 w-48" />
+                    </TableCell>
+                    <TableCell className="border-r">
+                      <Skeleton className="h-6 w-8" />
                     </TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+                ))
+            ) : table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  onClick={() => handleRowClick(row.original)}
+                  className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="border-r">
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No projects found.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+      <div className="flex items-center justify-end space-x-2 py-4">
+        <div className="flex-1 text-sm text-muted-foreground">
+          {table.getFilteredSelectedRowModel().rows.length} of{" "}
+          {table.getFilteredRowModel().rows.length} row(s) selected.
+        </div>
+        <div className="space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+          </Button>
         </div>
       </div>
 
@@ -169,7 +410,25 @@ export default function ProjectsTable() {
         project={projectToEdit}
         onUpdateSuccess={() => {
           setEditModalOpen(false);
-          loadProjects(); // Refetch updated project list
+          const loadProjects = async () => {
+            setIsLoading(true);
+            try {
+              const response = await fetchProjects();
+              if (response.success) {
+                const transformed: Project[] = response.data.map((item) => ({
+                  id: item.id,
+                  name: item.title,
+                  createDate: item.created_at,
+                  description: item.description || "No description available",
+                }));
+                setData(transformed);
+              }
+            } catch {
+              alert("An error occurred while fetching projects");
+            }
+            setIsLoading(false);
+          };
+          loadProjects();
         }}
       />
     </div>
