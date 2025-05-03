@@ -86,8 +86,8 @@ const SidebarComponents = () => {
             <div
               key={`${item.name}-${index}`}
               className={`rounded-md flex items-center justify-center dark:text-white cursor-pointer transition-colors duration-200 ease-in-out ${isActive
-                ? "bg-gray-200 dark:bg-gray-700"
-                : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                ? ""
+                : ""
                 }`}
             >
               <Link
@@ -95,11 +95,11 @@ const SidebarComponents = () => {
                 className="flex items-center flex-col justify-center"
               >
                 <item.icon
-                  className={`${isActive ? "text-blue-500" : "text-black dark:text-white"
+                  className={`${isActive ? "text-[var(--taskmandu-primary)]" : "text-black dark:text-white"
                     }`}
                 />
                 <h1
-                  className={`${isActive ? "text-blue-500" : "text-black dark:text-white"
+                  className={`${isActive ? "text-[var(--taskmandu-primary)]" : "text-black dark:text-white"
                     }`}
                 >
                   {item.name}
@@ -109,13 +109,15 @@ const SidebarComponents = () => {
           );
         })}
       </Container>
-      <Button
-        className="bg-[var(--taskmandu-primary)] text-black w-full rounded-md transition-colors duration-200 ease-in-out absolute bottom-5 text-xl cursor-pointer"
-        onClick={handleLogout}
-        disabled={isLoading}
-      >
-        {isLoading ? <Loader2Icon className="animate-spin" /> : "Logout"}
-      </Button>
+      <Container className="flex justify-center w-full absolute bottom-5 px-12">
+        <Button
+          className="bg-[var(--taskmandu-primary)]   rounded-md transition-colors duration-200 ease-in-out  text-sm cursor-pointer text-white font-medium"
+          onClick={handleLogout}
+          disabled={isLoading}
+        >
+          {isLoading ? <Loader2Icon className="animate-spin" /> : "Logout"}
+        </Button>
+      </Container>
     </Container>
   );
 };

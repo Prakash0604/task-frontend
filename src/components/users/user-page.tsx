@@ -36,6 +36,8 @@ import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
 import useUsersStore from "@/store/user-store/get-user-store"
 import { Skeleton } from "../ui/skeleton"
 import { formatDateToReadable } from "@/utlis"
+import Container from "../containers/main-container"
+import NoDataExample from "../no-data/no-data"
 
 type User = {
         id: number
@@ -159,19 +161,19 @@ export default function UserList() {
         if (isLoading) return <Skeleton className="h-screen w-full" />
 
         return (
-                <div className="w-full bg-white">
-                        <div className="flex items-center py-4">
+                <Container className="w-full  lg:px-12 px-8">
+                        <Container className="flex items-center py-4">
                                 <Input
                                         placeholder="Filter by name..."
                                         value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
                                         onChange={(e) =>
                                                 table.getColumn("name")?.setFilterValue(e.target.value)
                                         }
-                                        className="max-w-sm"
+                                        className="max-w-sm  border border-gray-400/80 dark:border-gray-700 placeholder:text-gray-500 dark:placeholder:text-gray-300 text-gray-600 dark:text-gray-200 focus:ring-0 focus:ring-[var(--taskmandu-primary)] "
                                 />
                                 <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
-                                                <Button variant="outline" className="ml-auto">
+                                                <Button variant="outline" className="ml-auto border border-gray-400/80 dark:border-gray-700 text-gray-600 dark:text-gray-200 text-sm font-semibold">
                                                         Columns <ChevronDown className="ml-2 h-4 w-4" />
                                                 </Button>
                                         </DropdownMenuTrigger>
@@ -190,12 +192,12 @@ export default function UserList() {
                                                         ))}
                                         </DropdownMenuContent>
                                 </DropdownMenu>
-                        </div>
-                        <div className="rounded-md border">
+                        </Container>
+                        <Container className="rounded-sm border border-gray-400/50 dark:border-gray-700">
                                 <Table>
-                                        <TableHeader>
+                                        <TableHeader className="text-gray-600 dark:text-gray-300 border-b border-gray-400/50 dark:border-gray-700">
                                                 {table.getHeaderGroups().map((headerGroup) => (
-                                                        <TableRow key={headerGroup.id}>
+                                                        <TableRow key={headerGroup.id} className="border-b border-gray-400/50 dark:border-gray-700">
                                                                 {headerGroup.headers.map((header) => (
                                                                         <TableHead key={header.id}>
                                                                                 {header.isPlaceholder
@@ -212,9 +214,9 @@ export default function UserList() {
                                         <TableBody>
                                                 {table.getRowModel().rows.length ? (
                                                         table.getRowModel().rows.map((row) => (
-                                                                <TableRow key={row.id}>
+                                                                <TableRow key={row.id} className="text-gray-600 dark:text-gray-300 font-normal">
                                                                         {row.getVisibleCells().map((cell) => (
-                                                                                <TableCell key={cell.id}>
+                                                                                <TableCell key={cell.id} className="border-b border-gray-400/50 dark:border-gray-700">
                                                                                         {flexRender(
                                                                                                 cell.column.columnDef.cell,
                                                                                                 cell.getContext()
@@ -225,25 +227,22 @@ export default function UserList() {
                                                         ))
                                                 ) : (
                                                         <TableRow>
-                                                                <TableCell colSpan={columns.length} className="text-center py-8">
-                                                                        No results.
+                                                                <TableCell colSpan={columns.length} className="text-center text-white py-8">
+                                                                        <NoDataExample />
                                                                 </TableCell>
                                                         </TableRow>
                                                 )}
                                         </TableBody>
                                 </Table>
-                        </div>
-                        <div className="flex items-center justify-end space-x-2 py-4">
-                                <div className="flex-1 text-sm text-muted-foreground">
-                                        {table.getFilteredSelectedRowModel().rows.length} of{" "}
-                                        {table.getFilteredRowModel().rows.length} row(s) selected.
-                                </div>
-                                <div className="space-x-2">
+                        </Container>
+                        <Container className="flex items-center justify-end space-x-2 py-4">
+                                <Container className="space-x-2">
                                         <Button
                                                 variant="outline"
                                                 size="sm"
                                                 onClick={() => table.previousPage()}
                                                 disabled={!table.getCanPreviousPage()}
+                                                className="border border-gray-400/80 dark:border-gray-700 text-gray-900 dark:text-gray-300"
                                         >
                                                 Previous
                                         </Button>
@@ -252,11 +251,12 @@ export default function UserList() {
                                                 size="sm"
                                                 onClick={() => table.nextPage()}
                                                 disabled={!table.getCanNextPage()}
+                                                className="border border-gray-400/80 dark:border-gray-700 text-gray-900 dark:text-gray-300"
                                         >
                                                 Next
                                         </Button>
-                                </div>
-                        </div>
-                </div>
+                                </Container>
+                        </Container>
+                </Container>
         )
 }
