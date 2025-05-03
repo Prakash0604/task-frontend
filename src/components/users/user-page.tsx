@@ -18,10 +18,9 @@ import { Input } from "@/components/ui/input"
 import {
         Table,
         TableHeader,
-        TableBody,
+
         TableRow,
         TableHead,
-        TableCell,
 } from "@/components/ui/table"
 import {
         DropdownMenu,
@@ -36,8 +35,8 @@ import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
 import useUsersStore from "@/store/user-store/get-user-store"
 import { Skeleton } from "../ui/skeleton"
 import { formatDateToReadable } from "@/utlis"
-import Container from "../containers/main-container"
 import NoDataExample from "../no-data/no-data"
+import { motion, AnimatePresence } from "framer-motion"
 
 type User = {
         id: number
@@ -153,26 +152,73 @@ export default function UserList() {
                 },
         })
 
+        // Animation variants
+        const containerVariants = {
+                hidden: { opacity: 0 },
+                show: {
+                        opacity: 1,
+                        transition: {
+                                staggerChildren: 0.05
+                        }
+                }
+        }
+
+        const itemVariants = {
+                hidden: { opacity: 0, y: 20 },
+                show: { opacity: 1, y: 0 }
+        }
+
+        const tableContainerVariants = {
+                hidden: { opacity: 0, scale: 0.98 },
+                show: {
+                        opacity: 1,
+                        scale: 1,
+                        transition: {
+                                duration: 0.3,
+                                ease: "easeOut"
+                        }
+                }
+        }
+
+        // Animation for filtering/sorting
+        const tableBodyVariants = {
+                hidden: { opacity: 0 },
+                show: {
+                        opacity: 1,
+                        transition: {
+                                staggerChildren: 0.05
+                        }
+                }
+        }
+
         if (isLoading) return <Skeleton className="h-screen w-full" />
 
         return (
-                <Container className="w-full  lg:px-12 px-8">
-                        <Container className="flex items-center py-4">
+                <motion.div
+                        initial="hidden"
+                        animate="show"
+                        variants={containerVariants}
+                        className="w-full lg:px-12 px-8"
+                >
+                        <motion.div
+                                variants={itemVariants}
+                                className="flex items-center py-4"
+                        >
                                 <Input
                                         placeholder="Filter by name..."
                                         value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
                                         onChange={(e) =>
                                                 table.getColumn("name")?.setFilterValue(e.target.value)
                                         }
-                                        className="max-w-sm  border border-gray-400/80 dark:border-gray-700 placeholder:text-gray-500 dark:placeholder:text-gray-300 text-gray-600 dark:text-gray-200 focus:ring-0 focus:ring-[var(--taskmandu-primary)] shadow-md dark:shadow-blue-400"
+                                        className="max-w-sm border border-gray-400/80 dark:border-gray-700 placeholder:text-gray-500 dark:placeholder:text-gray-300 text-gray-600 dark:text-gray-200 focus:ring-0 focus:ring-[var(--taskmandu-primary)] "
                                 />
                                 <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
-                                                <Button variant="outline" className="ml-auto shadow-lg dark:shadow-blue-400 border border-gray-400/80 dark:border-gray-700 text-gray-600 dark:text-gray-200 text-sm font-semibold ">
+                                                <Button variant="outline" className="ml-auto border border-gray-400/80 dark:border-gray-700 text-gray-600 dark:text-gray-200 text-sm font-semibold ">
                                                         Columns <ChevronDown className="ml-2 h-4 w-4" />
                                                 </Button>
                                         </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end" className="bg-gray-300 dark:bg-gray-900 text-gray-700 dark:text-gray-200 border border-gray-400/80 dark:border-gray-700 shadow-lg dark:shadow-blue-400">
+                                        <DropdownMenuContent align="end" className="bg-gray-300 dark:bg-gray-900 text-gray-700 dark:text-gray-200 border border-gray-400/80 dark:border-gray-700 ">
                                                 {table
                                                         .getAllColumns()
                                                         .filter((col) => col.getCanHide())
@@ -187,8 +233,11 @@ export default function UserList() {
                                                         ))}
                                         </DropdownMenuContent>
                                 </DropdownMenu>
-                        </Container>
-                        <Container className="rounded-sm border border-gray-400/50 dark:border-gray-700 shadow-lg dark:shadow-blue-400">
+                        </motion.div>
+                        <motion.div
+                                variants={tableContainerVariants}
+                                className="rounded-sm border border-gray-400/50 dark:border-gray-700 "
+                        >
                                 <Table>
                                         <TableHeader className="text-gray-600 dark:text-gray-300 border-b border-gray-400/50 dark:border-gray-700">
                                                 {table.getHeaderGroups().map((headerGroup) => (
@@ -206,38 +255,65 @@ export default function UserList() {
                                                         </TableRow>
                                                 ))}
                                         </TableHeader>
-                                        <TableBody>
-                                                {table.getRowModel().rows.length ? (
-                                                        table.getRowModel().rows.map((row) => (
-                                                                <TableRow key={row.id} className="text-gray-600 dark:text-gray-300 font-normal">
-                                                                        {row.getVisibleCells().map((cell) => (
-                                                                                <TableCell key={cell.id} className="border-b border-gray-400/50 dark:border-gray-700">
-                                                                                        {flexRender(
-                                                                                                cell.column.columnDef.cell,
-                                                                                                cell.getContext()
-                                                                                        )}
-                                                                                </TableCell>
-                                                                        ))}
-                                                                </TableRow>
-                                                        ))
-                                                ) : (
-                                                        <TableRow>
-                                                                <TableCell colSpan={columns.length} className="text-center text-white py-8 shadow-lg dark:shadow-blue-400">
-                                                                        <NoDataExample />
-                                                                </TableCell>
-                                                        </TableRow>
-                                                )}
-                                        </TableBody>
+                                        <AnimatePresence mode="wait">
+                                                <motion.tbody
+                                                        variants={tableBodyVariants}
+                                                        initial="hidden"
+                                                        animate="show"
+                                                        key={table.getRowModel().rows.length + sorting.length + JSON.stringify(columnFilters)}
+                                                >
+                                                        {table.getRowModel().rows.length ? (
+                                                                table.getRowModel().rows.map((row, index) => (
+                                                                        <motion.tr
+                                                                                key={row.id}
+                                                                                variants={itemVariants}
+                                                                                className="text-gray-600 dark:text-gray-300 font-normal"
+                                                                                custom={index}
+                                                                                exit={{ opacity: 0, y: -10 }}
+                                                                        >
+                                                                                {row.getVisibleCells().map((cell) => (
+                                                                                        <motion.td
+                                                                                                key={cell.id}
+                                                                                                className="py-4 px-4 border-b border-gray-400/50 dark:border-gray-700"
+                                                                                                whileHover={{
+                                                                                                        backgroundColor: "rgba(0,0,0,0.02)",
+                                                                                                        transition: { duration: 0.1 }
+                                                                                                }}
+                                                                                        >
+                                                                                                {flexRender(
+                                                                                                        cell.column.columnDef.cell,
+                                                                                                        cell.getContext()
+                                                                                                )}
+                                                                                        </motion.td>
+                                                                                ))}
+                                                                        </motion.tr>
+                                                                ))
+                                                        ) : (
+                                                                <motion.tr
+                                                                        initial={{ opacity: 0 }}
+                                                                        animate={{ opacity: 1 }}
+                                                                        exit={{ opacity: 0 }}
+                                                                >
+                                                                        <motion.td colSpan={columns.length} className="text-center text-white py-8 shadow-lg dark:shadow-blue-400">
+                                                                                <NoDataExample />
+                                                                        </motion.td>
+                                                                </motion.tr>
+                                                        )}
+                                                </motion.tbody>
+                                        </AnimatePresence>
                                 </Table>
-                        </Container>
-                        <Container className="flex items-center justify-end space-x-2 py-4 rounded-b-md px-4 dark:shadow-lg dark:shadow-blue-400">
-                                <Container className="space-x-4">
+                        </motion.div>
+                        <motion.div
+                                variants={itemVariants}
+                                className="flex items-center justify-end space-x-2 py-4 rounded-b-md px-4  "
+                        >
+                                <div className="space-x-4">
                                         <Button
                                                 variant="outline"
                                                 size="sm"
                                                 onClick={() => table.previousPage()}
                                                 disabled={!table.getCanPreviousPage()}
-                                                className="border border-gray-400/80 shadow-lg dark:shadow-blue-400 dark:border-gray-700 text-gray-900 dark:text-gray-300 cursor-pointer"
+                                                className="border border-gray-400/80 dark:border-gray-700 text-gray-900 dark:text-gray-300 cursor-pointer"
                                         >
                                                 Previous
                                         </Button>
@@ -246,12 +322,12 @@ export default function UserList() {
                                                 size="sm"
                                                 onClick={() => table.nextPage()}
                                                 disabled={!table.getCanNextPage()}
-                                                className="border border-gray-400/80 shadow-lg dark:shadow-blue-400 dark:border-gray-700 text-gray-900 dark:text-gray-300 cursor-pointer"
+                                                className="border border-gray-400/80  dark:border-gray-700 text-gray-900 dark:text-gray-300 cursor-pointer"
                                         >
                                                 Next
                                         </Button>
-                                </Container>
-                        </Container>
-                </Container>
+                                </div>
+                        </motion.div>
+                </motion.div>
         )
 }
