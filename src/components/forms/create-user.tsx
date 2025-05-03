@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
         Form,
@@ -16,15 +16,15 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { FileUpload } from "./file-upload";
 import { userSchema } from "@/utlis";
-import useCreateUserStore from "@/store/user-store/create-user-store";
-import useUsersStore from "@/store/user-store/get-user-store";
-import { toast } from "sonner";
+// import useCreateUserStore from "@/store/user-store/create-user-store";
+// import useUsersStore from "@/store/user-store/get-user-store";
+// import { toast } from "sonner";
 
 type FormValues = z.infer<typeof userSchema>;
 
 const CreateUser = () => {
-        const { createUser, isCreating, error: errMsg, successMessage } = useCreateUserStore();
-        const { fetchUsers } = useUsersStore();
+        // const { createUser, isCreating, error: errMsg, successMessage } = useCreateUserStore();
+        // const { fetchUsers } = useUsersStore();
         const [showPassword, setShowPassword] = React.useState<boolean>(false);
         const form = useForm({
                 resolver: zodResolver(userSchema),
@@ -56,18 +56,18 @@ const CreateUser = () => {
                         console.log(`FormData ${key}:`, value);
                 }
 
-                try {
-                        const response = await createUser(formData);
-                        if (response.status) {
-                                toast.success(successMessage || "User created successfully");
-                                await fetchUsers();
-                                form.reset();
-                        } else {
-                                toast.error(response.message);
-                        }
-                } catch (error) {
-                        toast.error(errMsg || "Error creating user");
-                }
+                // try {
+                //         const response = await createUser(formData);
+                //         if (response.status) {
+                //                 toast.success(successMessage || "User created successfully");
+                //                 await fetchUsers();
+                //                 form.reset();
+                //         } else {
+                //                 toast.error(response.message);
+                //         }
+                // } catch (error) {
+                //         toast.error(errMsg || "Error creating user");
+                // }
         };
 
         return (
@@ -185,7 +185,7 @@ const CreateUser = () => {
                                         />
                                 </div>
                                 <Button variant="default" type="submit" className="w-full">
-                                        {isCreating ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create User"}
+                                        {/* {isCreating ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create User"} */}
                                 </Button>
                         </form>
                 </Form>

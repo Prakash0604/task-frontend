@@ -50,8 +50,8 @@ const LoginForm = () => {
   };
 
   return (
-    <Container className="flex min-h-screen md:w-[35%] w-[100%] items-center  bg-gray-100   px-8">
-      <Container className="flex items-center justify-center p-8 bg-white shadow-lg rounded-lg w-full border  border-gray-200">
+    <Container className="flex min-h-screen md:w-[35%] lg:w-[50%] w-[100%] items-center  bg-gray-100   px-8">
+      <Container className="flex items-center justify-center p-8  shadow-2xl shadow-blue-300 dark:shadow-blue-400 rounded-lg w-full border border-gray-200 dark:border-gray-800">
         <Container className="w-full space-y-6">
           <h2 className="text-2xl font-bold text-center text-[var(--taskmandu-primary)]">
             Welcome to Taskmandu
@@ -62,7 +62,7 @@ const LoginForm = () => {
             <Container>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-taskmandu-primary-text"
+                className="block text-sm font-medium text-gray-700 dark:text-[var(--taskmandu-secondary-text)]"
               >
                 Email
               </label>
@@ -71,7 +71,8 @@ const LoginForm = () => {
                 type="email"
                 placeholder="Enter your email"
                 {...register("email")}
-                className="mt-2 p-2 w-full border border-gray-300 rounded-md"
+                className="mt-2 p-2 w-full border border-gray-300 rounded-md dark:border-gray-700 text-gray-700 dark:text-gray-200
+                focus:ring-1 focus:ring-[var(--taskmandu-primary)]"
               />
               {errors.email && (
                 <p className="text-red-500 text-sm">{errors.email.message}</p>
@@ -82,7 +83,7 @@ const LoginForm = () => {
             <Container>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-[var(--taskmandu-primary-text)]"
+                className="block text-sm font-medium text-gray-700 dark:text-[var(--taskmandu-secondary-text)]"
               >
                 Password
               </label>
@@ -92,7 +93,8 @@ const LoginForm = () => {
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
                   {...register("password")}
-                  className="mt-2 p-2 w-full border border-gray-300 rounded-md"
+                  className="mt-2 p-2 w-full border border-gray-300 rounded-md dark:border-gray-700 text-gray-700 dark:text-gray-200
+                  focus:ring-1 focus:ring-[var(--taskmandu-primary)]"
                 />
                 <Button
                   type="button"
