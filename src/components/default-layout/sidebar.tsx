@@ -71,19 +71,19 @@ const SidebarComponents = () => {
 
   return (
     <Container className="max-h-screen xl:w-[22%] bg-[var(--taskmandu-background)] xl:flex hidden border-r border-gray-200 py-4 px-6 flex-col items-center relative dark:bg-gray-900 dark:border-gray-700 ">
-      <div className="flex items-center gap-2 cursor-pointer mb-8">
+      <Container className="flex items-center gap-2 cursor-pointer mb-8">
         <div className="bg-[#2596be] p-2 rounded-lg cursor-pointer">
           <SquareCheckBig className="text-white h-5 w-5 cursor-pointer" />
         </div>
-        <span className="font-bold text-2xl text-black dark:text-white">
+        <span className="font-bold text-2xl text-gray-700/80 dark:text-white">
           TaskMandu
         </span>
-      </div>
+      </Container>
       <Container className="grid grid-cols-2 gap-4 h-[40%] w-full mt-4">
         {menu.map((item, index) => {
           const isActive = pathname === item.link; // Check if the current route matches the link
           return (
-            <div
+            <Container
               key={`${item.name}-${index}`}
               className={`rounded-md flex items-center justify-center dark:text-white cursor-pointer transition-colors duration-200 ease-in-out ${isActive
                 ? ""
@@ -95,17 +95,17 @@ const SidebarComponents = () => {
                 className="flex items-center flex-col justify-center"
               >
                 <item.icon
-                  className={`${isActive ? "text-[var(--taskmandu-primary)]" : "text-black dark:text-white"
+                  className={`${isActive ? "text-[var(--taskmandu-primary)]" : "text-gray-500 dark:text-white"
                     }`}
                 />
                 <h1
-                  className={`${isActive ? "text-[var(--taskmandu-primary)]" : "text-black dark:text-white"
+                  className={`font-normal ${isActive ? "text-[var(--taskmandu-primary)]" : "text-gray-500 dark:text-white"
                     }`}
                 >
                   {item.name}
                 </h1>
               </Link>
-            </div>
+            </Container>
           );
         })}
       </Container>

@@ -23,17 +23,17 @@ const UserPage = () => {
                         <DefaultLayout>
                                 <Container className='flex flex-col gap-4 py-12'>
                                         <Container className='flex justify-end items-center w-full px-6 gap-4'>
-                                                <Dialog>
+                                                <Dialog  >
                                                         <Container className="w-full flex justify-end   px-8">
                                                                 <DialogTrigger asChild >
-                                                                        <Button className='flex items-center'>Add users <UserPlus size={16} /></Button>
+                                                                        <Button className='flex items-center shadow-lg dark:shadow-emerald-200'>Add users <UserPlus size={16} /></Button>
                                                                 </DialogTrigger>
                                                         </Container>
 
-                                                        <DialogContent className="sm:max-w-[600px] bg-white">
+                                                        <DialogContent className="sm:max-w-[600px] bg-[#F2F5F7] dark:bg-gray-900 border-none">
                                                                 <DialogHeader>
-                                                                        <DialogTitle>Create New User</DialogTitle>
-                                                                        <DialogDescription>Fill out the form to add a new user.</DialogDescription>
+                                                                        <DialogTitle></DialogTitle>
+                                                                        <DialogDescription></DialogDescription>
                                                                 </DialogHeader>
 
                                                                 <CreateUser />

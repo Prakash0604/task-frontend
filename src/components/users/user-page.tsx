@@ -97,25 +97,20 @@ const columns: ColumnDef<User>[] = [
                         const user = row.original
                         return (
                                 <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" className="h-8 w-8 p-0">
+                                        <DropdownMenuTrigger asChild className="border-none hover:border-none " >
+                                                <Button variant="trans" className="h-8 w-8 p-0">
                                                         <MoreHorizontal className="h-4 w-4" />
                                                 </Button>
                                         </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end">
-                                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                <DropdownMenuItem
-                                                        onClick={() => navigator.clipboard.writeText(user.id.toString())}
-                                                >
-                                                        Copy User ID
-                                                </DropdownMenuItem>
+                                        <DropdownMenuContent align="end" className="bg-[var(--taskmandu-background)] dark:bg-gray-900 shadow-md dark:shadow-blue-400 border border-gray-400/80 dark:border-gray-700">
+                                                <DropdownMenuLabel className="font-semibold text-gray-800 dark:text-gray-300">Actions</DropdownMenuLabel>
                                                 <DropdownMenuSeparator />
-                                                <DropdownMenuItem onClick={() => console.log("Edit", user.id)}>
+                                                <DropdownMenuItem onClick={() => console.log("Edit", user.id)} className="text-green-600">
                                                         Edit
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem
                                                         onClick={() => console.log("Delete", user.id)}
-                                                        className="text-red-500"
+                                                        className="text-red-600"
                                                 >
                                                         Delete
                                                 </DropdownMenuItem>
@@ -169,15 +164,15 @@ export default function UserList() {
                                         onChange={(e) =>
                                                 table.getColumn("name")?.setFilterValue(e.target.value)
                                         }
-                                        className="max-w-sm  border border-gray-400/80 dark:border-gray-700 placeholder:text-gray-500 dark:placeholder:text-gray-300 text-gray-600 dark:text-gray-200 focus:ring-0 focus:ring-[var(--taskmandu-primary)] "
+                                        className="max-w-sm  border border-gray-400/80 dark:border-gray-700 placeholder:text-gray-500 dark:placeholder:text-gray-300 text-gray-600 dark:text-gray-200 focus:ring-0 focus:ring-[var(--taskmandu-primary)] shadow-md dark:shadow-blue-400"
                                 />
                                 <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
-                                                <Button variant="outline" className="ml-auto border border-gray-400/80 dark:border-gray-700 text-gray-600 dark:text-gray-200 text-sm font-semibold">
+                                                <Button variant="outline" className="ml-auto shadow-lg dark:shadow-blue-400 border border-gray-400/80 dark:border-gray-700 text-gray-600 dark:text-gray-200 text-sm font-semibold ">
                                                         Columns <ChevronDown className="ml-2 h-4 w-4" />
                                                 </Button>
                                         </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end">
+                                        <DropdownMenuContent align="end" className="bg-gray-300 dark:bg-gray-900 text-gray-700 dark:text-gray-200 border border-gray-400/80 dark:border-gray-700 shadow-lg dark:shadow-blue-400">
                                                 {table
                                                         .getAllColumns()
                                                         .filter((col) => col.getCanHide())
@@ -193,7 +188,7 @@ export default function UserList() {
                                         </DropdownMenuContent>
                                 </DropdownMenu>
                         </Container>
-                        <Container className="rounded-sm border border-gray-400/50 dark:border-gray-700">
+                        <Container className="rounded-sm border border-gray-400/50 dark:border-gray-700 shadow-lg dark:shadow-blue-400">
                                 <Table>
                                         <TableHeader className="text-gray-600 dark:text-gray-300 border-b border-gray-400/50 dark:border-gray-700">
                                                 {table.getHeaderGroups().map((headerGroup) => (
@@ -227,7 +222,7 @@ export default function UserList() {
                                                         ))
                                                 ) : (
                                                         <TableRow>
-                                                                <TableCell colSpan={columns.length} className="text-center text-white py-8">
+                                                                <TableCell colSpan={columns.length} className="text-center text-white py-8 shadow-lg dark:shadow-blue-400">
                                                                         <NoDataExample />
                                                                 </TableCell>
                                                         </TableRow>
@@ -235,14 +230,14 @@ export default function UserList() {
                                         </TableBody>
                                 </Table>
                         </Container>
-                        <Container className="flex items-center justify-end space-x-2 py-4">
-                                <Container className="space-x-2">
+                        <Container className="flex items-center justify-end space-x-2 py-4 rounded-b-md px-4 dark:shadow-lg dark:shadow-blue-400">
+                                <Container className="space-x-4">
                                         <Button
                                                 variant="outline"
                                                 size="sm"
                                                 onClick={() => table.previousPage()}
                                                 disabled={!table.getCanPreviousPage()}
-                                                className="border border-gray-400/80 dark:border-gray-700 text-gray-900 dark:text-gray-300"
+                                                className="border border-gray-400/80 shadow-lg dark:shadow-blue-400 dark:border-gray-700 text-gray-900 dark:text-gray-300 cursor-pointer"
                                         >
                                                 Previous
                                         </Button>
@@ -251,7 +246,7 @@ export default function UserList() {
                                                 size="sm"
                                                 onClick={() => table.nextPage()}
                                                 disabled={!table.getCanNextPage()}
-                                                className="border border-gray-400/80 dark:border-gray-700 text-gray-900 dark:text-gray-300"
+                                                className="border border-gray-400/80 shadow-lg dark:shadow-blue-400 dark:border-gray-700 text-gray-900 dark:text-gray-300 cursor-pointer"
                                         >
                                                 Next
                                         </Button>
