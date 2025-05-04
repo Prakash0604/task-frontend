@@ -30,7 +30,7 @@ const UserPage = () => {
                                                                 </DialogTrigger>
                                                         </Container>
 
-                                                        <DialogContent className="sm:max-w-[600px] bg-[#F2F5F7] dark:bg-gray-900 border-none">
+                                                        <DialogContent className="sm:max-w-[600px] bg-[#F2F5F7] dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-lg dark:shadow-blue-500">
                                                                 <DialogHeader>
                                                                         <DialogTitle></DialogTitle>
                                                                         <DialogDescription></DialogDescription>

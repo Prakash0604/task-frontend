@@ -1,35 +1,34 @@
+
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import API from '@/config/request';
 import { AxiosError } from 'axios';
 import { getUser } from '@/utlis';
+import API from '@/config/request';
 
-interface UserData {
-        name: string;
-        email: string;
-        address: string;
-        password: string;
-        contact: string;
-        profile?: File;
+interface User {
+        id: string;
 }
 
-interface UserStore {
-        user: UserData | null;
+interface UserState {
+        users: User[];
         loading: boolean;
         error: string | null;
-        createUser: (data: UserData) => Promise<UserData | null>;
+        successMessage: string | null;
+        deleteUser: (id: string) => Promise<User | null>;
 }
 
-export const useCreateUserStore = create<UserStore>()(
+export const useDeleteUserStore = create<UserState>()(
         immer((set) => ({
-                user: null,
+                users: [],
                 loading: false,
                 error: null,
+                successMessage: null,
 
-                createUser: async (data) => {
+                deleteUser: async (id: string) => {
                         set((state) => {
                                 state.loading = true;
                                 state.error = null;
+                                state.successMessage = null;
                         });
 
                         try {
@@ -37,29 +36,26 @@ export const useCreateUserStore = create<UserStore>()(
                                 if (!token) {
                                         throw new Error('No token found');
                                 }
-                                const formData = new FormData();
-                                formData.append('name', data.name);
-                                formData.append('email', data.email);
-                                formData.append('address', data.address);
-                                formData.append('password', data.password);
-                                formData.append('contact', data.contact);
-                                if (data.profile) {
-                                        formData.append('profile', data.profile);
-                                }
-
-                                const response = await API.post('/users', formData, {
+                                const response = await API.delete(`/users/${id}`, {
                                         headers: {
                                                 'Content-Type': 'multipart/form-data',
                                                 Authorization: `Bearer ${token}`,
                                         },
                                 });
+                                if (response.status) {
+                                        set((state) => {
+                                                state.users = state.users.filter((user) => user.id !== id);
+                                                state.successMessage = 'User deleted successfully.';
+                                        });
+                                        return response.data;
+                                }
+                                else {
+                                        set((state) => {
+                                                state.error = 'Failed to delete user.';
+                                        });
 
-                                set((state) => {
-                                        state.user = response.data;
-                                        state.loading = false;
-                                });
+                                }
 
-                                return response.data;
                         } catch (error) {
                                 const errorMessage =
                                         (error as AxiosError<{ message?: string }>).response?.data?.message ||

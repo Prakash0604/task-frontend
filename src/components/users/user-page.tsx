@@ -1,5 +1,3 @@
-"use client"
-
 import * as React from "react"
 import {
         ColumnDef,
@@ -18,7 +16,6 @@ import { Input } from "@/components/ui/input"
 import {
         Table,
         TableHeader,
-
         TableRow,
         TableHead,
 } from "@/components/ui/table"
@@ -37,6 +34,8 @@ import { Skeleton } from "../ui/skeleton"
 import { formatDateToReadable } from "@/utlis"
 import NoDataExample from "../no-data/no-data"
 import { motion, AnimatePresence } from "framer-motion"
+import Image from "next/image"
+
 
 type User = {
         id: number
@@ -46,9 +45,38 @@ type User = {
         address: string
         created_at: string
         status: string
+        profile: string | null // Add the profile field (URL to image)
 }
+const bucketUrl: string = process.env.NEXT_PUBLIC_API_URL || ""
 
 const columns: ColumnDef<User>[] = [
+        {
+                accessorKey: "profile",
+                header: "Profile Image",
+                cell: ({ row }) => {
+                        const profilePath = row.getValue("profile") as string
+                        const fullProfileUrl = profilePath?.startsWith("http")
+                                ? profilePath
+                                : `${bucketUrl}/${profilePath}`
+                        return (
+                                <div className="flex justify-center">
+                                        {profilePath ? (
+                                                <Image
+                                                        height={20}
+                                                        width={20}
+                                                        src={fullProfileUrl}
+                                                        alt="Profile"
+                                                        className="w-10 h-10 rounded-full object-cover"
+                                                />
+                                        ) : (
+                                                <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
+                                                        <span className="text-gray-600">N/A</span>
+                                                </div>
+                                        )}
+                                </div>
+                        )
+                },
+        },
         {
                 accessorKey: "name",
                 header: ({ column }) => (
@@ -81,23 +109,24 @@ const columns: ColumnDef<User>[] = [
         {
                 accessorKey: "created_at",
                 header: "Registered On",
-                cell: ({ row }) =>
-                        formatDateToReadable(row.getValue("created_at")),
+                cell: ({ row }) => formatDateToReadable(row.getValue("created_at")),
         },
         {
                 accessorKey: "status",
                 header: "Status",
                 cell: ({ row }) => row.getValue("status"),
         },
+
         {
                 id: "actions",
                 enableHiding: false,
                 cell: ({ row }) => {
                         const user = row.original
+
                         return (
                                 <DropdownMenu>
-                                        <DropdownMenuTrigger asChild className="border-none hover:border-none " >
-                                                <Button variant="trans" className="h-8 w-8 p-0">
+                                        <DropdownMenuTrigger asChild className="border-none hover:border-none">
+                                                <Button variant="ghost" className="h-8 w-8 p-0">
                                                         <MoreHorizontal className="h-4 w-4" />
                                                 </Button>
                                         </DropdownMenuTrigger>
@@ -107,10 +136,10 @@ const columns: ColumnDef<User>[] = [
                                                 <DropdownMenuItem onClick={() => console.log("Edit", user.id)} className="text-green-600">
                                                         Edit
                                                 </DropdownMenuItem>
-                                                <DropdownMenuItem
-                                                        onClick={() => console.log("Delete", user.id)}
-                                                        className="text-red-600"
-                                                >
+                                                <DropdownMenuItem onClick={async () => {
+
+
+                                                }} className="text-red-600">
                                                         Delete
                                                 </DropdownMenuItem>
                                         </DropdownMenuContent>
@@ -121,11 +150,14 @@ const columns: ColumnDef<User>[] = [
 ]
 
 export default function UserList() {
+
         const [sorting, setSorting] = React.useState<SortingState>([])
         const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
         const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
         const [rowSelection, setRowSelection] = React.useState({})
         const { users, fetchUsers, isLoading } = useUsersStore()
+
+
 
         React.useEffect(() => {
                 if (!users || users.length === 0) {
@@ -152,56 +184,23 @@ export default function UserList() {
                 },
         })
 
-        // Animation variants
-        const containerVariants = {
-                hidden: { opacity: 0 },
-                show: {
-                        opacity: 1,
-                        transition: {
-                                staggerChildren: 0.05
-                        }
-                }
-        }
-
-        const itemVariants = {
-                hidden: { opacity: 0, y: 20 },
-                show: { opacity: 1, y: 0 }
-        }
-
-        const tableContainerVariants = {
-                hidden: { opacity: 0, scale: 0.98 },
-                show: {
-                        opacity: 1,
-                        scale: 1,
-                        transition: {
-                                duration: 0.3,
-                                ease: "easeOut"
-                        }
-                }
-        }
-
-        // Animation for filtering/sorting
-        const tableBodyVariants = {
-                hidden: { opacity: 0 },
-                show: {
-                        opacity: 1,
-                        transition: {
-                                staggerChildren: 0.05
-                        }
-                }
-        }
-
         if (isLoading) return <Skeleton className="h-screen w-full" />
 
         return (
                 <motion.div
                         initial="hidden"
                         animate="show"
-                        variants={containerVariants}
+                        variants={{
+                                hidden: { opacity: 0 },
+                                show: {
+                                        opacity: 1,
+                                        transition: { staggerChildren: 0.05 }
+                                }
+                        }}
                         className="w-full lg:px-12 px-8"
                 >
                         <motion.div
-                                variants={itemVariants}
+                                variants={{ hidden: { opacity: 0 }, show: { opacity: 1, y: 0 } }}
                                 className="flex items-center py-4"
                         >
                                 <Input
@@ -210,7 +209,7 @@ export default function UserList() {
                                         onChange={(e) =>
                                                 table.getColumn("name")?.setFilterValue(e.target.value)
                                         }
-                                        className="max-w-sm border border-gray-400/80 dark:border-gray-700 placeholder:text-gray-500 dark:placeholder:text-gray-300 text-gray-600 dark:text-gray-200 focus:ring-0 focus:ring-[var(--taskmandu-primary)] "
+                                        className="max-w-sm border border-gray-400/80 dark:border-gray-700 placeholder:text-gray-500 dark:placeholder:text-gray-300 text-gray-600 dark:text-gray-200 focus:ring-0 focus:ring-[var(--taskmandu-primary)]"
                                 />
                                 <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
@@ -235,8 +234,11 @@ export default function UserList() {
                                 </DropdownMenu>
                         </motion.div>
                         <motion.div
-                                variants={tableContainerVariants}
-                                className="rounded-sm border border-gray-400/50 dark:border-gray-700 "
+                                variants={{
+                                        hidden: { opacity: 0, scale: 0.98 },
+                                        show: { opacity: 1, scale: 1, transition: { duration: 0.3, ease: "easeOut" } }
+                                }}
+                                className="rounded-sm border border-gray-400/50 dark:border-gray-700"
                         >
                                 <Table>
                                         <TableHeader className="text-gray-600 dark:text-gray-300 border-b border-gray-400/50 dark:border-gray-700">
@@ -257,7 +259,10 @@ export default function UserList() {
                                         </TableHeader>
                                         <AnimatePresence mode="wait">
                                                 <motion.tbody
-                                                        variants={tableBodyVariants}
+                                                        variants={{
+                                                                hidden: { opacity: 0 },
+                                                                show: { opacity: 1, transition: { staggerChildren: 0.05 } }
+                                                        }}
                                                         initial="hidden"
                                                         animate="show"
                                                         key={table.getRowModel().rows.length + sorting.length + JSON.stringify(columnFilters)}
@@ -266,7 +271,10 @@ export default function UserList() {
                                                                 table.getRowModel().rows.map((row, index) => (
                                                                         <motion.tr
                                                                                 key={row.id}
-                                                                                variants={itemVariants}
+                                                                                variants={{
+                                                                                        hidden: { opacity: 0, y: 20 },
+                                                                                        show: { opacity: 1, y: 0 }
+                                                                                }}
                                                                                 className="text-gray-600 dark:text-gray-300 font-normal"
                                                                                 custom={index}
                                                                                 exit={{ opacity: 0, y: -10 }}
@@ -302,31 +310,6 @@ export default function UserList() {
                                                 </motion.tbody>
                                         </AnimatePresence>
                                 </Table>
-                        </motion.div>
-                        <motion.div
-                                variants={itemVariants}
-                                className="flex items-center justify-end space-x-2 py-4 rounded-b-md px-4  "
-                        >
-                                <div className="space-x-4">
-                                        <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => table.previousPage()}
-                                                disabled={!table.getCanPreviousPage()}
-                                                className="border border-gray-400/80 dark:border-gray-700 text-gray-900 dark:text-gray-300 cursor-pointer"
-                                        >
-                                                Previous
-                                        </Button>
-                                        <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => table.nextPage()}
-                                                disabled={!table.getCanNextPage()}
-                                                className="border border-gray-400/80  dark:border-gray-700 text-gray-900 dark:text-gray-300 cursor-pointer"
-                                        >
-                                                Next
-                                        </Button>
-                                </div>
                         </motion.div>
                 </motion.div>
         )

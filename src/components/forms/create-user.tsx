@@ -1,9 +1,10 @@
-import React from "react";
+"use client";
+
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Eye, EyeOff } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
         Form,
         FormControl,
@@ -12,21 +13,23 @@ import {
         FormLabel,
         FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { FileUpload } from "./file-upload";
+import { useState } from "react";
+import { useDropzone } from "react-dropzone";
+import { Loader2, UploadCloud, X } from "lucide-react";
 import { userSchema } from "@/utlis";
-// import useCreateUserStore from "@/store/user-store/create-user-store";
-// import useUsersStore from "@/store/user-store/get-user-store";
-// import { toast } from "sonner";
+import { useCreateUserStore } from "@/store/user-store/create-user-store";
+import { toast } from "sonner";
+import useUsersStore from "@/store/user-store/get-user-store";
+import Container from "../containers/main-container";
 
-type FormValues = z.infer<typeof userSchema>;
 
-const CreateUser = () => {
-        // const { createUser, isCreating, error: errMsg, successMessage } = useCreateUserStore();
-        // const { fetchUsers } = useUsersStore();
-        const [showPassword, setShowPassword] = React.useState<boolean>(false);
-        const form = useForm({
+
+type FormData = z.infer<typeof userSchema>;
+
+export default function CreateUser() {
+        const { createUser, loading, error: errMsg } = useCreateUserStore()
+        const { fetchUsers } = useUsersStore()
+        const form = useForm<FormData>({
                 resolver: zodResolver(userSchema),
                 defaultValues: {
                         name: "",
@@ -38,158 +41,168 @@ const CreateUser = () => {
                 },
         });
 
-        const onSubmit = async (data: FormValues) => {
-                console.log("Profile value:", data.profile); // Debug: Should log File object or null
-                const formData = new FormData();
-                formData.append("name", data.name);
-                formData.append("email", data.email);
-                formData.append("address", data.address);
-                formData.append("contact", data.contact);
-                formData.append("password", data.password);
-                if (data.profile) {
-                        console.log("Appending File:", data.profile.name, data.profile.size); // Debug: Log file details
-                        formData.append("profile", data.profile);
-                }
+        const { setValue } = form;
+        const [fileName, setFileName] = useState<string | null>(null);
 
-                // Debug: Inspect FormData contents
-                for (const [key, value] of formData.entries()) {
-                        console.log(`FormData ${key}:`, value);
-                }
+        const onDrop = (acceptedFiles: File[]) => {
+                setValue("profile", acceptedFiles[0] ?? null);
+                setFileName(acceptedFiles[0]?.name ?? null);
+        };
 
-                // try {
-                //         const response = await createUser(formData);
-                //         if (response.status) {
-                //                 toast.success(successMessage || "User created successfully");
-                //                 await fetchUsers();
-                //                 form.reset();
-                //         } else {
-                //                 toast.error(response.message);
-                //         }
-                // } catch (error) {
-                //         toast.error(errMsg || "Error creating user");
-                // }
+        const removeFile = () => {
+                setValue("profile", null);
+                setFileName(null);
+        };
+
+        const { getRootProps, getInputProps } = useDropzone({
+                onDrop,
+                multiple: false,
+                accept: { "image/*": [] },
+        });
+
+        const onSubmit = async (data: FormData) => {
+                try {
+                        const res = await createUser({
+                                ...data,
+                                profile: data.profile ?? undefined,
+                        });
+                        if (res) {
+                                toast.success("User created successfully");
+                                form.reset();
+                                setFileName(null);
+                                fetchUsers();
+                        }
+                        else {
+                                toast.error(errMsg)
+                        }
+                } catch (error) {
+                        toast.error(errMsg)
+                        throw new Error("Failed to create the user", error as Error);
+                }
         };
 
         return (
-                <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-full">
-                                <div className="space-y-4">
+                <Form {...form} >
+                        <form
+                                onSubmit={form.handleSubmit(onSubmit)}
+                                className="space-y-4 "
+                        >
+                                <Container className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <FormField
                                                 control={form.control}
                                                 name="name"
                                                 render={({ field }) => (
-                                                        <FormItem>
-                                                                <FormLabel>Full Name</FormLabel>
-                                                                <FormControl>
-                                                                        <Input placeholder="John Doe" {...field} />
+                                                        <FormItem >
+                                                                <FormLabel className="text-gray-500 dark:text-gray-300" >Name</FormLabel>
+                                                                <FormControl className="  border border-gray-300 dark:border-gray-700 shadow-sm  dark:shadow-blue-400 focus:ring-2 focus:ring-blue-500 placeholder:text-gray-500 dark:placeholder:text-gray-300">
+                                                                        <Input {...field} placeholder="Enter your name" className="text-gray-500 dark:text-gray-200" />
                                                                 </FormControl>
                                                                 <FormMessage />
                                                         </FormItem>
                                                 )}
                                         />
+
                                         <FormField
                                                 control={form.control}
                                                 name="email"
                                                 render={({ field }) => (
                                                         <FormItem>
-                                                                <FormLabel>Email</FormLabel>
-                                                                <FormControl>
-                                                                        <Input type="email" placeholder="you@example.com" {...field} />
+                                                                <FormLabel className="text-gray-500 dark:text-gray-300">Email</FormLabel>
+                                                                <FormControl className="  border border-gray-300 dark:border-gray-700 shadow-sm  dark:shadow-blue-400 focus:ring-2 focus:ring-blue-500 placeholder:text-gray-500 dark:placeholder:text-gray-300">
+                                                                        <Input {...field} placeholder="Enter your email" className="text-gray-500 dark:text-gray-200" />
                                                                 </FormControl>
                                                                 <FormMessage />
                                                         </FormItem>
                                                 )}
                                         />
+                                </Container>
+
+                                <Container className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <FormField
                                                 control={form.control}
                                                 name="address"
                                                 render={({ field }) => (
-                                                        <FormItem>
-                                                                <FormLabel>Address</FormLabel>
-                                                                <FormControl>
-                                                                        <Input placeholder="123 Main St, City" {...field} />
+                                                        <FormItem >
+                                                                <FormLabel className="text-gray-500 dark:text-gray-300">Address</FormLabel>
+                                                                <FormControl className="  border border-gray-300 dark:border-gray-700 shadow-sm  dark:shadow-blue-400 focus:ring-2 focus:ring-blue-500 placeholder:text-gray-500 dark:placeholder:text-gray-300">
+                                                                        <Input {...field} placeholder="La, USA, Street 123" className="text-gray-500 dark:text-gray-200" />
                                                                 </FormControl>
                                                                 <FormMessage />
                                                         </FormItem>
                                                 )}
                                         />
+
+
                                         <FormField
                                                 control={form.control}
                                                 name="contact"
                                                 render={({ field }) => (
                                                         <FormItem>
-                                                                <FormLabel>Contact Number</FormLabel>
-                                                                <FormControl>
-                                                                        <Input placeholder="9800000000" {...field} />
+                                                                <FormLabel className="text-gray-500 dark:text-gray-300">Contact</FormLabel>
+                                                                <FormControl className="  border border-gray-300 dark:border-gray-700 shadow-sm  dark:shadow-blue-400 focus:ring-2 focus:ring-blue-500 placeholder:text-gray-500 dark:placeholder:text-gray-300">
+                                                                        <Input {...field} placeholder="9800000000" className="text-gray-500 dark:text-gray-200" />
                                                                 </FormControl>
                                                                 <FormMessage />
                                                         </FormItem>
                                                 )}
                                         />
-                                        <FormField
-                                                control={form.control}
-                                                name="password"
-                                                render={({ field }) => (
-                                                        <FormItem>
-                                                                <FormLabel>Password</FormLabel>
-                                                                <FormControl>
-                                                                        <div className="relative">
-                                                                                <Input
-                                                                                        type={showPassword ? "text" : "password"}
-                                                                                        placeholder="********"
-                                                                                        {...field}
-                                                                                        className="pr-10"
-                                                                                />
-                                                                                <Button
-                                                                                        type="button"
-                                                                                        variant="ghost"
-                                                                                        size="sm"
-                                                                                        className={cn(
-                                                                                                "absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground",
-                                                                                                "hover:text-foreground"
-                                                                                        )}
-                                                                                        onClick={() => setShowPassword((prev) => !prev)}
-                                                                                >
-                                                                                        {showPassword ? (
-                                                                                                <EyeOff className="h-4 w-4" />
-                                                                                        ) : (
-                                                                                                <Eye className="h-4 w-4" />
-                                                                                        )}
-                                                                                        <span className="sr-only">
-                                                                                                {showPassword ? "Hide password" : "Show password"}
-                                                                                        </span>
-                                                                                </Button>
-                                                                        </div>
-                                                                </FormControl>
-                                                                <FormMessage />
-                                                        </FormItem>
-                                                )}
-                                        />
-                                        <FormField
-                                                control={form.control}
-                                                name="profile"
-                                                render={({ field }) => (
-                                                        <FormItem>
-                                                                <FormLabel>Profile Image</FormLabel>
-                                                                <FormControl>
-                                                                        <FileUpload
-                                                                                value={field.value ?? null}
-                                                                                onChange={field.onChange}
-                                                                                error={form.formState.errors.profile?.message}
-                                                                                className="h-32"
-                                                                        />
-                                                                </FormControl>
-                                                                <FormMessage />
-                                                        </FormItem>
-                                                )}
-                                        />
-                                </div>
-                                <Button variant="default" type="submit" className="w-full">
-                                        {/* {isCreating ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create User"} */}
+                                </Container>
+                                <FormField
+                                        control={form.control}
+                                        name="password"
+                                        render={({ field }) => (
+                                                <FormItem>
+                                                        <FormLabel className="text-gray-500 dark:text-gray-300">Password</FormLabel>
+                                                        <FormControl className="  border border-gray-300 dark:border-gray-700 shadow-sm  dark:shadow-blue-400 focus:ring-2 focus:ring-blue-500 placeholder:text-gray-500 dark:placeholder:text-gray-300">
+                                                                <Input type="password" {...field} placeholder="Secret@1234" className="text-gray-500 dark:text-gray-200" />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                </FormItem>
+                                        )}
+                                />
+
+                                <FormField
+                                        control={form.control}
+                                        name="profile"
+                                        render={() => (
+                                                <FormItem className="gap-4">
+                                                        <FormLabel className="text-gray-500 dark:text-gray-300">Profile Image</FormLabel>
+                                                        <FormControl className=" shadow-sm  dark:shadow-blue-400">
+                                                                <div
+                                                                        {...getRootProps()}
+                                                                        className="border border-dashed border-gray-400 dark:border-gray-700 p-12 rounded-md cursor-pointer text-center hover:bg-gray-50 relative"
+                                                                >
+
+                                                                        <input {...getInputProps()} />
+                                                                        {fileName ? (
+                                                                                <div className="flex items-center justify-between">
+                                                                                        <p className="text-sm text-green-700">{fileName}</p>
+                                                                                        <button
+                                                                                                type="button"
+                                                                                                onClick={removeFile}
+                                                                                                className="ml-2 text-red-600 hover:text-red-800"
+                                                                                                title="Remove image"
+                                                                                        >
+                                                                                                <X className="w-4 h-4" />
+                                                                                        </button>
+                                                                                </div>
+                                                                        ) : (
+                                                                                <p className="text-sm text-gray-500 dark:text-gray-300">
+                                                                                        <UploadCloud className="w-6 h-6 mx-auto mb-2" />
+                                                                                        Drag &apos;n&apos; drop or click to upload
+                                                                                </p>
+                                                                        )}
+                                                                </div>
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                </FormItem>
+                                        )}
+                                />
+
+                                <Button type="submit" className="w-full ">
+                                        {loading ? <Loader2 /> : "Create User"}
                                 </Button>
                         </form>
-                </Form>
+                </Form >
         );
-};
-
-export default CreateUser;
+}
