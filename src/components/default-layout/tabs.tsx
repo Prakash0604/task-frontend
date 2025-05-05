@@ -51,7 +51,6 @@ const Tabs: React.FC = () => {
   return (
     <Container className="flex absolute bottom-0 left-0 w-full md:py-4 py-2 md:px-8 px-4 z-50">
       <Container className="w-full p-4 rounded-full relative border border-gray-300 dark:border-gray-700 shadow-md dark:shadow-blue-400 shadow-blue-300 flex items-center xl:hidden">
-
         {/* Mobile view (small devices) */}
         <div className="flex w-full md:hidden justify-between items-center">
           {menu.slice(0, 3).map((item, index) => {
@@ -76,7 +75,10 @@ const Tabs: React.FC = () => {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="trans" className="flex flex-col items-center justify-center">
+              <Button
+                variant="trans"
+                className="flex flex-col items-center justify-center"
+              >
                 <MoreHorizontal className="w-6 h-6 text-gray-500 dark:text-white" />
               </Button>
             </DropdownMenuTrigger>
