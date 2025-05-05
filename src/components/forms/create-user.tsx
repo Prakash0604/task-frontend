@@ -199,7 +199,7 @@ export default function CreateUser() {
                                         )}
                                 />
 
-                                <Button type="submit" className="w-full ">
+                                <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
                                         {loading ? <Loader2 /> : "Create User"}
                                 </Button>
                         </form>

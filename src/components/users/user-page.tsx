@@ -48,9 +48,118 @@ export interface User {
   is_verified: string;
   office_status: string | null;
   status: string;
-}
+  profile: string | null; // Add the profile field (URL to image)
+};
+const bucketUrl: string = process.env.NEXT_PUBLIC_BUCKET_URL || "";
 
-const bucketUrl: string = process.env.NEXT_PUBLIC_API_URL || "";
+const columns: ColumnDef<User>[] = [
+  {
+    accessorKey: "profile",
+    header: "Profile Image",
+    cell: ({ row }) => {
+      const profilePath = row.getValue("profile") as string;
+      const fullProfileUrl = profilePath?.startsWith("http")
+        ? profilePath
+        : `${bucketUrl}/${profilePath}`;
+      return (
+        <div className="flex justify-center">
+          {profilePath ? (
+            <Image
+              height={20}
+              width={20}
+              src={fullProfileUrl}
+              alt="Profile"
+              className="w-10 h-10 rounded-full object-cover"
+            />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
+              <span className="text-gray-600">N/A</span>
+            </div>
+          )}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "name",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Name <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => row.getValue("name"),
+  },
+  {
+    accessorKey: "email",
+    header: "Email",
+    cell: ({ row }) => row.getValue("email"),
+  },
+  {
+    accessorKey: "contact",
+    header: "Contact",
+    cell: ({ row }) => row.getValue("contact"),
+  },
+  {
+    accessorKey: "address",
+    header: "Address",
+    cell: ({ row }) => (
+      <div className="truncate max-w-[200px]">{row.getValue("address")}</div>
+    ),
+  },
+  {
+    accessorKey: "created_at",
+    header: "Registered On",
+    cell: ({ row }) => formatDateToReadable(row.getValue("created_at")),
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => row.getValue("status"),
+  },
+
+  {
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row }) => {
+      const user = row.original;
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            asChild
+            className="border-none hover:border-none"
+          >
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            className="bg-[var(--taskmandu-background)] dark:bg-gray-900 shadow-md dark:shadow-blue-400 border border-gray-400/80 dark:border-gray-700"
+          >
+            <DropdownMenuLabel className="font-semibold text-gray-800 dark:text-gray-300">
+              Actions
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => console.log("Edit", user.id)}
+              className="text-green-600"
+            >
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={async () => { }} className="text-red-600">
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
+  },
+];
+
 
 export default function UserList() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -314,9 +423,9 @@ export default function UserList() {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 ))}
               </TableRow>
