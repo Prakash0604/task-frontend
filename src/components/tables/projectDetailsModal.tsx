@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import { Calendar } from "lucide-react";
-// import { Project } from "@/types/project";
 import { Project } from "@/lib/type";
 
 interface ProjectDetailsModalProps {
@@ -28,7 +27,7 @@ export default function ProjectDetailsModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md dark:bg-gray-900 dark:text-white rounded-2xl shadow-xl p-6">
+      <DialogContent className="sm:max-w-md dark:bg-gray-900 dark:text-white rounded-2xl  p-6 focus:ring-1 focus:ring-[var(--taskmandu-primary)] text-sm shadow-md dark:shadow-blue-400">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">
             Project Details: {project.name}
@@ -64,7 +63,11 @@ export default function ProjectDetailsModal({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+          <Button
+            variant="outline"
+            onClick={onClose}
+            className="text-sm shadow-md dark:shadow-blue-400"
+          >
             Close
           </Button>
         </DialogFooter>

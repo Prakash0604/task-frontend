@@ -60,7 +60,7 @@ export default function EditProjectModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] dark:bg-gray-900 dark:text-white rounded-2xl shadow-xl p-6">
+      <DialogContent className="sm:max-w-[500px] dark:bg-gray-900 dark:text-white rounded-2xl p-6 focus:ring-1 focus:ring-[var(--taskmandu-primary)] text-sm shadow-md dark:shadow-blue-400">
         <DialogHeader>
           <DialogTitle>Edit Project</DialogTitle>
         </DialogHeader>
