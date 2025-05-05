@@ -30,126 +30,27 @@ import { formatDateToReadable } from "@/utlis";
 import NoDataExample from "../no-data/no-data";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import UserDetailsModal from "./user-details-modal";
+import EditUserModal from "./edit-modal";
+import DeleteUserModal from "./delete-modal";
+import { toast } from "sonner";
 
-type User = {
+export interface User {
   id: number;
   name: string;
   email: string;
+  email_verified_at: string | null;
+  profile: string | null;
   contact: string;
   address: string;
   created_at: string;
+  updated_at: string;
+  is_verified: string;
+  office_status: string | null;
   status: string;
-  profile: string | null; // Add the profile field (URL to image)
-};
+}
+
 const bucketUrl: string = process.env.NEXT_PUBLIC_API_URL || "";
-
-const columns: ColumnDef<User>[] = [
-  {
-    accessorKey: "profile",
-    header: "Profile Image",
-    cell: ({ row }) => {
-      const profilePath = row.getValue("profile") as string;
-      const fullProfileUrl = profilePath?.startsWith("http")
-        ? profilePath
-        : `${bucketUrl}/${profilePath}`;
-      return (
-        <div className="flex justify-center">
-          {profilePath ? (
-            <Image
-              height={20}
-              width={20}
-              src={fullProfileUrl}
-              alt="Profile"
-              className="w-10 h-10 rounded-full object-cover"
-            />
-          ) : (
-            <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
-              <span className="text-gray-600">N/A</span>
-            </div>
-          )}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "name",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Name <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => row.getValue("name"),
-  },
-  {
-    accessorKey: "email",
-    header: "Email",
-    cell: ({ row }) => row.getValue("email"),
-  },
-  {
-    accessorKey: "contact",
-    header: "Contact",
-    cell: ({ row }) => row.getValue("contact"),
-  },
-  {
-    accessorKey: "address",
-    header: "Address",
-    cell: ({ row }) => (
-      <div className="truncate max-w-[200px]">{row.getValue("address")}</div>
-    ),
-  },
-  {
-    accessorKey: "created_at",
-    header: "Registered On",
-    cell: ({ row }) => formatDateToReadable(row.getValue("created_at")),
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => row.getValue("status"),
-  },
-
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const user = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            asChild
-            className="border-none hover:border-none"
-          >
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="end"
-            className="bg-[var(--taskmandu-background)] dark:bg-gray-900 shadow-md dark:shadow-blue-400 border border-gray-400/80 dark:border-gray-700"
-          >
-            <DropdownMenuLabel className="font-semibold text-gray-800 dark:text-gray-300">
-              Actions
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => console.log("Edit", user.id)}
-              className="text-green-600"
-            >
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={async () => {}} className="text-red-600">
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
-];
 
 export default function UserList() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -159,6 +60,12 @@ export default function UserList() {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [selectedUser, setSelectedUser] = React.useState<User | null>(null);
+  const [editUser, setEditUser] = React.useState<User | null>(null);
+  const [deleteUser, setDeleteUser] = React.useState<User | null>(null);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
   const { users, fetchUsers, isLoading } = useUsersStore();
 
   React.useEffect(() => {
@@ -166,6 +73,129 @@ export default function UserList() {
       fetchUsers();
     }
   }, [users, fetchUsers]);
+
+  const columns: ColumnDef<User>[] = [
+    {
+      accessorKey: "profile",
+      header: "Profile Image",
+      cell: ({ row }) => {
+        const profilePath = row.getValue("profile") as string;
+        const fullProfileUrl = profilePath?.startsWith("http")
+          ? profilePath
+          : `${bucketUrl}/${profilePath}`;
+        return (
+          <div className="flex justify-center">
+            {profilePath ? (
+              <Image
+                height={20}
+                width={20}
+                src={fullProfileUrl}
+                alt="Profile"
+                className="w-10 h-10 rounded-full object-cover"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
+                <span className="text-gray-600">N/A</span>
+              </div>
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "name",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Name <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => row.getValue("name"),
+    },
+    {
+      accessorKey: "email",
+      header: "Email",
+      cell: ({ row }) => row.getValue("email"),
+    },
+    {
+      accessorKey: "contact",
+      header: "Contact",
+      cell: ({ row }) => row.getValue("contact") || "N/A",
+    },
+    {
+      accessorKey: "address",
+      header: "Address",
+      cell: ({ row }) => (
+        <div className="truncate max-w-[200px]">
+          {row.getValue("address") || "N/A"}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "created_at",
+      header: "Registered On",
+      cell: ({ row }) =>
+        row.getValue("created_at")
+          ? formatDateToReadable(row.getValue("created_at"))
+          : "N/A",
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => row.getValue("status") || "N/A",
+    },
+    {
+      id: "actions",
+      enableHiding: false,
+      cell: ({ row }) => {
+        const user = row.original;
+
+        return (
+          <div onClick={(e) => e.stopPropagation()}>
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                asChild
+                className="border-none hover:border-none"
+              >
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="bg-[var(--taskmandu-background)] dark:bg-gray-900 shadow-md dark:shadow-blue-400 border border-gray-400/80 dark:border-gray-700"
+              >
+                <DropdownMenuLabel className="font-semibold text-gray-800 dark:text-gray-300">
+                  Actions
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => {
+                    setEditUser(user);
+                    setIsEditModalOpen(true);
+                  }}
+                  className="text-green-600"
+                >
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    setDeleteUser(user);
+                    setIsDeleteModalOpen(true);
+                  }}
+                  className="text-red-600"
+                >
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        );
+      },
+    },
+  ];
 
   const table = useReactTable({
     data: users || [],
@@ -185,6 +215,26 @@ export default function UserList() {
       rowSelection,
     },
   });
+
+  const handleRowClick = (user: User) => {
+    setSelectedUser(user);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedUser(null);
+  };
+
+  const handleEditModalClose = () => {
+    setIsEditModalOpen(false);
+    setEditUser(null);
+  };
+
+  const handleDeleteModalClose = () => {
+    setIsDeleteModalOpen(false);
+    setDeleteUser(null);
+  };
 
   if (isLoading) return <Skeleton className="h-screen w-full" />;
 
@@ -294,9 +344,10 @@ export default function UserList() {
                       hidden: { opacity: 0, y: 20 },
                       show: { opacity: 1, y: 0 },
                     }}
-                    className="text-gray-600 dark:text-gray-300 font-normal"
+                    className="text-gray-600 dark:text-gray-300 font-normal cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
                     custom={index}
                     exit={{ opacity: 0, y: -10 }}
+                    onClick={() => handleRowClick(row.original)}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <motion.td
@@ -333,6 +384,25 @@ export default function UserList() {
           </AnimatePresence>
         </Table>
       </motion.div>
+      <UserDetailsModal
+        user={selectedUser}
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+      />
+      <EditUserModal
+        user={editUser}
+        isOpen={isEditModalOpen}
+        onClose={handleEditModalClose}
+      />
+      <DeleteUserModal
+        user={deleteUser}
+        isOpen={isDeleteModalOpen}
+        onClose={handleDeleteModalClose}
+        onDeleteSuccess={() => {
+          fetchUsers();
+          toast.success("User deleted successfully");
+        }}
+      />
     </motion.div>
   );
 }
