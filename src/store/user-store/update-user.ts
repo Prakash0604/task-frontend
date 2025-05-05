@@ -49,19 +49,20 @@ export const fetchUsersAPI = async (): Promise<UsersResponse> => {
   return res.data;
 };
 
-export const updateUserAPI = async (id: number, data: Partial<User>): Promise<boolean> => {
+export const updateUserAPI = async (id: number, data: FormData): Promise<boolean> => {
   const token = getUser();
-  if (!token) throw new Error('No token found');
+  if (!token) throw new Error("No token found");
 
   try {
-    const res = await API.put(`/users/${id}`, data, {
+    const res = await API.post(`/users/${id}?_method=PUT`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
       },
     });
 
-    return res.status >= 200 && res.status < 300; // Accept 200, 201, 204, etc.
+    return res.status >= 200 && res.status < 300;
   } catch (error) {
-    throw error; // Let the caller handle the error
+    throw error;
   }
 };
