@@ -41,7 +41,7 @@ type User = {
   status: string;
   profile: string | null; // Add the profile field (URL to image)
 };
-const bucketUrl: string = process.env.NEXT_PUBLIC_API_URL || "";
+const bucketUrl: string = process.env.NEXT_PUBLIC_BUCKET_URL || "";
 
 const columns: ColumnDef<User>[] = [
   {
@@ -141,7 +141,7 @@ const columns: ColumnDef<User>[] = [
             >
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={async () => {}} className="text-red-600">
+            <DropdownMenuItem onClick={async () => { }} className="text-red-600">
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -264,9 +264,9 @@ export default function UserList() {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 ))}
               </TableRow>

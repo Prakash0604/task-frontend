@@ -44,6 +44,7 @@ import ProjectDetailsModal from "./projectDetailsModal";
 import EditProjectModal from "./edit-project-modal";
 import { DeleteProjectModal } from "./delete-modal";
 import { Project } from "@/lib/type";
+import { toast } from "sonner";
 
 export const columns: ColumnDef<Project>[] = [
   {
@@ -177,10 +178,10 @@ export function ProjectsDataTable() {
           }));
           setData(transformed);
         } else {
-          alert("Failed to fetch projects");
+          toast.error("Failed to fetch projects");
         }
       } catch {
-        alert("An error occurred while fetching projects");
+        toast.error("An error occurred while fetching projects");
       }
       setIsLoading(false);
     };
@@ -216,17 +217,27 @@ export function ProjectsDataTable() {
   // Handle confirm delete
   const handleConfirmDelete = async () => {
     if (!projectToDelete) return;
-
-    const success = await deleteProject(projectToDelete.id);
-    if (success) {
-      setData((prev) =>
-        prev.filter((project) => project.id !== projectToDelete.id)
-      );
-    } else {
-      alert("Failed to delete project");
+    try {
+      const success = await deleteProject(projectToDelete.id);
+      if (success) {
+        setData((prev) =>
+          prev.filter((project) => project.id !== projectToDelete.id)
+        );
+        toast.success("Project deleted successfully");
+        fetchProjects();
+      } else {
+        toast.error("Failed to delete project");
+      }
+      setDeleteModalOpen(false);
+      setProjectToDelete(null);
+    } catch (error) {
+      setDeleteModalOpen(false);
+      setProjectToDelete(null);
+      toast.error("An error occurred while deleting the project");
+      throw new Error("Failed to delete project", error as Error);
     }
-    setDeleteModalOpen(false);
-    setProjectToDelete(null);
+
+
   };
 
   const table = useReactTable({
@@ -311,9 +322,9 @@ export function ProjectsDataTable() {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 ))}
               </TableRow>

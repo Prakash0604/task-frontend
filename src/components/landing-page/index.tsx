@@ -1,6 +1,6 @@
 import React from "react";
 import Container from "../containers/main-container";
-import Navbar from "./nav-bar";
+// import Navbar from "./nav-bar";
 import HeroSection from "./hero-section";
 import FeatureSection from "./features-section";
 import CTASection from "./cta-section";
@@ -10,7 +10,7 @@ const LandingPage = () => {
   return (
     <>
       <Container className="flex flex-col w-full max-w-screen mx-auto ">
-        <Navbar />
+        {/* <Navbar /> */}
         <HeroSection />
         <FeatureSection />
         <CTASection />
