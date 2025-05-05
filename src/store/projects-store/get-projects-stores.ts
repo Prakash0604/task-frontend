@@ -37,7 +37,7 @@ interface AddProjectResponse {
         message: string;
         status_code: number;
         data: Project;
-    }
+}
 
 interface ProjectsState {
         projects: Project[] | null;
@@ -183,39 +183,39 @@ const useProjectsStore = create<ProjectsState>()(
                 // Add project
                 addProject: async (projectData: { title: string; description: string }): Promise<boolean> => {
                         try {
-                            const token = getUser();
-                            if (!token) throw new Error("No token found");
-            
-                            const res = await API.post<AddProjectResponse>('/projects', projectData, {
-                                headers: {
-                                    Authorization: `Bearer ${token}`,
-                                },
-                            });
-            
-                            if (res.data.success) {
-                                set((state) => {
-                                    if (state.projects) {
-                                        state.projects.push(res.data.data);
-                                    } else {
-                                        state.projects = [res.data.data];
-                                    }
+                                const token = getUser();
+                                if (!token) throw new Error("No token found");
+
+                                const res = await API.post<AddProjectResponse>('/projects', projectData, {
+                                        headers: {
+                                                Authorization: `Bearer ${token}`,
+                                        },
                                 });
-                                return true;
-                            }
-                            return false;
+
+                                if (res.data.success) {
+                                        set((state) => {
+                                                if (state.projects) {
+                                                        state.projects.push(res.data.data);
+                                                } else {
+                                                        state.projects = [res.data.data];
+                                                }
+                                        });
+                                        return true;
+                                }
+                                return false;
                         } catch (error) {
-                            const message =
-                                (error as AxiosError<{ message?: string }>).response?.data?.message ||
-                                "Failed to add project";
-            
-                            set((state) => {
-                                state.error = message;
-                            });
-            
-                            console.error(message);
-                            return false;
+                                const message =
+                                        (error as AxiosError<{ message?: string }>).response?.data?.message ||
+                                        "Failed to add project";
+
+                                set((state) => {
+                                        state.error = message;
+                                });
+
+                                console.error(message);
+                                return false;
                         }
-                    }
+                }
         }))
 );
 
