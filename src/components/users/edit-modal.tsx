@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { updateUserAPI } from "@/store/user-store/update-user";
 import { AxiosError } from "axios";
+import Image from "next/image";
 
 export interface User {
   id: number;
@@ -35,6 +36,9 @@ interface EditUserForm {
   email: string;
   contact: string;
   address: string;
+  password?: string;
+  confirmPassword?: string;
+  profile?: FileList;
 }
 
 interface EditUserModalProps {
@@ -54,6 +58,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
     register,
     handleSubmit,
     formState: { errors },
+    watch,
     reset,
   } = useForm<EditUserForm>({
     defaultValues: {
@@ -63,6 +68,9 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
       address: "",
     },
   });
+
+  const watchProfile = watch("profile");
+  const [preview, setPreview] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (user) {
@@ -75,16 +83,32 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
     }
   }, [user, reset]);
 
+  React.useEffect(() => {
+    if (watchProfile && watchProfile.length > 0) {
+      const file = watchProfile[0];
+      const objectUrl = URL.createObjectURL(file);
+      setPreview(objectUrl);
+
+      return () => URL.revokeObjectURL(objectUrl);
+    } else {
+      setPreview(null);
+    }
+  }, [watchProfile]);
+
   const onSubmit = async (data: EditUserForm) => {
     if (!user) return;
 
     try {
-      const success = await updateUserAPI(user.id, {
-        name: data.name,
-        email: data.email,
-        contact: data.contact,
-        address: data.address,
-      });
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("email", data.email);
+      formData.append("contact", data.contact);
+      formData.append("address", data.address);
+
+      if (data.password) formData.append("password", data.password);
+      if (data.profile?.[0]) formData.append("profile", data.profile[0]);
+
+      const success = await updateUserAPI(user.id, formData);
 
       if (success) {
         toast.success("User updated successfully");
@@ -98,11 +122,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
         message?: string;
         errors?: Record<string, string[]>;
       }>;
-      console.error("Update error:", {
-        message: axiosError.message,
-        response: axiosError.response?.data,
-        status: axiosError.response?.status,
-      });
+      console.error("Update error:", axiosError);
 
       if (axiosError.response) {
         const { status, data } = axiosError.response;
@@ -113,8 +133,6 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
           toast.error(`Validation failed: ${errorMessages}`);
         } else if (status === 401) {
           toast.error("Unauthorized: Invalid or missing token");
-        } else if (status === 404) {
-          toast.error("User not found");
         } else {
           toast.error(
             data.message || "An error occurred while updating the user"
@@ -128,132 +146,194 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px] bg-[var(--taskmandu-background)] dark:bg-gray-900 border border-gray-400/80 dark:border-gray-700">
+      <DialogContent className="sm:max-w-[500px] bg-[var(--taskmandu-background)] dark:bg-gray-900 border border-gray-400/80 dark:border-gray-700 ">
         <DialogHeader>
           <DialogTitle className="text-gray-800 dark:text-gray-200">
             Edit User
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4 dark:bg-gray-900 dark:border-gray-700 ">
+            {/* Name */}
+            <div>
               <Label
                 htmlFor="name"
-                className="text-gray-700 dark:text-gray-300"
+                className="text-gray-800 dark:text-gray-200 mb-2"
               >
                 Name
               </Label>
               <Input
                 id="name"
+                className="dark:text-white dark:shadow-md dark:shadow-blue-700"
                 {...register("name", {
                   required: "Name is required",
-                  minLength: {
-                    value: 2,
-                    message: "Name must be at least 2 characters",
-                  },
-                  maxLength: {
-                    value: 255,
-                    message: "Name cannot exceed 255 characters",
-                  },
+                  minLength: { value: 2, message: "At least 2 characters" },
+                  maxLength: { value: 255, message: "Max 255 characters" },
                 })}
-                className="border border-gray-400/80 dark:border-gray-700 text-gray-600 dark:text-gray-200"
               />
               {errors.name && (
                 <p className="text-red-500 text-sm">{errors.name.message}</p>
               )}
             </div>
-            <div className="grid gap-2">
+
+            {/* Email */}
+            <div>
               <Label
                 htmlFor="email"
-                className="text-gray-700 dark:text-gray-300"
+                className="text-gray-800 dark:text-gray-200 mb-2"
               >
                 Email
               </Label>
               <Input
                 id="email"
                 type="email"
+                className="dark:text-white dark:shadow-md dark:shadow-blue-700 dark:bg-gray-800"
                 {...register("email", {
                   required: "Email is required",
                   pattern: {
                     value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: "Invalid email address",
+                    message: "Invalid email",
                   },
-                  maxLength: {
-                    value: 255,
-                    message: "Email cannot exceed 255 characters",
-                  },
+                  maxLength: { value: 255, message: "Max 255 characters" },
                 })}
-                className="border border-gray-400/80 dark:border-gray-700 text-gray-600 dark:text-gray-200"
               />
               {errors.email && (
                 <p className="text-red-500 text-sm">{errors.email.message}</p>
               )}
             </div>
-            <div className="grid gap-2">
+
+            {/* Contact */}
+            <div>
               <Label
                 htmlFor="contact"
-                className="text-gray-700 dark:text-gray-300"
+                className="text-gray-800 dark:text-gray-200 mb-2"
               >
                 Contact
               </Label>
               <Input
                 id="contact"
+                className="dark:text-white dark:shadow-md dark:shadow-blue-700"
                 {...register("contact", {
                   required: "Contact is required",
-                  minLength: {
-                    value: 10,
-                    message: "Contact must be at least 10 characters",
-                  },
-                  maxLength: {
-                    value: 50,
-                    message: "Contact cannot exceed 50 characters",
-                  },
+                  minLength: { value: 10, message: "At least 10 characters" },
+                  maxLength: { value: 50, message: "Max 50 characters" },
                 })}
-                className="border border-gray-400/80 dark:border-gray-700 text-gray-600 dark:text-gray-200"
               />
               {errors.contact && (
                 <p className="text-red-500 text-sm">{errors.contact.message}</p>
               )}
             </div>
-            <div className="grid gap-2">
+
+            {/* Address */}
+            <div>
               <Label
                 htmlFor="address"
-                className="text-gray-700 dark:text-gray-300"
+                className="text-gray-800 dark:text-gray-200 mb-2"
               >
                 Address
               </Label>
               <Input
                 id="address"
+                className="dark:text-white dark:shadow-md dark:shadow-blue-700"
                 {...register("address", {
                   required: "Address is required",
-                  minLength: {
-                    value: 5,
-                    message: "Address must be at least 5 characters",
-                  },
-                  maxLength: {
-                    value: 255,
-                    message: "Address cannot exceed 255 characters",
-                  },
+                  minLength: { value: 5, message: "At least 5 characters" },
+                  maxLength: { value: 255, message: "Max 255 characters" },
                 })}
-                className="border border-gray-400/80 dark:border-gray-700 text-gray-600 dark:text-gray-200"
               />
               {errors.address && (
                 <p className="text-red-500 text-sm">{errors.address.message}</p>
               )}
             </div>
+
+            {/* Profile Image - full width */}
+            <div className="col-span-1 md:col-span-2">
+              <Label
+                htmlFor="profile"
+                className="text-gray-800 dark:text-gray-200 mb-2"
+              >
+                Profile Image
+              </Label>
+              <Input
+                id="profile"
+                type="file"
+                className="dark:text-white dark:shadow-md dark:shadow-blue-700"
+                accept="image/*"
+                {...register("profile")}
+              />
+              {preview && (
+                <Image
+                  width={200}
+                  height={200}
+                  src={preview}
+                  alt="Preview"
+                  className="h-20 w-20 rounded-full object-cover mt-2"
+                />
+              )}
+            </div>
+
+            {/* Password - full width */}
+            <div className="col-span-1 md:col-span-2">
+              <Label
+                htmlFor="password"
+                className="text-gray-800 dark:text-gray-200 mb-2"
+              >
+                Password
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                className="dark:text-white dark:shadow-md dark:shadow-blue-700"
+                {...register("password", {
+                  minLength: { value: 6, message: "Min 6 characters" },
+                })}
+              />
+              {errors.password && (
+                <p className="text-red-500 text-sm">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+
+            {/* Confirm Password - full width */}
+            <div className="col-span-1 md:col-span-2">
+              <Label
+                htmlFor="confirmPassword"
+                className="text-gray-800 dark:text-gray-200 mb-2"
+              >
+                Confirm Password
+              </Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                className="dark:text-white dark:shadow-md dark:shadow-blue-700"
+                {...register("confirmPassword", {
+                  validate: (value) =>
+                    !watch("password") ||
+                    value === watch("password") ||
+                    "Passwords do not match",
+                })}
+              />
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-sm">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
+            </div>
           </div>
+
           <DialogFooter>
             <Button
               type="button"
               variant="outline"
               onClick={onClose}
-              className="border border-gray-400/80 dark:border-gray-700 text-gray-600 dark:text-gray-200"
+              className="text-gray-800 dark:text-gray-200 border-gray-400/80 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 dark:shadow-md dark:shadow-blue-700"
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              className="bg-[var(--taskmandu-primary)] text-white hover:bg-[var(--taskmandu-primary-dark)]"
+              className="bg-[var(--taskmandu-primary)] text-white ] dark:shadow-lg dark:shadow-blue-700"
             >
               Save
             </Button>
