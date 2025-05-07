@@ -56,17 +56,16 @@ export const useDeleteUserStore = create<UserState>()(
         const axiosError = error as AxiosError<{ message?: string }>;
         const errorMessage =
           axiosError.response?.data?.message || 'Something went wrong';
-        console.error("Delete API error:", {
-          message: errorMessage,
-          status: axiosError.response?.status,
-          response: axiosError.response?.data,
-        });
-
         set((state) => {
           state.error = errorMessage;
           state.loading = false;
         });
-        throw new Error(errorMessage);
+
+        throw new Error("Delete API error: " + JSON.stringify({
+          message: errorMessage,
+          status: axiosError.response?.status,
+          response: axiosError.response?.data,
+        }));
       }
     },
   }))

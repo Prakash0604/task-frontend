@@ -29,7 +29,19 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
-        <Toaster richColors position="top-right" />
+        <Toaster
+          richColors
+          position="top-right"
+          toastOptions={{
+            classNames: {
+              success: "bg-green-500 text-white border border-green-600",
+              error: "bg-red-500 text-white border border-red-600",
+              info: "bg-blue-500 text-white border border-blue-600",
+              warning: "bg-yellow-500 text-black border border-yellow-600",
+              default: "bg-gray-800 text-white border border-gray-600",
+            },
+          }}
+        />
       </body>
     </html>
   );
