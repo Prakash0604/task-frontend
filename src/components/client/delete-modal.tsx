@@ -1,15 +1,16 @@
 "use client";
 
 import * as React from "react";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import useDeleteClientStore from "@/store/clients-store/delete-client";
 
 export type Client = {
   id: number;
@@ -27,40 +28,38 @@ interface DeleteClientModalProps {
   client: Client | null;
   isOpen: boolean;
   onClose: () => void;
-  onDeleteSuccess: () => void;
+  onConfirm: () => void;
 }
 
 export default function DeleteClientModal({
   client,
   isOpen,
   onClose,
-  onDeleteSuccess,
+  onConfirm,
 }: DeleteClientModalProps) {
-  const handleDelete = () => {
-    // Implement API call to delete client
-    console.log("Deleting client:", client?.id);
-    onDeleteSuccess();
-    onClose();
-  };
-
-  if (!client) return null;
+  const { isLoading, error } = useDeleteClientStore();
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Delete Client</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete {client.name}? This action cannot be
-            undone.
+            Are you sure you want to delete {client?.name || "this client"}?
+            This action cannot be undone.
           </DialogDescription>
+          {error && <div className="text-red-500 text-sm">{error}</div>}
         </DialogHeader>
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" onClick={onClose} disabled={isLoading}>
             Cancel
           </Button>
-          <Button variant="destructive" onClick={handleDelete}>
-            Delete
+          <Button
+            variant="destructive"
+            onClick={onConfirm}
+            disabled={isLoading}
+          >
+            {isLoading ? "Deleting..." : "Delete"}
           </Button>
         </DialogFooter>
       </DialogContent>

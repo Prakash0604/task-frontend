@@ -35,9 +35,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import useClientsStore from "@/store/clients-store/get-clients-store";
+import useDeleteClientStore from "@/store/clients-store/delete-client";
 import { motion, AnimatePresence } from "framer-motion";
 import ClientDetailsModal from "./details-modal";
 import EditClientModal from "./edit-modal";
+import DeleteClientModal from "./delete-modal";
+import { toast } from "sonner";
 
 export type Client = {
   id: number;
@@ -47,19 +50,13 @@ export type Client = {
   contact: string;
   contact_person: string;
   contact_number_person: string;
-  project_id: { [key: string]: number };
+  project_id: { [key: string]: number }; // Unified type for compatibility
   created_at: string;
-};
-
-// Mock project ID to name mapping
-const projectNameMap: { [key: number]: string } = {
-  1: "Project Alpha",
-  2: "Project Beta",
-  3: "Project Gamma",
 };
 
 export function ClientTable() {
   const { clients, isLoading, error, fetchClients } = useClientsStore();
+  const { deleteClient } = useDeleteClientStore();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -73,6 +70,10 @@ export function ClientTable() {
   );
   const [isDetailsModalOpen, setIsDetailsModalOpen] = React.useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
+  const [clientToDelete, setClientToDelete] = React.useState<Client | null>(
+    null
+  );
 
   React.useEffect(() => {
     if (!hasFetched && !isLoading && !clients) {
@@ -88,9 +89,37 @@ export function ClientTable() {
   };
 
   const handleSaveClient = (updatedClient: Client) => {
-    // Implement save logic here (e.g., API call to update client)
     console.log("Saving client:", updatedClient);
-    // You might want to update the clients store here
+  };
+
+  const handleDeleteClick = (client: Client) => {
+    setClientToDelete(client);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (clientToDelete && clientToDelete.id) {
+      try {
+        const response = await deleteClient(clientToDelete.id);
+        if (response.success) {
+          toast.success(response.message || "Client deleted successfully");
+          await fetchClients(); // Refresh the client list
+          setIsDeleteModalOpen(false);
+          setClientToDelete(null);
+        } else {
+          toast.error(response.message || "Failed to delete client");
+        }
+      } catch (err) {
+        toast.error(`Error deleting client: ${err}`);
+      }
+    } else {
+      toast.error("Invalid client ID");
+    }
+  };
+
+  const handleDeleteModalClose = () => {
+    setIsDeleteModalOpen(false);
+    setClientToDelete(null);
   };
 
   const columns: ColumnDef<Client>[] = [
@@ -155,13 +184,11 @@ export function ClientTable() {
       accessorKey: "project_id",
       header: "Projects",
       cell: ({ row }) => {
-        const projectIds = Object.values(
-          row.getValue("project_id") as { [key: string]: number }
-        ) as number[];
+        const projectNames = row.getValue("project_id") as string[];
         return (
           <div>
-            {projectIds.length > 0 ? (
-              projectIds.map((id) => projectNameMap[id] || "N/A").join(", ")
+            {projectNames?.length > 0 ? (
+              projectNames.join(", ")
             ) : (
               <div>None</div>
             )}
@@ -208,7 +235,7 @@ export function ClientTable() {
                   Edit
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={() => {}}
+                  onClick={() => handleDeleteClick(row.original)}
                   className="text-red-600 cursor-pointer"
                 >
                   Delete
@@ -390,7 +417,13 @@ export function ClientTable() {
         isOpen={isEditModalOpen}
         onClose={handleEditModalClose}
         onSave={handleSaveClient}
-        onUpdateSuccess={() => fetchClients()} // Pass the required prop
+        onUpdateSuccess={() => fetchClients()}
+      />
+      <DeleteClientModal
+        client={clientToDelete}
+        isOpen={isDeleteModalOpen}
+        onClose={handleDeleteModalClose}
+        onConfirm={handleDeleteConfirm}
       />
     </div>
   );
