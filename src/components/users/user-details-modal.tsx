@@ -24,7 +24,7 @@ interface User {
 }
 
 interface UserDetailsModalProps {
-  user: User | null;
+  user?: User;
   isOpen: boolean;
   onClose: () => void;
 }
