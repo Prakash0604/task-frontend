@@ -83,6 +83,8 @@ export function ClientTable() {
     null
   );
   const [isAddModalOpen, setIsAddModalOpen] = React.useState(false);
+  const [pageIndex, setPageIndex] = React.useState(0); // Manage pageIndex
+  const [pageSize, setPageSize] = React.useState(10); // Manage pageSize
 
   // Fetch clients and projects on mount
   React.useEffect(() => {
@@ -107,6 +109,11 @@ export function ClientTable() {
     projectsError,
   ]);
 
+  // Debug clients data
+  React.useEffect(() => {
+    console.log("Clients data:", clients, "Length:", clients?.length);
+  }, [clients]);
+
   const handleEditClient = (client: Client) => {
     setSelectedClient(client);
     setIsEditModalOpen(true);
@@ -130,6 +137,7 @@ export function ClientTable() {
           await fetchClients(); // Refresh the client list
           setIsDeleteModalOpen(false);
           setClientToDelete(null);
+          setPageIndex(0); // Reset to first page after deletion
         } else {
           toast.error(response.message || "Failed to delete client");
         }
@@ -150,7 +158,7 @@ export function ClientTable() {
     {
       id: "serial",
       header: "S.N.",
-      cell: ({ row }) => <div>{row.index + 1}</div>,
+      cell: ({ row }) => <div>{row.index + 1 + pageIndex * pageSize}</div>, // Adjust serial number for pagination
       enableSorting: false,
       enableHiding: false,
     },
@@ -382,7 +390,20 @@ export function ClientTable() {
       columnFilters,
       columnVisibility,
       rowSelection,
+      pagination: {
+        pageIndex,
+        pageSize,
+      },
     },
+    onPaginationChange: (updater) => {
+      const newPagination =
+        typeof updater === "function"
+          ? updater({ pageIndex, pageSize })
+          : updater;
+      setPageIndex(newPagination.pageIndex);
+      setPageSize(newPagination.pageSize);
+    },
+    rowCount: clients?.length || 0, // Provide total row count
   });
 
   const handleRowClick = (client: Client) => {
@@ -504,12 +525,31 @@ export function ClientTable() {
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+      <div className="flex items-center justify-between py-4">
+        <div className="text-sm text-muted-foreground">
+          Showing {table.getRowModel().rows.length} of {clients?.length || 0}{" "}
+          rows
         </div>
-        <div className="space-x-2">
+        <div className="flex items-center space-x-2">
+          <label htmlFor="pageSize" className="text-sm">
+            Rows per page:
+          </label>
+          <select
+            id="pageSize"
+            value={pageSize}
+            onChange={(e) => {
+              setPageSize(Number(e.target.value));
+              table.setPageSize(Number(e.target.value));
+              setPageIndex(0); // Reset to first page when pageSize changes
+            }}
+            className="border rounded p-1"
+          >
+            {[5, 10, 20, 50].map((size) => (
+              <option key={size} value={size}>
+                {size}
+              </option>
+            ))}
+          </select>
           <Button
             variant="outline"
             size="sm"
@@ -518,6 +558,10 @@ export function ClientTable() {
           >
             Previous
           </Button>
+          <span className="text-sm">
+            Page {table.getState().pagination.pageIndex + 1} of{" "}
+            {table.getPageCount()}
+          </span>
           <Button
             variant="outline"
             size="sm"
