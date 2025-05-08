@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import DefaultLayout from "@/components/default-layout";
-import { ProjectsDataTable } from "@/components/tables/project-tables";
 import ProtectedRoute from "@/components/user-auth/protected-route";
 import { Button } from "@/components/ui/button";
-import { CardContent } from "@/components/ui/card";
 import Container from "@/components/containers/main-container";
 import AddProjectModal from "@/components/tables/add-project";
+import { ProjectsDataTable } from "@/components/tables/project-tables";
+
 
 const Projects: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,7 +15,7 @@ const Projects: React.FC = () => {
   return (
     <ProtectedRoute>
       <DefaultLayout>
-        <Container className="p-4 bg-gray-50 dark:bg-gray-900 dark:text-white">
+        <Container className="p-4  dark:text-white">
           <Container className="">
             <Container className="flex justify-between items-center">
               <div>
@@ -33,9 +33,7 @@ const Projects: React.FC = () => {
                 Add Project
               </Button>
             </Container>
-            <CardContent>
-              <ProjectsDataTable />
-            </CardContent>
+            <ProjectsDataTable />
           </Container>
         </Container>
         <AddProjectModal

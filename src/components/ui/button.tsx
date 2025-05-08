@@ -18,6 +18,7 @@ const buttonVariants = cva(
         trans: "bg-transparent",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
+        danger: "bg-[var(--taskmandu-danger)]",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {

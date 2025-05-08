@@ -26,12 +26,12 @@ export function DeleteProjectModal({
 }: DeleteProjectModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px] dark:bg-gray-950 dark:text-white focus:ring-1 focus:ring-[var(--taskmandu-primary)] text-sm shadow-md dark:shadow-blue-400">
+      <DialogContent className="sm:max-w-[425px] dark:bg-gray-900 bg-gray-200 dark:text-white focus:ring-1 focus:ring-[var(--taskmandu-primary)] text-sm shadow-md dark:shadow-blue-400 border border-gray-200 dark:border-gray-700">
         <DialogHeader>
           <DialogTitle>Delete Project</DialogTitle>
           <DialogDescription>
             Are you sure you want to delete{" "}
-            <span className="font-semibold">
+            <span className="font-semibold text-lg text-[var(--taskmandu-light-icon)]">
               {projectName || "this project"}
             </span>
             ? This action cannot be undone.
@@ -46,12 +46,12 @@ export function DeleteProjectModal({
             Cancel
           </Button>
           <Button
-            variant="destructive"
+            variant="danger"
             onClick={() => {
               onConfirm();
               onClose();
             }}
-            className="focus:ring-1 focus:ring-[var(--taskmandu-primary)] text-sm shadow-md dark:shadow-blue-400"
+            className="focus:ring-1 focus:ring-[var(--taskmandu-primary)] text-sm text-white"
           >
             Delete
           </Button>
