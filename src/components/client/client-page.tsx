@@ -36,11 +36,13 @@ import {
 } from "@/components/ui/table";
 import useClientsStore from "@/store/clients-store/get-clients-store";
 import useDeleteClientStore from "@/store/clients-store/delete-client";
+import useProjectsStore from "@/store/projects-store/get-projects-stores";
 import { motion, AnimatePresence } from "framer-motion";
 import ClientDetailsModal from "./details-modal";
 import EditClientModal from "./edit-modal";
 import DeleteClientModal from "./delete-modal";
 import { toast } from "sonner";
+import AddClientModal from "./client-add";
 
 export type Client = {
   id: number;
@@ -50,13 +52,19 @@ export type Client = {
   contact: string;
   contact_person: string;
   contact_number_person: string;
-  project_id: { [key: string]: number }; // Unified type for compatibility
+  project_id: { [key: string]: number };
   created_at: string;
 };
 
 export function ClientTable() {
   const { clients, isLoading, error, fetchClients } = useClientsStore();
   const { deleteClient } = useDeleteClientStore();
+  const {
+    projects,
+    isLoading: projectsLoading,
+    error: projectsError,
+    fetchProjects,
+  } = useProjectsStore();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -74,14 +82,37 @@ export function ClientTable() {
   const [clientToDelete, setClientToDelete] = React.useState<Client | null>(
     null
   );
+  const [isAddModalOpen, setIsAddModalOpen] = React.useState(false);
+  const [pageIndex, setPageIndex] = React.useState(0); // Manage pageIndex
+  const [pageSize, setPageSize] = React.useState(10); // Manage pageSize
 
+  // Fetch clients and projects on mount
   React.useEffect(() => {
     if (!hasFetched && !isLoading && !clients) {
       fetchClients().then(() => {
         setHasFetched(true);
       });
     }
-  }, [fetchClients, hasFetched, isLoading, clients]);
+    if (!projects && !projectsLoading && !projectsError) {
+      fetchProjects().catch(() => {
+        toast.error("Failed to fetch projects");
+      });
+    }
+  }, [
+    fetchClients,
+    hasFetched,
+    isLoading,
+    clients,
+    fetchProjects,
+    projects,
+    projectsLoading,
+    projectsError,
+  ]);
+
+  // Debug clients data
+  React.useEffect(() => {
+    console.log("Clients data:", clients, "Length:", clients?.length);
+  }, [clients]);
 
   const handleEditClient = (client: Client) => {
     setSelectedClient(client);
@@ -89,7 +120,7 @@ export function ClientTable() {
   };
 
   const handleSaveClient = (updatedClient: Client) => {
-    console.log("Saving client:", updatedClient);
+    toast.success("Saving client:", updatedClient);
   };
 
   const handleDeleteClick = (client: Client) => {
@@ -106,6 +137,7 @@ export function ClientTable() {
           await fetchClients(); // Refresh the client list
           setIsDeleteModalOpen(false);
           setClientToDelete(null);
+          setPageIndex(0); // Reset to first page after deletion
         } else {
           toast.error(response.message || "Failed to delete client");
         }
@@ -126,7 +158,7 @@ export function ClientTable() {
     {
       id: "serial",
       header: "S.N.",
-      cell: ({ row }) => <div>{row.index + 1}</div>,
+      cell: ({ row }) => <div>{row.index + 1 + pageIndex * pageSize}</div>, // Adjust serial number for pagination
       enableSorting: false,
       enableHiding: false,
     },
@@ -141,7 +173,22 @@ export function ClientTable() {
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => <div>{row.getValue("name") || "N/A"}</div>,
+      cell: ({ row }) => {
+        const value = (row.getValue("name") as string) || "N/A";
+        if (value.includes(" ")) {
+          const parts = value.split(" ");
+          return (
+            <div className="flex flex-col gap-1">
+              {parts.map((part, index) => (
+                <div key={index} className="text-sm">
+                  {part}
+                </div>
+              ))}
+            </div>
+          );
+        }
+        return <div>{value}</div>;
+      },
     },
     {
       accessorKey: "email",
@@ -154,57 +201,136 @@ export function ClientTable() {
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => (
-        <div className="lowercase">{row.getValue("email") || "N/A"}</div>
-      ),
+      cell: ({ row }) => {
+        const value = (row.getValue("email") as string) || "N/A";
+        if (value.includes(" ")) {
+          const parts = value.split(" ");
+          return (
+            <div className="flex flex-col gap-1 lowercase">
+              {parts.map((part, index) => (
+                <div key={index} className="text-sm">
+                  {part}
+                </div>
+              ))}
+            </div>
+          );
+        }
+        return <div className="lowercase">{value}</div>;
+      },
     },
     {
       accessorKey: "address",
       header: "Address",
-      cell: ({ row }) => <div>{row.getValue("address") || "N/A"}</div>,
+      cell: ({ row }) => {
+        const value = (row.getValue("address") as string) || "N/A";
+        if (value.includes(" ")) {
+          const parts = value.split(" ");
+          return (
+            <div className="flex flex-col gap-1">
+              {parts.map((part, index) => (
+                <div key={index} className="text-sm">
+                  {part}
+                </div>
+              ))}
+            </div>
+          );
+        }
+        return <div>{value}</div>;
+      },
     },
     {
       accessorKey: "contact",
       header: "Contact",
-      cell: ({ row }) => <div>{row.getValue("contact") || "N/A"}</div>,
+      cell: ({ row }) => {
+        const value = (row.getValue("contact") as string) || "N/A";
+        if (value.includes(" ")) {
+          const parts = value.split(" ");
+          return (
+            <div className="flex flex-col gap-1">
+              {parts.map((part, index) => (
+                <div key={index} className="text-sm">
+                  {part}
+                </div>
+              ))}
+            </div>
+          );
+        }
+        return <div>{value}</div>;
+      },
     },
     {
       accessorKey: "contact_person",
       header: "Contact Person",
-      cell: ({ row }) => <div>{row.getValue("contact_person") || "N/A"}</div>,
+      cell: ({ row }) => {
+        const value = (row.getValue("contact_person") as string) || "N/A";
+        if (value.includes(" ")) {
+          const parts = value.split(" ");
+          return (
+            <div className="flex flex-col gap-1">
+              {parts.map((part, index) => (
+                <div key={index} className="text-sm">
+                  {part}
+                </div>
+              ))}
+            </div>
+          );
+        }
+        return <div>{value}</div>;
+      },
     },
     {
       accessorKey: "contact_number_person",
       header: "Person Number",
-      cell: ({ row }) => (
-        <div>{row.getValue("contact_number_person") || "N/A"}</div>
-      ),
+      cell: ({ row }) => {
+        const value =
+          (row.getValue("contact_number_person") as string) || "N/A";
+        if (value.includes(" ")) {
+          const parts = value.split(" ");
+          return (
+            <div className="flex flex-col gap-1">
+              {parts.map((part, index) => (
+                <div key={index} className="text-sm">
+                  {part}
+                </div>
+              ))}
+            </div>
+          );
+        }
+        return <div>{value}</div>;
+      },
     },
     {
       accessorKey: "project_id",
       header: "Projects",
       cell: ({ row }) => {
-        const projectNames = row.getValue("project_id") as string[];
+        const projectIds = row.getValue("project_id") as {
+          [key: string]: number;
+        };
+        if (projectsLoading) {
+          return <div>Loading projects...</div>;
+        }
+        if (projectsError) {
+          return <div className="text-red-500">Error loading projects</div>;
+        }
+        if (!projects || projects.length === 0) {
+          return <div>No projects available</div>;
+        }
+        const projectNames = Object.values(projectIds).map(
+          (id) =>
+            projects.find((p: { id: number; title: string }) => p.id === id)
+              ?.title || id.toString()
+        );
         return (
-          <div>
-            {projectNames?.length > 0 ? (
-              projectNames.join(", ")
-            ) : (
-              <div>None</div>
-            )}
+          <div className="flex flex-col gap-1">
+            {projectNames.length > 0
+              ? projectNames.map((name, index) => (
+                  <div key={index} className="text-sm">
+                    {name}
+                  </div>
+                ))
+              : "None"}
           </div>
         );
-      },
-    },
-    {
-      accessorKey: "created_at",
-      header: "Created At",
-      cell: ({ row }) => {
-        const dateTime = row.getValue("created_at") as string;
-        const formattedDate = dateTime
-          ? new Date(dateTime).toISOString().split("T")[0]
-          : "N/A";
-        return <div>{formattedDate}</div>;
       },
     },
     {
@@ -264,7 +390,20 @@ export function ClientTable() {
       columnFilters,
       columnVisibility,
       rowSelection,
+      pagination: {
+        pageIndex,
+        pageSize,
+      },
     },
+    onPaginationChange: (updater) => {
+      const newPagination =
+        typeof updater === "function"
+          ? updater({ pageIndex, pageSize })
+          : updater;
+      setPageIndex(newPagination.pageIndex);
+      setPageSize(newPagination.pageSize);
+    },
+    rowCount: clients?.length || 0, // Provide total row count
   });
 
   const handleRowClick = (client: Client) => {
@@ -286,6 +425,9 @@ export function ClientTable() {
     <div className="w-full max-w-full p-4 flex flex-col dark:text-white overflow-x-hidden box-sizing-border">
       {isLoading && <div>Loading...</div>}
       {error && <div className="text-red-500">{error}</div>}
+      <div className="flex mb-4">
+        <Button onClick={() => setIsAddModalOpen(true)}>Add Client</Button>
+      </div>
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter emails..."
@@ -383,12 +525,31 @@ export function ClientTable() {
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+      <div className="flex items-center justify-between py-4">
+        <div className="text-sm text-muted-foreground">
+          Showing {table.getRowModel().rows.length} of {clients?.length || 0}{" "}
+          rows
         </div>
-        <div className="space-x-2">
+        <div className="flex items-center space-x-2">
+          <label htmlFor="pageSize" className="text-sm">
+            Rows per page:
+          </label>
+          <select
+            id="pageSize"
+            value={pageSize}
+            onChange={(e) => {
+              setPageSize(Number(e.target.value));
+              table.setPageSize(Number(e.target.value));
+              setPageIndex(0); // Reset to first page when pageSize changes
+            }}
+            className="border rounded p-1"
+          >
+            {[5, 10, 20, 50].map((size) => (
+              <option key={size} value={size}>
+                {size}
+              </option>
+            ))}
+          </select>
           <Button
             variant="outline"
             size="sm"
@@ -397,6 +558,10 @@ export function ClientTable() {
           >
             Previous
           </Button>
+          <span className="text-sm">
+            Page {table.getState().pagination.pageIndex + 1} of{" "}
+            {table.getPageCount()}
+          </span>
           <Button
             variant="outline"
             size="sm"
@@ -424,6 +589,11 @@ export function ClientTable() {
         isOpen={isDeleteModalOpen}
         onClose={handleDeleteModalClose}
         onConfirm={handleDeleteConfirm}
+      />
+      <AddClientModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onAddSuccess={() => fetchClients()}
       />
     </div>
   );

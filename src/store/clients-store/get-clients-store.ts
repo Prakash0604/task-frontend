@@ -42,6 +42,7 @@ interface ClientsState {
   isLoading: boolean;
   error: string | null;
   fetchClients: () => Promise<ClientsResponse>;
+  
 }
 
 const useClientsStore = create<ClientsState>()(

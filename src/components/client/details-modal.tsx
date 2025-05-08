@@ -10,30 +10,69 @@ import {
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { Client } from "./client-page";
+import useProjectsStore from "@/store/projects-store/get-projects-stores";
+import { toast } from "sonner";
+
 interface ClientDetailsModalProps {
   client: Client | null;
   isOpen: boolean;
   onClose: () => void;
 }
 
-const projectNameMap: { [key: number]: string } = {
-  1: "Project Alpha",
-  2: "Project Beta",
-  3: "Project Gamma",
-};
-
 export default function ClientDetailsModal({
   client,
   isOpen,
   onClose,
 }: ClientDetailsModalProps) {
+  const {
+    projects,
+    isLoading: projectsLoading,
+    error: projectsError,
+    fetchProjects,
+  } = useProjectsStore();
+
+  // Fetch projects if not already loaded
+  React.useEffect(() => {
+    if (!projects && !projectsLoading && !projectsError) {
+      fetchProjects().catch(() => {
+        toast.error("Failed to fetch projects");
+      });
+    }
+  }, [projects, projectsLoading, projectsError, fetchProjects]);
+
   if (!client) return null;
 
+  // Get project names from project_id
   const projectIds = Object.values(client.project_id) as number[];
-  const projectNames =
-    projectIds.length > 0
-      ? projectIds.map((id) => projectNameMap[id] || "N/A").join(", ")
-      : "None";
+  let projectNames: string;
+
+  if (projectsLoading) {
+    projectNames = "Loading projects...";
+  } else if (projectsError) {
+    projectNames = "Error loading projects";
+  } else if (!projects || projects.length === 0) {
+    projectNames = "No projects available";
+  } else {
+    projectNames =
+      projectIds.length > 0
+        ? projectIds
+            .map(
+              (id) =>
+                projects.find((p: { id: number; title: string }) => p.id === id)
+                  ?.title || "Unknown Project"
+            )
+            .join(", ")
+        : "None";
+  }
+
+  // Format created_at date
+  const formattedCreatedAt = client.created_at
+    ? new Date(client.created_at).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : "N/A";
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -86,11 +125,7 @@ export default function ClientDetailsModal({
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <span className="col-span-1 font-medium">Created At:</span>
-            <span className="col-span-3">
-              {client.created_at
-                ? new Date(client.created_at).toISOString().split("T")[0]
-                : "N/A"}
-            </span>
+            <span className="col-span-3">{formattedCreatedAt}</span>
           </div>
         </div>
       </DialogContent>

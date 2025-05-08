@@ -236,8 +236,6 @@ export function ProjectsDataTable() {
       toast.error("An error occurred while deleting the project");
       throw new Error("Failed to delete project", error as Error);
     }
-
-
   };
 
   const table = useReactTable({
@@ -322,9 +320,9 @@ export function ProjectsDataTable() {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
