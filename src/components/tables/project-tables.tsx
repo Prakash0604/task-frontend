@@ -165,19 +165,29 @@ export function ProjectsDataTable() {
   );
 
 
-  const { projects, fetchProjects: allProjects, currentPage, loading } = useAllProjectStore();
+  const {
+    projects,
+    fetchProjects,
+    currentPage,
+    hasMore,
+    loading,
+  } = useAllProjectStore();
 
   React.useEffect(() => {
-    if (projects.length === 0 && !loading) {
-      allProjects(1);
+    if (projects.length === 0) {
+      fetchProjects(1);
     }
-  }, [projects, allProjects, loading]);
+  }, [fetchProjects, projects.length]);
+
+  const [triggeredPage, setTriggeredPage] = React.useState<number | null>(null);
 
   React.useEffect(() => {
-    if (projects.length > 0 && projects.length % 10 === 0 && !loading) {
-      allProjects(currentPage + 1);
+    if (!loading && hasMore && triggeredPage !== currentPage) {
+      setTriggeredPage(currentPage);
+      fetchProjects(currentPage + 1);
     }
-  }, [projects, allProjects, currentPage, loading]);
+  }, [loading, hasMore, currentPage, fetchProjects, triggeredPage]);
+
   console.log(projects)
 
 
