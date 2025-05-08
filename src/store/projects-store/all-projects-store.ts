@@ -1,7 +1,7 @@
 
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import API from '@/config/request';
 import { getUser } from '@/utlis';
 
@@ -19,7 +19,9 @@ interface ProjectStore {
         loading: boolean;
         error: string | null;
         currentPage: number;
-        fetchProjects: (page?: number) => Promise<Project[] | null>;
+        hasMore: boolean;
+        fetchProjects: (page?: number) => Promise<void>;
+        resetProjects: () => void;
 }
 
 export const useAllProjectStore = create<ProjectStore>()(
@@ -28,6 +30,7 @@ export const useAllProjectStore = create<ProjectStore>()(
                 loading: false,
                 error: null,
                 currentPage: 1,
+                hasMore: true,
                 fetchProjects: async (page = 1) => {
                         set((state) => {
                                 state.loading = true;
@@ -36,9 +39,7 @@ export const useAllProjectStore = create<ProjectStore>()(
 
                         try {
                                 const token = getUser();
-                                if (!token) {
-                                        throw new Error('No token found');
-                                }
+                                if (!token) throw new Error('No token found');
 
                                 const response = await API.get(`/projects?page=${page}`, {
                                         headers: {
@@ -46,46 +47,40 @@ export const useAllProjectStore = create<ProjectStore>()(
                                         },
                                 });
 
-                                if (response.data?.success && Array.isArray(response.data.data)) {
-                                        const projectData = response.data.data;
+                                const { data, meta } = response.data;
 
-                                        set((state) => {
-                                                // Append if fetching next page
-                                                if (page > 1) {
-                                                        state.projects.push(...projectData);
-                                                } else {
-                                                        state.projects = projectData;
-                                                }
-                                                state.currentPage = page;
-                                                state.loading = false;
-                                        });
-
-                                        return projectData;
-                                } else {
-                                        const fallbackError = 'Invalid response format from server.';
-                                        console.error('[ProjectStore] Unexpected API structure:', response.data);
-                                        set((state) => {
-                                                state.error = fallbackError;
-                                                state.loading = false;
-                                        });
-                                        return null;
-                                }
-                        } catch (error) {
-                                let errorMessage = 'Failed to fetch or No response from the server';
-                                if (axios.isAxiosError(error)) {
-                                        const axiosError = error as AxiosError<{ message?: string }>;
-                                        errorMessage = axiosError.response?.data?.message || axiosError.message;
-                                } else if (error instanceof Error) {
-                                        errorMessage = error.message;
-                                }
                                 set((state) => {
-                                        state.error = errorMessage;
+                                        if (page === 1) {
+                                                state.projects = data;
+                                        } else {
+                                                state.projects.push(...data);
+                                        }
+                                        state.currentPage = page;
+                                        state.hasMore = meta?.has_more || data.length > 0; // fallback
                                         state.loading = false;
                                 });
+                        } catch (error) {
+                                const message =
+                                        axios.isAxiosError(error)
+                                                ? error.response?.data?.message || error.message
+                                                : error instanceof Error
+                                                        ? error.message
+                                                        : 'Unknown error';
 
-                                return null;
+                                set((state) => {
+                                        state.error = message;
+                                        state.loading = false;
+                                });
                         }
                 },
+
+                resetProjects: () =>
+                        set((state) => {
+                                state.projects = [];
+                                state.currentPage = 1;
+                                state.hasMore = true;
+                                state.error = null;
+                        }),
         }))
 );
 
