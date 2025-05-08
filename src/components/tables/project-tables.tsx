@@ -45,6 +45,7 @@ import EditProjectModal from "./edit-project-modal";
 import { DeleteProjectModal } from "./delete-modal";
 import { Project } from "@/lib/type";
 import { toast } from "sonner";
+import { useAllProjectStore } from "@/store/projects-store/all-projects-store";
 
 export const columns: ColumnDef<Project>[] = [
   {
@@ -140,7 +141,7 @@ export const columns: ColumnDef<Project>[] = [
 ];
 
 export function ProjectsDataTable() {
-  const { fetchProjects, deleteProject } = useProjectsStore();
+  const { deleteProject } = useProjectsStore();
   const [data, setData] = React.useState<Project[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -163,30 +164,24 @@ export function ProjectsDataTable() {
     null
   );
 
-  // Fetch projects from API
+
+  const { projects, fetchProjects: allProjects, currentPage, loading } = useAllProjectStore();
+
   React.useEffect(() => {
-    const loadProjects = async () => {
-      setIsLoading(true);
-      try {
-        const response = await fetchProjects();
-        if (response.success) {
-          const transformed: Project[] = response.data.map((item) => ({
-            id: item.id,
-            name: item.title,
-            createDate: item.created_at,
-            description: item.description || "No description available",
-          }));
-          setData(transformed);
-        } else {
-          toast.error("Failed to fetch projects");
-        }
-      } catch {
-        toast.error("An error occurred while fetching projects");
-      }
-      setIsLoading(false);
-    };
-    loadProjects();
-  }, [fetchProjects]);
+    if (projects.length === 0 && !loading) {
+      allProjects(1);
+    }
+  }, [projects, allProjects, loading]);
+
+  React.useEffect(() => {
+    if (projects.length > 0 && projects.length % 10 === 0 && !loading) {
+      allProjects(currentPage + 1);
+    }
+  }, [projects, allProjects, currentPage, loading]);
+  console.log(projects)
+
+
+
 
   // Handle row click to open details modal
   const handleRowClick = (project: Project) => {
@@ -224,7 +219,7 @@ export function ProjectsDataTable() {
           prev.filter((project) => project.id !== projectToDelete.id)
         );
         toast.success("Project deleted successfully");
-        fetchProjects();
+        allProjects();
       } else {
         toast.error("Failed to delete project");
       }
@@ -320,9 +315,9 @@ export function ProjectsDataTable() {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -428,7 +423,7 @@ export function ProjectsDataTable() {
           const loadProjects = async () => {
             setIsLoading(true);
             try {
-              const response = await fetchProjects();
+              const response = await allProjects();
               if (response.success) {
                 const transformed: Project[] = response.data.map((item) => ({
                   id: item.id,
