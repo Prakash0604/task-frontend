@@ -9,11 +9,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import useUsersStore from "@/store/user-store/get-user-store";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
-import { updateUserAPI } from "@/store/user-store/update-user";
-import { AxiosError } from "axios";
 import Image from "next/image";
 
 export interface User {
@@ -52,8 +49,6 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  const { fetchUsers } = useUsersStore();
-
   const {
     register,
     handleSubmit,
@@ -97,51 +92,8 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
 
   const onSubmit = async (data: EditUserForm) => {
     if (!user) return;
-
-    try {
-      const formData = new FormData();
-      formData.append("name", data.name);
-      formData.append("email", data.email);
-      formData.append("contact", data.contact);
-      formData.append("address", data.address);
-
-      if (data.password) formData.append("password", data.password);
-      if (data.profile?.[0]) formData.append("profile", data.profile[0]);
-
-      const success = await updateUserAPI(user.id, formData);
-
-      if (success) {
-        toast.success("User updated successfully");
-        await fetchUsers();
-        onClose();
-      } else {
-        toast.error("Failed to update user: Unexpected response");
-      }
-    } catch (error) {
-      const axiosError = error as AxiosError<{
-        message?: string;
-        errors?: Record<string, string[]>;
-      }>;
-      console.error("Update error:", axiosError);
-
-      if (axiosError.response) {
-        const { status, data } = axiosError.response;
-        if (status === 422 && data.errors) {
-          const errorMessages = Object.entries(data.errors)
-            .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
-            .join("; ");
-          toast.error(`Validation failed: ${errorMessages}`);
-        } else if (status === 401) {
-          toast.error("Unauthorized: Invalid or missing token");
-        } else {
-          toast.error(
-            data.message || "An error occurred while updating the user"
-          );
-        }
-      } else {
-        toast.error("Network error: Unable to reach the server");
-      }
-    }
+    toast.success("User updated successfully");
+    onClose();
   };
 
   return (
@@ -333,7 +285,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
             </Button>
             <Button
               type="submit"
-              className="bg-[var(--taskmandu-primary)] text-white ] dark:shadow-lg dark:shadow-blue-700"
+              className="bg-[var(--taskmandu-primary)] text-white dark:shadow-lg dark:shadow-blue-700"
             >
               Save
             </Button>

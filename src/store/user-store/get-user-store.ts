@@ -51,66 +51,66 @@ const useUsersStore = create<UsersState>()(
                 isLoading: false,
                 error: null,
                 fetchUsers: async (page = 1): Promise<UsersResponse> => {
-                        set((state) => {
-                                state.isLoading = true;
-                                state.error = null;
-                        });
+  set((state) => {
+    state.isLoading = true;
+    state.error = null;
+  });
 
-                        try {
-                                const token = getUser();
-                                if (!token) throw new Error('No token found');
-                                const res = await API.get<UsersResponse>(`/users?page=${page}`, {
-                                        headers: {
-                                                Authorization: `Bearer ${token}`,
-                                        },
-                                });
+  try {
+    const token = getUser();
+    if (!token) throw new Error('No token found');
+    const res = await API.get<UsersResponse>(`/users?page=${page}&per_page=5`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-                                const responseData = res.data;
+    const responseData = res.data;
 
-                                if (responseData.success) {
-                                        set((state) => {
-                                                state.users = responseData.data;
-                                                state.meta = responseData.meta;
-                                                state.isLoading = false;
-                                        });
-                                } else {
-                                        set((state) => {
-                                                state.error = responseData.message || 'Failed to fetch users';
-                                                state.isLoading = false;
-                                        });
-                                }
+    if (responseData.success) {
+      set((state) => {
+        state.users = responseData.data;
+        state.meta = responseData.meta;
+        state.isLoading = false;
+      });
+    } else {
+      set((state) => {
+        state.error = responseData.message || 'Failed to fetch users';
+        state.isLoading = false;
+      });
+    }
 
-                                return responseData;
-                        } catch (error) {
-                                const errorMessage =
-                                        (error as AxiosError<{ message?: string }>).response?.data?.message ||
-                                        'We are sorry, there was a problem. Please check the details and try again.';
+    return responseData;
+  } catch (error) {
+    const errorMessage =
+      (error as AxiosError<{ message?: string }>).response?.data?.message ||
+      'We are sorry, there was a problem. Please check the details and try again.';
 
-                                set((state) => {
-                                        state.error = errorMessage;
-                                        state.isLoading = false;
-                                });
+    set((state) => {
+      state.error = errorMessage;
+      state.isLoading = false;
+    });
 
-                                return {
-                                        success: false,
-                                        message: errorMessage,
-                                        status_code: 500,
-                                        data: [],
-                                        meta: {
-                                                current_page: 1,
-                                                last_page: 1,
-                                                per_page: 10,
-                                                total: 0,
-                                                next_page_url: null,
-                                                prev_page_url: null,
-                                                from: 0,
-                                                to: 0,
-                                                path: '',
-                                        },
-                                };
-                        }
-                },
-        }))
+    return {
+      success: false,
+      message: errorMessage,
+      status_code: 500,
+      data: [],
+      meta: {
+        current_page: 1,
+        last_page: 1,
+        per_page: 5,
+        total: 0,
+        next_page_url: null,
+        prev_page_url: null,
+        from: 0,
+        to: 0,
+        path: '',
+      },
+    };
+  }
+},
+        })),
 );
 
 export default useUsersStore;
