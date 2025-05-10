@@ -1,68 +1,85 @@
+import { create } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
 import API from '@/config/request';
+import { AxiosError } from 'axios';
 import { getUser } from '@/utlis';
 
-export interface User {
-  id: number;
+interface UserData {
   name: string;
   email: string;
-  email_verified_at: string | null;
-  profile: string | null;
-  contact: string;
   address: string;
-  created_at: string;
-  updated_at: string;
-  is_verified: string;
-  office_status: string | null;
-  status: string;
+  password: string;
+  contact: string;
+  profile?: File;
 }
 
-export interface Meta {
-  current_page: number;
-  last_page: number;
-  per_page: number;
-  total: number;
-  next_page_url: string | null;
-  prev_page_url: string | null;
-  from: number;
-  to: number;
-  path: string;
+interface UserStore {
+  user: UserData | null;
+  loading: boolean;
+  error: string | null;
+  updateUser: (id: number, data: UserData) => Promise<UserData | null>; // New updateUser method
 }
 
-export interface UsersResponse {
-  success: boolean;
-  message: string;
-  status_code: number;
-  data: User[];
-  meta: Meta;
-}
+export const useCreateUserStore = create<UserStore>()(
+  immer((set) => ({
+    user: null,
+    loading: false,
+    error: null,
+    // Update user method
+    updateUser: async (id, data) => {
+      set((state) => {
+        state.loading = true;
+        state.error = null;
+      });
 
-export const fetchUsersAPI = async (): Promise<UsersResponse> => {
-  const token = getUser();
-  if (!token) throw new Error('No token found');
+      try {
+        const token = getUser();
+        if (!token) {
+          throw new Error('No token found');
+        }
+        const formData = new FormData();
+        formData.append('name', data.name);
+        formData.append('email', data.email);
+        formData.append('address', data.address);
+        formData.append('password', data.password);
+        formData.append('contact', data.contact);
+        if (data.profile) {
+          formData.append('profile', data.profile);
+        }
 
-  const res = await API.get<UsersResponse>('/users', {
-    headers: {
-      Authorization: `Bearer ${token}`,
+        const response = await API.put(`/users/${id}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.status) {
+          set((state) => {
+            state.user = response.data;
+            state.loading = false;
+          });
+          return response.data;
+        } else {
+          set((state) => {
+            state.user = null;
+            state.loading = false;
+          });
+          return null;
+        }
+      } catch (error) {
+        const errorMessage =
+          (error as AxiosError<{ message?: string }>).response?.data?.message ||
+          'We are sorry, there was a problem. Please check the details and try again.';
+
+        set((state) => {
+          state.error = errorMessage;
+          state.loading = false;
+        });
+
+        throw new Error(errorMessage);
+      }
     },
-  });
+  }))
+);
 
-  return res.data;
-};
-
-export const updateUserAPI = async (id: number, data: FormData): Promise<boolean> => {
-  const token = getUser();
-  if (!token) throw new Error("No token found");
-
-  try {
-    const res = await API.post(`/users/${id}?_method=PUT`, data, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
-      },
-    });
-
-    return res.status >= 200 && res.status < 300;
-  } catch (error) {
-    throw error;
-  }
-};
