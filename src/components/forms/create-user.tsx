@@ -15,12 +15,13 @@ import {
 } from "@/components/ui/form";
 import { useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { Loader2, UploadCloud, X } from "lucide-react";
+import { UploadCloud, X } from "lucide-react";
 import { userSchema } from "@/utlis";
 import { useCreateUserStore } from "@/store/user-store/create-user-store";
 import { toast } from "sonner";
 import useUsersStore from "@/store/user-store/get-user-store";
 import Container from "../containers/main-container";
+import LoadingButton from "../loading/loading-button";
 
 type FormData = z.infer<typeof userSchema>;
 
@@ -102,7 +103,7 @@ export default function CreateUser({ onSuccess }: CreateUserProps) {
                     className="text-gray-500 dark:text-gray-200"
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-[var(--taskmandu-danger)]" />
               </FormItem>
             )}
           />
@@ -122,7 +123,7 @@ export default function CreateUser({ onSuccess }: CreateUserProps) {
                     className="text-gray-500 dark:text-gray-200"
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-[var(--taskmandu-danger)]" />
               </FormItem>
             )}
           />
@@ -144,7 +145,7 @@ export default function CreateUser({ onSuccess }: CreateUserProps) {
                     className="text-gray-500 dark:text-gray-200"
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-[var(--taskmandu-danger)]" />
               </FormItem>
             )}
           />
@@ -164,7 +165,7 @@ export default function CreateUser({ onSuccess }: CreateUserProps) {
                     className="text-gray-500 dark:text-gray-200"
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-[var(--taskmandu-danger)]" />
               </FormItem>
             )}
           />
@@ -185,7 +186,7 @@ export default function CreateUser({ onSuccess }: CreateUserProps) {
                   className="text-gray-500 dark:text-gray-200"
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-[var(--taskmandu-danger)]" />
             </FormItem>
           )}
         />
@@ -206,7 +207,7 @@ export default function CreateUser({ onSuccess }: CreateUserProps) {
                   <input {...getInputProps()} />
                   {fileName ? (
                     <div className="flex items-center justify-between">
-                      <p className="text-sm text-green-700">{fileName}</p>
+                      <p className="text-sm text-green-500">{fileName}</p>
                       <button
                         type="button"
                         onClick={removeFile}
@@ -231,9 +232,9 @@ export default function CreateUser({ onSuccess }: CreateUserProps) {
 
         <Button
           type="submit"
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+          className="w-full bg-[var(--taskmandu-primary)] hover:bg-[var(--taskmandu-primary)] text-white font-bold py-2 px-4 rounded"
         >
-          {loading ? <Loader2 /> : "Create User"}
+          {loading ? <LoadingButton /> : "Create User"}
         </Button>
       </form>
     </Form>

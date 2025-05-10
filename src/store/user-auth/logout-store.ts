@@ -14,13 +14,6 @@ interface LogoutState {
         error: string | null;
         logout: () => Promise<LogoutResponse>;
 }
-
-
-
-
-
-
-
 const useLogoutStore = create<LogoutState>()(
         immer((set) => ({
                 isLoading: false,

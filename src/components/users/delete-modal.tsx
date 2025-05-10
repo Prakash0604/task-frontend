@@ -10,6 +10,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { useDeleteUserStore } from "@/store/user-store/delete-user-store";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
+import useUsersStore from "@/store/user-store/get-user-store";
 
 export interface User {
   id: number;
@@ -39,6 +41,7 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
   onClose,
   onDeleteSuccess,
 }) => {
+  const { fetchUsers } = useUsersStore()
   const { deleteUser, loading, error } = useDeleteUserStore();
 
   const handleDelete = async () => {
@@ -48,20 +51,19 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
     }
 
     try {
-      console.log("Attempting to delete user with ID:", user.id);
       await deleteUser(user.id.toString());
-      console.log("User deleted successfully");
+      await fetchUsers()
       onDeleteSuccess();
       onClose();
     } catch (err) {
-      console.error("Delete error:", err);
-      toast.error(error || "Failed to delete user");
+      toast.error(error || "We are sorry, there was a problem. Please check the details and try again.");
+      throw new Error("We are sorry, there was a problem. Please check the details and try again.", err as Error)
     }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px] bg-[var(--taskmandu-background)] dark:bg-gray-900 border border-gray-400/80 dark:border-gray-700">
+      <DialogContent className="sm:max-w-[425px] bg-[var(--taskmandu-background)] dark:bg-gray-900 border border-gray-400/80 dark:border-gray-700/80">
         <DialogHeader>
           <DialogTitle className="text-gray-800 dark:text-gray-200">
             Confirm Deletion
@@ -77,19 +79,19 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
             type="button"
             variant="outline"
             onClick={onClose}
-            className="border border-gray-400/80 dark:border-gray-700 text-gray-600 dark:text-gray-200"
+            className="border bg-[var(--taskmandu-primary-text)] dark:bg-[var(--taskmandu-primary-icon)] border-gray-400/80 dark:border-gray-700 text-gray-600 dark:text-gray-900 "
             disabled={loading}
           >
             Cancel
           </Button>
           <Button
             type="button"
-            variant="destructive"
+            variant="danger"
             onClick={handleDelete}
-            className="bg-red-600 text-white hover:bg-red-700"
+            className=" text-white "
             disabled={loading}
           >
-            {loading ? "Deleting..." : "Delete"}
+            {loading ? <Loader2 className="animated-spin" /> : "Delete"}
           </Button>
         </DialogFooter>
       </DialogContent>

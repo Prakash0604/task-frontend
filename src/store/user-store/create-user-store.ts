@@ -46,24 +46,32 @@ export const useCreateUserStore = create<UserStore>()(
                                 if (data.profile) {
                                         formData.append('profile', data.profile);
                                 }
-
                                 const response = await API.post('/users', formData, {
                                         headers: {
                                                 'Content-Type': 'multipart/form-data',
                                                 Authorization: `Bearer ${token}`,
                                         },
                                 });
+                                if (response.status) {
+                                        set((state) => {
+                                                state.user = response.data;
+                                                state.loading = false;
+                                        });
+                                        return response.data;
 
-                                set((state) => {
-                                        state.user = response.data;
-                                        state.loading = false;
-                                });
+                                }
+                                else {
+                                        set((state) => {
+                                                state.user = null;
+                                                state.loading = false;
+                                        })
+                                        return null
+                                }
 
-                                return response.data;
                         } catch (error) {
                                 const errorMessage =
                                         (error as AxiosError<{ message?: string }>).response?.data?.message ||
-                                        'Something went wrong';
+                                        'We are sorry, there was a problem. Please check the details and try again.';
 
                                 set((state) => {
                                         state.error = errorMessage;
