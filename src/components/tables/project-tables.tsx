@@ -164,34 +164,25 @@ export function ProjectsDataTable() {
     null
   );
 
-
   const {
     projects,
-    fetchProjects,
+    fetchProjects: allProjects,
     currentPage,
-    hasMore,
     loading,
   } = useAllProjectStore();
 
   React.useEffect(() => {
-    if (projects.length === 0) {
-      fetchProjects(1);
+    if (projects.length === 0 && !loading) {
+      allProjects(1);
     }
-  }, [fetchProjects, projects.length]);
-
-  const [triggeredPage, setTriggeredPage] = React.useState<number | null>(null);
+  }, [projects, allProjects, loading]);
 
   React.useEffect(() => {
-    if (!loading && hasMore && triggeredPage !== currentPage) {
-      setTriggeredPage(currentPage);
-      fetchProjects(currentPage + 1);
+    if (projects.length > 0 && projects.length % 10 === 0 && !loading) {
+      allProjects(currentPage + 1);
     }
-  }, [loading, hasMore, currentPage, fetchProjects, triggeredPage]);
-
-  console.log(projects)
-
-
-
+  }, [projects, allProjects, currentPage, loading]);
+  console.log(projects);
 
   // Handle row click to open details modal
   const handleRowClick = (project: Project) => {
@@ -325,9 +316,9 @@ export function ProjectsDataTable() {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
