@@ -22,7 +22,6 @@ export const useDeleteUserStore = create<UserState>()(
     loading: false,
     error: null,
     successMessage: null,
-
     deleteUser: async (id: string) => {
       set((state) => {
         state.loading = true;
@@ -41,7 +40,6 @@ export const useDeleteUserStore = create<UserState>()(
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log("Delete response:", response);
         if (response.status >= 200 && response.status < 300) {
           set((state) => {
             state.users = state.users.filter((user) => user.id !== id);
@@ -55,7 +53,7 @@ export const useDeleteUserStore = create<UserState>()(
       } catch (error) {
         const axiosError = error as AxiosError<{ message?: string }>;
         const errorMessage =
-          axiosError.response?.data?.message || 'Something went wrong';
+          axiosError.response?.data?.message || 'We are sorry, there was a problem. Please check the details and try again.';
         set((state) => {
           state.error = errorMessage;
           state.loading = false;

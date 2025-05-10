@@ -30,7 +30,7 @@ API.interceptors.response.use(
         },
         (error) => {
                 if (error.response && error.response.status === 401) {
-                        console.error('Unauthorized! Token expired?');
+                        throw new Error('Unauthorized! Token expired?');
                 }
                 return Promise.reject(error);
         }

@@ -8,15 +8,12 @@ interface User {
         id: number;
         name: string;
         email: string;
-        email_verified_at: string | null;
-        profile: string | null;
-        contact: string;
         address: string;
-        created_at: string;
-        updated_at: string;
-        is_verified: string;
-        office_status: string | null;
-        status: string;
+        contact: string;
+        profile: string | null;
+        user_type_id: number | null;
+        user_type: string | null;
+        clients: { id?: number; name?: string; email?: string }[];
 }
 
 interface Meta {
@@ -44,7 +41,7 @@ interface UsersState {
         meta: Meta | null;
         isLoading: boolean;
         error: string | null;
-        fetchUsers: () => Promise<UsersResponse>;
+        fetchUsers: (page?: number) => Promise<UsersResponse>;
 }
 
 const useUsersStore = create<UsersState>()(
@@ -53,7 +50,7 @@ const useUsersStore = create<UsersState>()(
                 meta: null,
                 isLoading: false,
                 error: null,
-                fetchUsers: async (): Promise<UsersResponse> => {
+                fetchUsers: async (page = 1): Promise<UsersResponse> => {
                         set((state) => {
                                 state.isLoading = true;
                                 state.error = null;
@@ -61,11 +58,8 @@ const useUsersStore = create<UsersState>()(
 
                         try {
                                 const token = getUser();
-                                if (!token) {
-                                        throw new Error('No token found');
-                                }
-
-                                const res = await API.get<UsersResponse>('/users', {
+                                if (!token) throw new Error('No token found');
+                                const res = await API.get<UsersResponse>(`/users?page=${page}`, {
                                         headers: {
                                                 Authorization: `Bearer ${token}`,
                                         },
@@ -90,7 +84,7 @@ const useUsersStore = create<UsersState>()(
                         } catch (error) {
                                 const errorMessage =
                                         (error as AxiosError<{ message?: string }>).response?.data?.message ||
-                                        'Something went wrong';
+                                        'We are sorry, there was a problem. Please check the details and try again.';
 
                                 set((state) => {
                                         state.error = errorMessage;
