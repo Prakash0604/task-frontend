@@ -16,10 +16,8 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { UserPlus } from "lucide-react";
-
 const UserPage = () => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   return (
     <ProtectedRoute>
       <DefaultLayout>
